@@ -15,7 +15,9 @@
 
     <modules>
         <module>services/home</module>
+        <module>services/home-impl</module>
         <module>services/commons</module>
+        <module>services/commons-impl</module>
         <module>web/home</module>
         <module>web/commons</module>
         <module>view/static</module>

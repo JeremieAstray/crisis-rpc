@@ -2,7 +2,9 @@ package com.jeremie.spring.home.entity;
 
 import com.jeremie.spring.entity.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author guanhong 15/8/18 下午4:07.

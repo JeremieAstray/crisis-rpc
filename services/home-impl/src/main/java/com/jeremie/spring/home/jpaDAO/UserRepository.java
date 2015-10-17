@@ -2,7 +2,6 @@ package com.jeremie.spring.home.jpaDAO;
 
 import com.jeremie.spring.home.entity.User;
 import com.jeremie.spring.jpaDAO.BaseDAO;
-import com.jeremie.spring.jpaDAO.BaseRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
