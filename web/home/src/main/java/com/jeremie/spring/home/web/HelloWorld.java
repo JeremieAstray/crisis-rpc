@@ -7,6 +7,7 @@ import com.jeremie.spring.web.BaseController;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,12 +21,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class HelloWorld extends BaseController{
 
+    //private ApplicationContext applicationContext;
     @Autowired
-    private ApplicationContext applicationContext;
+    private UserService userService;
 
-    private UserService jpaUserService(){
-        return  (UserService)applicationContext.getBean("UserService");
-    }
+    /*private UserService jpaUserService(){
+        if(userService == null)
+            userService = applicationContext.getBean(UserService.class);
+        return userService;
+    }*/
 
     @ResponseBody
     @RequestMapping("/")
@@ -44,13 +48,7 @@ public class HelloWorld extends BaseController{
         //model.addAttribute("vmchange", "vmchange");
         model.addAttribute("vmchange", "vmchangetest");
         User user;
-        try {
-            user = jpaUserService().getById(id);
-            user.getId();
-        }catch (Exception e){
-            log.error("entity error",e);
-            user = null;
-        }
+        user = userService.getById(id);
         if (user != null)
             model.addAttribute("user", user.getUsername());
         else
@@ -64,7 +62,7 @@ public class HelloWorld extends BaseController{
             id = 1l;
         if(StringUtils.isBlank(name))
             name = "guanhong!";
-        jpaUserService().updateUserById(name, id);
+        userService.updateUserById(name, id);
         redirectAttributes.addAttribute("id",id);
         return "redirect:/testvm";
     }
@@ -72,7 +70,7 @@ public class HelloWorld extends BaseController{
     @ResponseBody
     @RequestMapping("/invalidUser")
     public String invalidUser(Long id) throws Exception{
-        jpaUserService().deleteUser(id);
+        userService.deleteUser(id);
         return "success";
     }
 }

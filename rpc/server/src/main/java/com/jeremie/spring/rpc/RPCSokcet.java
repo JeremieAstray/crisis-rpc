@@ -39,7 +39,7 @@ public class RPCSokcet implements Runnable {
             if (o instanceof RPCDto){
                 RPCDto rpcDto = (RPCDto) o;
                 Class clazz = Class.forName(rpcDto.getDestClazz());
-                Object o1 = applicationContext.getBean(rpcDto.getDestClazz().split("\\.")[rpcDto.getDestClazz().split("\\.").length-1]);
+                Object o1 = applicationContext.getBean(clazz);
                 Method method = clazz.getMethod(((RPCDto) o).getMethod(), ((RPCDto) o).getParamsType());
                 Object result = method.invoke(o1,((RPCDto) o).getParams());
                 RPCReceive rpcReceive = new RPCReceive();

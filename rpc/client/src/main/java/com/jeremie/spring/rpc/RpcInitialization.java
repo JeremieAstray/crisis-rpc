@@ -3,7 +3,7 @@ package com.jeremie.spring.rpc;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,15 +23,10 @@ import java.util.jar.JarFile;
 
 public class RpcInitialization {
 
-    private ConfigurableBeanFactory beanFactory;
-
-    public RpcInitialization(ConfigurableBeanFactory beanFactory){
-        this.beanFactory = beanFactory;
-    }
-
     protected static Logger logger = Logger.getLogger(RpcInitialization.class);
 
-    public void rpcInit() {
+    public static void rpcInit(ConfigurableApplicationContext applicationContext) {
+        ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();
         Set<String> classNames = getClassName("com.jeremie.spring.home.jpaService", true);
         classNames.forEach(className -> {
             try {
@@ -59,7 +54,7 @@ public class RpcInitialization {
      * @return 类的完整名称
      */
 
-    private Set<String> getClassName(String packageName, boolean isRecursion) {
+    private static Set<String> getClassName(String packageName, boolean isRecursion) {
         Set<String> classNames = null;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         String packagePath = packageName.replace(".", "/");
@@ -97,7 +92,7 @@ public class RpcInitialization {
      * @param isRecursion 是否遍历子包
      * @return 类的完整名称
      */
-    private Set<String> getClassNameFromDir(String filePath, String packageName, boolean isRecursion) {
+    private static Set<String> getClassNameFromDir(String filePath, String packageName, boolean isRecursion) {
         Set<String> className = new HashSet<String>();
         File file = new File(filePath);
         File[] files = file.listFiles();
@@ -124,7 +119,7 @@ public class RpcInitialization {
      * @param isRecursion
      * @return
      */
-    private Set<String> getClassNameFromJar(Enumeration<JarEntry> jarEntries, String packageName, boolean isRecursion) {
+    private static Set<String> getClassNameFromJar(Enumeration<JarEntry> jarEntries, String packageName, boolean isRecursion) {
         Set<String> classNames = new HashSet<String>();
 
         while (jarEntries.hasMoreElements()) {
@@ -157,7 +152,7 @@ public class RpcInitialization {
      * @param isRecursion 是否遍历子包
      * @return 类的完整名称
      */
-    private Set<String> getClassNameFromJars(URL[] urls, String packageName, boolean isRecursion) {
+    private static Set<String> getClassNameFromJars(URL[] urls, String packageName, boolean isRecursion) {
         Set<String> classNames = new HashSet<String>();
 
         for (int i = 0; i < urls.length; i++) {
