@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author guanhong 15/9/10 下午10:11.
  */
-@Service("jpaUserService")
+@Service("UserService")
 public class UserServiceImpl extends BaseService implements UserService {
 
     @Autowired
@@ -33,7 +33,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public User getById(Long id) throws Exception  {
-        return userRepository.getOne(id);
+        return userRepository.findByIdAndValidTrue(id);
     }
 
     //@Transactional(readOnly = false)

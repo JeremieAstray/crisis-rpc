@@ -22,4 +22,6 @@ public interface UserRepository extends BaseDAO<User> {
 
     User findByUsername(String username);
 
+    User findByIdAndValidTrue(Long id);
+
 }
