@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc;
 
 import com.jeremie.spring.rpc.dto.RPCDto;
+import com.jeremie.spring.rpc.socket.RPCClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;

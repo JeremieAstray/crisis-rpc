@@ -1,4 +1,4 @@
-package com.jeremie.spring.rpc;
+package com.jeremie.spring.rpc.socket;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
 import org.apache.log4j.Logger;
