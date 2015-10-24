@@ -10,6 +10,7 @@ public class RPCDto implements Serializable{
     private String method;
     private Class[] paramsType;
     private Object[] params;
+    private Class returnType;
 
     public String getDestClazz() {
         return destClazz;
@@ -41,5 +42,13 @@ public class RPCDto implements Serializable{
 
     public void setParamsType(Class[] paramsType) {
         this.paramsType = paramsType;
+    }
+
+    public Class getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(Class returnType) {
+        this.returnType = returnType;
     }
 }

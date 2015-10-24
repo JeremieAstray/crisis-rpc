@@ -32,7 +32,7 @@ public class UserServiceImpl extends BaseService implements UserService {
     }
 
     @Override
-    public User getById(Long id) throws Exception  {
+    public User getById(long id) throws Exception  {
         return userRepository.findByIdAndValidTrue(id);
     }
 

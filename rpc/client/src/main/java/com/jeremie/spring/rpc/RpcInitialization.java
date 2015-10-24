@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc;
 
 import com.jeremie.spring.rpc.dto.RPCDto;
-import com.jeremie.spring.rpc.socket.RPCClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -38,7 +37,8 @@ public class RpcInitialization {
                     rpcDto.setParams(params);
                     rpcDto.setMethod(method.getName());
                     rpcDto.setParamsType(method.getParameterTypes());
-                    return new RPCClient().invoke(rpcDto);
+                    rpcDto.setReturnType(method.getReturnType());
+                    return RPCFactory.getHttpRPCClient().invoke(rpcDto);
                 });
                 beanFactory.registerSingleton(clazz.getSimpleName(), o);
             }catch(ClassNotFoundException e){

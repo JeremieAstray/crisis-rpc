@@ -14,7 +14,7 @@ public interface UserService {
 
     User save(User user) throws Exception;
 
-    User getById(Long id) throws Exception;
+    User getById(long id) throws Exception;
 
     void updateUserById(String username, Long id) throws Exception;
 

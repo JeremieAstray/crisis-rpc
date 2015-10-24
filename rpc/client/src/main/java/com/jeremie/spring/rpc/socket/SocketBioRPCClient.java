@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.socket;
 
 
+import com.jeremie.spring.rpc.RPCClient;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import org.apache.log4j.Logger;
@@ -14,13 +15,14 @@ import java.net.Socket;
 /**
  * Created by Jeremie on 2015/5/13.
  */
-public class RPCClient {
+public class SocketBioRPCClient implements RPCClient {
 
     protected Logger logger = Logger.getLogger(this.getClass());
     private Socket socket = null;
     private ObjectOutputStream objectOutputStream = null;
     private ObjectInputStream objectInputStream = null;
 
+    @Override
     public Object invoke(RPCDto rpcDto) {
         try {
             socket = new Socket("127.0.0.1", 8000);

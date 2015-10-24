@@ -10,6 +10,7 @@ public class RPCReceive implements Serializable {
         SUCCESS,ERR0R
     }
     private Status status;
+
     private Object returnPara;
 
     public Status getStatus() {
