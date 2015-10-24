@@ -21,11 +21,13 @@ public class SocketBioRPCClient implements RPCClient {
     private Socket socket = null;
     private ObjectOutputStream objectOutputStream = null;
     private ObjectInputStream objectInputStream = null;
+    private String host = "127.0.0.1";
+    private int serverPort = 8000;
 
     @Override
     public Object invoke(RPCDto rpcDto) {
         try {
-            socket = new Socket("127.0.0.1", 8000);
+            socket = new Socket(host, serverPort);
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(rpcDto);
@@ -40,27 +42,27 @@ public class SocketBioRPCClient implements RPCClient {
         } catch (EOFException e) {
             logger.debug("socket连接结束");
         } catch (IOException | ClassNotFoundException e) {
-            logger.error(e);
+            logger.error("error",e);
         } finally {
             if (objectOutputStream != null) {
                 try {
                     objectOutputStream.flush();
                     objectOutputStream.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    logger.error("error",e);
                 }
             }
             try {
                 if (objectInputStream != null)
                     objectInputStream.close();
             } catch (IOException e) {
-                logger.error(e);
+                logger.error("error",e);
             }
             try {
                 if (socket != null)
                     socket.close();
             } catch (IOException e) {
-                logger.error(e);
+                logger.error("error",e);
             }
         }
         return null;

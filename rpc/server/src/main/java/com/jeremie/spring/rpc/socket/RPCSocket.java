@@ -16,7 +16,7 @@ import java.net.Socket;
 /**
  * Created by jeremie on 2015/6/4.
  */
-public class RPCSokcet implements Runnable {
+public class RPCSocket implements Runnable {
 
     protected Logger logger = Logger.getLogger(this.getClass());
     public ObjectOutputStream objectOutputStream = null;
@@ -24,7 +24,7 @@ public class RPCSokcet implements Runnable {
     private Socket socket;
     private ApplicationContext applicationContext;
 
-    public RPCSokcet(Socket sockek,ApplicationContext applicationContext) {
+    public RPCSocket(Socket sockek, ApplicationContext applicationContext) {
         this.socket = sockek;
         this.applicationContext = applicationContext;
     }
@@ -53,33 +53,33 @@ public class RPCSokcet implements Runnable {
                 objectOutputStream.writeObject(rpcReceive);
             }
         } catch (IOException |InvocationTargetException | IllegalAccessException |NoSuchMethodException| ClassNotFoundException e) {
-            logger.error(e);
+            logger.error("error",e);
         } finally {
             if (objectOutputStream != null) {
                 try {
                     objectOutputStream.flush();
                     objectOutputStream.close();
                 } catch (IOException e) {
-                    logger.error(e);
+                    logger.error("error",e);
                 }
             }
             try {
                 if (objectInputStream != null)
                     objectInputStream.close();
             } catch (IOException e) {
-                logger.error(e);
+                logger.error("error",e);
             }
             try {
                 if (!socket.isClosed())
                     socket.getInputStream().close();
             } catch (IOException e) {
-                logger.error(e);
+                logger.error("error",e);
             }
             try {
                 logger.debug(socket.getInetAddress() + " close!");
                 socket.close();
             } catch (IOException e) {
-                logger.error(e);
+                logger.error("error",e);
             }
 
         }

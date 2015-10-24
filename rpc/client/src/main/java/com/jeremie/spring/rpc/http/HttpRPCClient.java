@@ -48,7 +48,7 @@ public class HttpRPCClient implements RPCClient {
                     returnObject = rpcReceive.getReturnPara();
             }
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("httpRequest error",e);
         }
         return returnObject;
     }

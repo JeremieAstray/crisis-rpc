@@ -61,7 +61,7 @@ public class Launch extends WebMvcConfigurerAdapter {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String handleException(Exception e) {
-        logger.error(e);
+        logger.error("error",e);
         RPCReceive rpcReceive = new RPCReceive();
         rpcReceive.setReturnPara(null);
         rpcReceive.setStatus(RPCReceive.Status.ERR0R);

@@ -6,12 +6,23 @@ import java.io.Serializable;
  * @author guanhong 15/10/18 下午2:45.
  */
 public class RPCReceive implements Serializable {
+
+    private String clientId;
+
     public enum Status{
         SUCCESS,ERR0R
     }
     private Status status;
 
     private Object returnPara;
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
 
     public Status getStatus() {
         return status;

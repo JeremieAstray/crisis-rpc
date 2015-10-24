@@ -32,25 +32,25 @@ public class Launch implements CommandLineRunner {
     private ApplicationContext applicationContext;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         logger.debug("开启RPC服务，端口号：" + 8000);
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(8000);
             while (true) {
                 Socket socket = serverSocket.accept();
-                Thread thread = new Thread(new RPCSokcet(socket,applicationContext));
+                Thread thread = new Thread(new RPCSocket(socket,applicationContext));
                 thread.start();
             }
         } catch (IOException e) {
-            logger.error(e);
+            logger.error("error",e);
         } finally {
             try {
                 logger.debug("关闭RPC服务");
                 if (serverSocket != null)
                     serverSocket.close();
             } catch (IOException e) {
-                logger.error(e);
+                logger.error("error",e);
             }
         }
     }

@@ -6,11 +6,20 @@ import java.io.Serializable;
  * @author guanhong 15/10/18 下午1:33.
  */
 public class RPCDto implements Serializable{
+    private String clientId;
     private String destClazz;
     private String method;
     private Class[] paramsType;
     private Object[] params;
     private Class returnType;
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
 
     public String getDestClazz() {
         return destClazz;
