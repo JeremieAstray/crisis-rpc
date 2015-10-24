@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * @author guanhong 15/10/18 下午1:33.
  */
-public class RPCDto213 implements Serializable{
+public class RPCDto implements Serializable{
     private String clientId;
     private String destClazz;
     private String method;
