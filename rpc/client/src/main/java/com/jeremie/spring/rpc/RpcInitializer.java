@@ -21,9 +21,9 @@ import java.util.jar.JarFile;
  * @author guanhong 15/10/17 下午11:40.
  */
 
-public class RpcInitialization {
+public class RpcInitializer {
 
-    protected static Logger logger = Logger.getLogger(RpcInitialization.class);
+    protected static Logger logger = Logger.getLogger(RpcInitializer.class);
 
     public static void rpcInit(ConfigurableApplicationContext applicationContext) {
         ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();
