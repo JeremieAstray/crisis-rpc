@@ -3,6 +3,7 @@ package com.jeremie.spring.rpc;
 
 import com.jeremie.spring.rpc.http.HttpRPCClient;
 import com.jeremie.spring.rpc.mina.MinaRPCClient;
+import com.jeremie.spring.rpc.netty.NettyRPCClient;
 import com.jeremie.spring.rpc.nio.SocketNioRPCClient;
 import com.jeremie.spring.rpc.socket.SocketBioRPCClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class RPCFactory {
     private static RPCClient socketBioRPCClient;
     private static RPCClient socketNioRPCClient;
     private static RPCClient minaRPCClient;
+    private static RPCClient nettyRPCClient;
 
     @Autowired
     public void setSocketNioRPCClient(SocketNioRPCClient mySocketBioRPCClient) {
@@ -26,6 +28,11 @@ public class RPCFactory {
     @Autowired
     public void setMinaRPCClient(MinaRPCClient myMinaRPCClient) {
         minaRPCClient = myMinaRPCClient;
+    }
+
+    @Autowired
+    public void setNettyRPCClient(NettyRPCClient myNettyRPCClient) {
+        nettyRPCClient = myNettyRPCClient;
     }
 
     public static RPCClient getHttpRPCClient() {
@@ -46,5 +53,9 @@ public class RPCFactory {
 
     public static RPCClient getMinaRPCClient() {
         return minaRPCClient;
+    }
+
+    public static RPCClient getNettyRPCClient() {
+        return nettyRPCClient;
     }
 }

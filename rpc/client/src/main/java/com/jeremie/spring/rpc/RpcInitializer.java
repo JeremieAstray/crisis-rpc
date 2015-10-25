@@ -38,7 +38,7 @@ public class RpcInitializer {
                     rpcDto.setMethod(method.getName());
                     rpcDto.setParamsType(method.getParameterTypes());
                     rpcDto.setReturnType(method.getReturnType());
-                    return RPCFactory.getMinaRPCClient().invoke(rpcDto);
+                    return RPCFactory.getNettyRPCClient().invoke(rpcDto);
                 });
                 beanFactory.registerSingleton(clazz.getSimpleName(), o);
             }catch(ClassNotFoundException e){
