@@ -23,7 +23,7 @@ import java.net.Socket;
 @EntityScan(basePackages = "${spring.ioc.entityScan.basePackages}")
 @SpringBootApplication
 public class Launch implements CommandLineRunner {
-    protected Logger logger = Logger.getLogger(Launch.class);
+    protected Logger logger = Logger.getLogger(this.getClass());
     public static void main(String[] args) {
         SpringApplication.run(Launch.class, args);
     }

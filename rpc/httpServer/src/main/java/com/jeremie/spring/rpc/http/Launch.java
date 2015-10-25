@@ -30,7 +30,7 @@ import java.lang.reflect.Method;
 @SpringBootApplication
 @Controller
 public class Launch extends WebMvcConfigurerAdapter {
-    protected Logger logger = Logger.getLogger(Launch.class);
+    protected Logger logger = Logger.getLogger(this.getClass());
 
     public static void main(String[] args) {
         SpringApplication.run(Launch.class, args);
