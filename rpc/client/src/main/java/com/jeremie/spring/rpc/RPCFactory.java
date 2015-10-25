@@ -55,7 +55,7 @@ public class RPCFactory {
         return minaRPCClient;
     }
 
-    public static RPCClient getNettyRPCClient() {
+    /*public static RPCClient getNettyRPCClient() {
         return nettyRPCClient;
-    }
+    }*/
 }

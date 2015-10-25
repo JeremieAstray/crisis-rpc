@@ -1,9 +1,13 @@
 package com.jeremie.spring.rpc.netty;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelFuture;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -20,21 +24,30 @@ public class NettyRPCBean implements DisposableBean {
     private boolean isConnect = false;
     private Bootstrap bootstrap;
     protected ChannelFuture channelFuture;
+    private EventLoopGroup group;
     public boolean isConnect() {
         return isConnect;
     }
 
     public void init() {
-        // Client服务启动器 3.x的ClientBootstrap 改为Bootstrap，且构造函数变化很大，这里用无参构造。
-        bootstrap = new Bootstrap();
-        // 指定channel类型
-        bootstrap.channel(NioSocketChannel.class);
-        // 指定Handler
-        bootstrap.handler(new RPCClientHandler());
-        // 指定EventLoopGroup
-        bootstrap.group(new NioEventLoopGroup());
-        // 连接到服务端
-        channelFuture = bootstrap.connect( new InetSocketAddress(host , serverPort));
+        group = new NioEventLoopGroup();
+        try {
+            bootstrap = new Bootstrap();
+            bootstrap.group(group).channel(NioSocketChannel.class).option(ChannelOption.TCP_NODELAY, true)
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        public void initChannel(SocketChannel ch) throws Exception {
+                            ChannelPipeline p = ch.pipeline();
+                            p.addLast(new ObjectEncoder(), new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                    new RPCClientHandler());
+                        }
+                    });
+
+            // Start the client.
+            channelFuture = bootstrap.connect(host, serverPort).sync();
+        }catch (InterruptedException e){
+            logger.error("error",e);
+        }
         isConnect = true;
     }
 
@@ -42,7 +55,8 @@ public class NettyRPCBean implements DisposableBean {
     public void destroy() throws Exception {
         //关闭
         if(bootstrap!=null){
-            channelFuture.cancel(true);
+            channelFuture.channel().close();
+            group.shutdownGracefully();
         }
     }
 }

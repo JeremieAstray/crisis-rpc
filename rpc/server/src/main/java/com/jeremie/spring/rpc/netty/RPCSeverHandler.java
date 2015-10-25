@@ -27,7 +27,6 @@ public class RPCSeverHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        super.channelRead(ctx, msg);
         RPCReceive rpcReceive = new RPCReceive();
         if (msg instanceof RPCDto) {
             RPCDto rpcDto = (RPCDto) msg;
@@ -43,24 +42,16 @@ public class RPCSeverHandler extends ChannelInboundHandlerAdapter {
             rpcReceive.setStatus(RPCReceive.Status.ERR0R);
         }
         ctx.write(rpcReceive);
+        logger.info("成功写出数据!!");
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-        logger.info(ctx.name() + "客户端连接");
-    }
-
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        super.channelReadComplete(ctx);
-        logger.info("写出数据成功");
-        ctx.flush();
+        logger.info(ctx.channel().remoteAddress().toString() + "客户端连接");
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
         logger.error("error",cause);
     }
 }

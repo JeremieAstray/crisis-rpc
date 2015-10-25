@@ -31,7 +31,7 @@ public class NettyRPCClient implements RPCClient {
         Thread current = Thread.currentThread();
         rpcDto.setClientId(UUID.randomUUID().toString());
         threadMap.put(rpcDto.getClientId(),current);
-        nettyRPCBean.channelFuture.channel().writeAndFlush(rpcDto);
+        nettyRPCBean.channelFuture.channel().write(rpcDto);
         try {
             synchronized (current) {
                 current.wait(5000);

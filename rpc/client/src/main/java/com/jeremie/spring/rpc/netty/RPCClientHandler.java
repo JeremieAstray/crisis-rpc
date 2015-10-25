@@ -11,11 +11,8 @@ import org.apache.log4j.Logger;
 public class RPCClientHandler extends ChannelInboundHandlerAdapter {
     private Logger logger = Logger.getLogger(this.getClass());
 
-
-
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        super.channelRead(ctx, msg);
         if(msg instanceof RPCReceive){
             RPCReceive rpcReceive = (RPCReceive) msg;
             if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS){
@@ -31,18 +28,11 @@ public class RPCClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        super.channelReadComplete(ctx);
         ctx.flush();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
         logger.error("error", cause);
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
     }
 }

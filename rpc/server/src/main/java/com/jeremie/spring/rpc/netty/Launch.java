@@ -44,7 +44,6 @@ public class Launch implements CommandLineRunner {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
-            // server端采用简洁的连写方式，client端才用分段普通写法。
             serverBootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel. class )
                     .childHandler( new ChannelInitializer<SocketChannel>() {
@@ -54,7 +53,6 @@ public class Launch implements CommandLineRunner {
                             ch.pipeline().addLast( new RPCSeverHandler(applicationContext));
                         }
                     }).option(ChannelOption.SO_KEEPALIVE , true );
-
             ChannelFuture f = serverBootstrap.bind(SERVER_PORT).sync();
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
