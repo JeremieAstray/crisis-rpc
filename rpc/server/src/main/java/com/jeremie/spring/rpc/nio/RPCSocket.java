@@ -6,6 +6,7 @@ import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
+import java.io.EOFException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -22,6 +23,8 @@ public class RPCSocket implements Runnable {
 
     private SocketChannel socketChannel;
     private ApplicationContext applicationContext;
+    private Selector selector;
+    private String clientHost;
 
     public RPCSocket(SocketChannel socketChannel, ApplicationContext applicationContext) {
         this.socketChannel = socketChannel;
@@ -32,9 +35,11 @@ public class RPCSocket implements Runnable {
     public void run() {
         try {
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(50 * 1024);
-            Selector selector = Selector.open();
+            selector = Selector.open();
             socketChannel.configureBlocking(false);
             socketChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            this.clientHost = socketChannel.getRemoteAddress().toString();
+            logger.info("与" + this.clientHost + "建立连接");
             while (true) {
                 selector.select();
                 Iterator it = selector.selectedKeys().iterator();
@@ -75,8 +80,19 @@ public class RPCSocket implements Runnable {
                     }
                 }
             }
+        } catch (EOFException e) {
+            logger.info("与" + this.clientHost + "断开连接");
         } catch (Exception e) {
-            logger.error("error",e);
+            logger.error("error", e);
+        }finally {
+            try {
+                if(socketChannel !=null){
+                    socketChannel.close();
+                    selector.close();
+                }
+            }catch (Exception e){
+                logger.error("close connect error",e);
+            }
         }
     }
 }

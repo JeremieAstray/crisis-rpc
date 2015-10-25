@@ -11,63 +11,98 @@ public class SerializeTool {
 
     private static Logger logger = Logger.getLogger(SerializeTool.class);
 
-    public static String objectToString(Object object){
+    public static String objectToString(Object object) {
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
         try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
-            String objectString = byteArrayOutputStream.toString("ISO-8859-1");
-            objectOutputStream.close();
-            byteArrayOutputStream.close();
-            return objectString;
-        }catch (IOException e){
-            logger.error("objectToString error",e);
+            return byteArrayOutputStream.toString("ISO-8859-1");
+        } catch (IOException e) {
+            logger.error("objectToString error", e);
+        } finally {
+            try {
+                if (objectOutputStream != null)
+                    objectOutputStream.close();
+                if (byteArrayOutputStream != null)
+                    byteArrayOutputStream.close();
+            } catch (IOException e) {
+                logger.error("close stream error", e);
+            }
         }
         return null;
     }
 
-    public static Object stringToObject(String string){
+    public static Object stringToObject(String string) {
+        ByteArrayInputStream byteArrayInputStream = null;
+        ObjectInputStream objectInputStream = null;
         try {
             byte[] objectBytes = string.getBytes("ISO-8859-1");
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(objectBytes);
-            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            Object o = objectInputStream.readObject();
-            objectInputStream.close();
-            byteArrayInputStream.close();
-            return o;
-        }catch (IOException | ClassNotFoundException e){
-            logger.error("stringToObject error",e);
+            byteArrayInputStream = new ByteArrayInputStream(objectBytes);
+            objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("stringToObject error", e);
+        } finally {
+            try {
+                if (objectInputStream != null)
+                    objectInputStream.close();
+                if (byteArrayInputStream != null)
+                    byteArrayInputStream.close();
+            } catch (IOException e) {
+                logger.error("close stream error", e);
+            }
         }
         return null;
     }
 
-    public static Object byteArrayToObject(byte[] byteArray){
+    public static Object byteArrayToObject(byte[] byteArray) throws EOFException {
+        ByteArrayInputStream byteArrayInputStream = null;
+        ObjectInputStream objectInputStream = null;
         try {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArray);
-            ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            Object o = objectInputStream.readObject();
-            objectInputStream.close();
-            byteArrayInputStream.close();
-            return o;
-        }catch (IOException | ClassNotFoundException e){
-            logger.error("byteArrayToObject error",e);
+            byteArrayInputStream = new ByteArrayInputStream(byteArray);
+            objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return objectInputStream.readObject();
+        } catch (EOFException e) {
+            throw e;
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("byteArrayToObject error", e);
+        } finally {
+            try {
+                if (objectInputStream != null)
+                    objectInputStream.close();
+                if (byteArrayInputStream != null)
+                    byteArrayInputStream.close();
+
+            } catch (IOException e) {
+                logger.error("close stream error", e);
+            }
         }
         return null;
     }
 
-    public static byte[] objectToByteArray(Object object){
+    public static byte[] objectToByteArray(Object object) {
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
         try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(object);
             objectOutputStream.flush();
-            byte[] bytes = byteArrayOutputStream.toByteArray();
-            objectOutputStream.close();
-            byteArrayOutputStream.close();
-            return bytes;
-        }catch (IOException e){
-            logger.error("objectToByteArray error",e);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            logger.error("objectToByteArray error", e);
+        } finally {
+            try {
+                if (objectOutputStream != null)
+                    objectOutputStream.close();
+                if (byteArrayOutputStream != null)
+                    byteArrayOutputStream.close();
+            } catch (IOException e) {
+                logger.error("close stream error", e);
+            }
         }
         return null;
     }
