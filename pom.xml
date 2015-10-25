@@ -17,6 +17,7 @@
         <module>rpc/commons</module>
         <module>rpc/client</module>
         <module>rpc/server</module>
+        <module>rpc/httpServer</module>
         <module>services/home</module>
         <module>services/home-impl</module>
         <module>services/commons</module>
@@ -36,14 +37,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>

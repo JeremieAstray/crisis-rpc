@@ -1,3 +1,5 @@
+server:
+    port: 8081
 spring:
     #datasource
     datasource:
@@ -42,7 +44,7 @@ spring:
                 - batch
 #log
 logging:
-    file: rpc-implement-server.log
+    file: rpc-implement-http-server.log
     level:
         org:
             springframework:
