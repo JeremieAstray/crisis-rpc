@@ -23,6 +23,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author guanhong 15/10/24 下午1:56.
@@ -33,6 +35,8 @@ import java.util.Iterator;
 @SpringBootApplication
 public class Launch implements CommandLineRunner {
     protected Logger logger = Logger.getLogger(this.getClass());
+
+    private Executor executor = Executors.newFixedThreadPool(200);
 
     public static void main(String[] args) {
         SpringApplication.run(Launch.class, args);
@@ -62,8 +66,7 @@ public class Launch implements CommandLineRunner {
                         if (selectionKey.isAcceptable()) {
                             SocketChannel socketChannel = serverSocketChannel.accept();
                             RPCSocket rpcSocket = new RPCSocket(socketChannel, applicationContext);
-                            Thread thread = new Thread(rpcSocket);
-                            thread.start();
+                            executor.execute(rpcSocket);
                         }
                     }
                 }

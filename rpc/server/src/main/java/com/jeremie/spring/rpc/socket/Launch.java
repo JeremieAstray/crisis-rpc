@@ -14,6 +14,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author guanhong 15/9/10 下午5:04.
@@ -24,6 +26,7 @@ import java.net.Socket;
 @SpringBootApplication
 public class Launch implements CommandLineRunner {
     protected Logger logger = Logger.getLogger(this.getClass());
+    private Executor executor = Executors.newFixedThreadPool(200);
     public static void main(String[] args) {
         SpringApplication.run(Launch.class, args);
     }
@@ -39,8 +42,7 @@ public class Launch implements CommandLineRunner {
             serverSocket = new ServerSocket(8000);
             while (true) {
                 Socket socket = serverSocket.accept();
-                Thread thread = new Thread(new RPCSocket(socket,applicationContext));
-                thread.start();
+                executor.execute(new RPCSocket(socket,applicationContext));
             }
         } catch (IOException e) {
             logger.error("error",e);

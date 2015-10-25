@@ -2,7 +2,6 @@ package com.jeremie.spring.rpc.mina;
 
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
-import com.jeremie.spring.rpc.nio.SocketNioRPCClient;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
@@ -38,14 +37,6 @@ public class RPCClientHandler extends IoHandlerAdapter {
             }
         }
 
-    }
-
-    @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        if (message instanceof RPCDto) {
-            RPCDto rpcDto = (RPCDto) message;
-            session.write(rpcDto);
-        }
     }
 
 }

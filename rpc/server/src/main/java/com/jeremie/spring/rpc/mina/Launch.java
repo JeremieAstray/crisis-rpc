@@ -8,6 +8,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
+import org.apache.mina.transport.socket.nio.NioProcessor;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +22,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author guanhong 15/10/24 下午1:56.
@@ -43,7 +46,8 @@ public class Launch implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        IoAcceptor acceptor = new NioSocketAcceptor();
+        Executor executor = Executors.newFixedThreadPool(200);
+        IoAcceptor acceptor = new NioSocketAcceptor(executor,new NioProcessor(executor));
 
         acceptor.getFilterChain().addLast( "logger", new LoggingFilter(this.getClass()) );
         acceptor.getFilterChain().addLast( "codec", new ProtocolCodecFilter( new ObjectSerializationCodecFactory()));
