@@ -13,6 +13,7 @@ import java.util.Iterator;
 /**
  * @author guanhong 15/10/24 下午7:47.
  */
+@Deprecated
 public class RPCNioWriteSocketThread implements Runnable {
 
     private Logger logger = Logger.getLogger(this.getClass());

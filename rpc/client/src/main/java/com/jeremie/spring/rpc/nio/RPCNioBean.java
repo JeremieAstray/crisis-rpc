@@ -22,6 +22,8 @@ public class RPCNioBean implements DisposableBean {
     private Selector selector = null;
     private String host = "127.0.0.1";
     private int serverPort = 8000;
+    protected static boolean running = false;
+    protected boolean init = false;
 
     public SocketChannel getSocketChannel() {
         return socketChannel;
@@ -41,7 +43,9 @@ public class RPCNioBean implements DisposableBean {
             InetAddress addr = InetAddress.getLocalHost();
             boolean success = socketChannel.connect(new InetSocketAddress(addr, serverPort));
             if (!success) socketChannel.finishConnect();
-            new Thread(new RPCNioReadSocketThread(selector, socketChannel)).start();
+            //new Thread(new RPCNioReadSocketThread(selector, socketChannel)).start();
+            running = true;
+            init = true;
         } catch (Exception e) {
             logger.error("rpcNioBean init error",e);
         }
@@ -50,6 +54,8 @@ public class RPCNioBean implements DisposableBean {
     @Override
     public void destroy() throws Exception {
         try {
+            running = false;
+            init = false;
             if (socketChannel != null) {
                 socketChannel.close();
                 selector.close();

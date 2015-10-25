@@ -19,12 +19,11 @@ public class RPCFactory {
     private static RPCClient socketBioRPCClient;
     private static RPCClient socketNioRPCClient;
 
-    private static RPCNioBean rpcNioBean;
-
     @Autowired
-    public void setRpcNioBean(RPCNioBean rpcNioBean){
-        RPCFactory.rpcNioBean = rpcNioBean;
+    public void setSocketNioRPCClient(SocketNioRPCClient mySocketBioRPCClient){
+        socketNioRPCClient = mySocketBioRPCClient;
     }
+
 
     public static RPCClient getHttpRPCClient(){
         if (httpRPCClient==null)
@@ -39,8 +38,6 @@ public class RPCFactory {
     }
 
     public static RPCClient getSocketNioRPCClient(){
-        if(socketNioRPCClient == null)
-            socketNioRPCClient = new SocketNioRPCClient(rpcNioBean);
         return socketNioRPCClient;
     }
 }

@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.nio;
 
+import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.log4j.Logger;
@@ -11,16 +12,15 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 /**
- * @author guanhong 15/10/24 下午9:17.
+ * @author guanhong 15/10/25 下午12:32.
  */
-@Deprecated
-public class RPCNioReadSocketThread implements Runnable {
+public class RPCNioSocketThread implements Runnable {
     private Logger logger = Logger.getLogger(this.getClass());
 
     private Selector selector;
     private SocketChannel socketChannel;
 
-    public RPCNioReadSocketThread(Selector selector, SocketChannel socketChannel) {
+    public RPCNioSocketThread(Selector selector, SocketChannel socketChannel) {
         this.selector = selector;
         this.socketChannel = socketChannel;
     }
@@ -28,7 +28,7 @@ public class RPCNioReadSocketThread implements Runnable {
     @Override
     public void run() {
         try {
-            while (true) {
+            while (RPCNioBean.running) {
                 selector.select();
                 Iterator it = selector.selectedKeys().iterator();
                 while (it.hasNext()) {
@@ -46,7 +46,8 @@ public class RPCNioReadSocketThread implements Runnable {
                             if (o instanceof RPCReceive) {
                                 RPCReceive rpcReceive = (RPCReceive) o;
                                 if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS){
-                                    SocketNioRPCClient.resultMap.put(rpcReceive.getClientId(),rpcReceive.getReturnPara());
+                                    if(rpcReceive.getReturnPara() != null)
+                                        SocketNioRPCClient.resultMap.put(rpcReceive.getClientId(),rpcReceive.getReturnPara());
                                     Thread thread = SocketNioRPCClient.threadMap.get(rpcReceive.getClientId());
                                     synchronized (thread) {
                                         thread.notify();
@@ -54,6 +55,12 @@ public class RPCNioReadSocketThread implements Runnable {
                                 }
                             }
                         }
+                    } else if (key.isWritable() && !SocketNioRPCClient.requestQueue.isEmpty()) {
+                        RPCDto rpcDto = SocketNioRPCClient.requestQueue.poll();
+                        byte[] bytes = SerializeTool.objectToByteArray(rpcDto);
+                        if (bytes == null)
+                            throw new IllegalStateException();
+                        socketChannel.write(ByteBuffer.wrap(bytes));
                     }
                 }
             }

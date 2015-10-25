@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RPCNioConfiguration {
-    @Bean(initMethod = "init",destroyMethod = "destroy")
+    @Bean(destroyMethod = "destroy")
     public RPCNioBean rpcNioBean(){
         return new RPCNioBean();
     }
