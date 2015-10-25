@@ -46,9 +46,7 @@ public class Launch implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Executor executor = Executors.newFixedThreadPool(200);
-        IoAcceptor acceptor = new NioSocketAcceptor(executor,new NioProcessor(executor));
-
+        IoAcceptor acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast( "logger", new LoggingFilter(this.getClass()) );
         acceptor.getFilterChain().addLast( "codec", new ProtocolCodecFilter( new ObjectSerializationCodecFactory()));
 
