@@ -19,7 +19,7 @@ public class RPCClientHandler extends IoHandlerAdapter {
 
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-        logger.error(e.getMessage(), cause);
+        logger.error(cause.getMessage(), cause);
     }
 
     @Override

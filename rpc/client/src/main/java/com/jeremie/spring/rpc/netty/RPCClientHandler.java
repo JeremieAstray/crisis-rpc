@@ -35,6 +35,6 @@ public class RPCClientHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error(e.getMessage(), cause);
+        logger.error(cause.getMessage(), cause);
     }
 }
