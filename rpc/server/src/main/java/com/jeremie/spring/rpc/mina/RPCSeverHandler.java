@@ -33,13 +33,20 @@ public class RPCSeverHandler extends IoHandlerAdapter {
         RPCReceive rpcReceive = new RPCReceive();
         if (message instanceof RPCDto) {
             RPCDto rpcDto = (RPCDto) message;
-            Class clazz = Class.forName(rpcDto.getDestClazz());
-            Object o1 = applicationContext.getBean(clazz);
-            Method method = clazz.getMethod(((RPCDto) message).getMethod(), ((RPCDto) message).getParamsType());
-            Object result = method.invoke(o1, ((RPCDto) message).getParams());
-            rpcReceive.setReturnPara(result);
-            rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
-            rpcReceive.setClientId(rpcDto.getClientId());
+            try {
+                Class clazz = Class.forName(rpcDto.getDestClazz());
+                Object o1 = applicationContext.getBean(clazz);
+                Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
+                Object result = method.invoke(o1, rpcDto.getParams());
+                rpcReceive.setReturnPara(result);
+                rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
+                rpcReceive.setClientId(rpcDto.getClientId());
+            } catch (Exception e) {
+                logger.error(e.getMessage(),e);
+                rpcReceive.setClientId(rpcDto.getClientId());
+                rpcReceive.setStatus(RPCReceive.Status.ERR0R);
+                rpcReceive.setReturnPara(null);
+            }
         } else {
             rpcReceive.setReturnPara(null);
             rpcReceive.setStatus(RPCReceive.Status.ERR0R);

@@ -62,8 +62,8 @@ public class RPCSocket implements Runnable {
                             RPCDto rpcDto = (RPCDto) o;
                             Class clazz = Class.forName(rpcDto.getDestClazz());
                             Object o1 = applicationContext.getBean(clazz);
-                            Method method = clazz.getMethod(((RPCDto) o).getMethod(), ((RPCDto) o).getParamsType());
-                            Object result = method.invoke(o1, ((RPCDto) o).getParams());
+                            Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
+                            Object result = method.invoke(o1, rpcDto.getParams());
                             rpcReceive.setReturnPara(result);
                             rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
                             rpcReceive.setClientId(rpcDto.getClientId());

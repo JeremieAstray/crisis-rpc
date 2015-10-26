@@ -2,22 +2,23 @@ package com.jeremie.spring.rpc.netty;
 
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.log4j.Logger;
 
 /**
  * @author guanhong 15/10/25 下午4:10.
  */
-public class RPCClientHandler extends ChannelInboundHandlerAdapter {
+public class RPCClientHandler extends SimpleChannelInboundHandler<Object> {
     private Logger logger = Logger.getLogger(this.getClass());
 
+
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if(msg instanceof RPCReceive){
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (msg instanceof RPCReceive) {
             RPCReceive rpcReceive = (RPCReceive) msg;
-            if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS){
-                if(rpcReceive.getReturnPara() != null)
-                   NettyRPCClient.resultMap.put(rpcReceive.getClientId(),rpcReceive.getReturnPara());
+            if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS) {
+                if (rpcReceive.getReturnPara() != null)
+                    NettyRPCClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
                 Thread thread = NettyRPCClient.threadMap.get(rpcReceive.getClientId());
                 synchronized (thread) {
                     thread.notify();
@@ -27,8 +28,9 @@ public class RPCClientHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.flush();
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        logger.info("客服端连接服务器" + ctx.channel().remoteAddress());
+        super.channelActive(ctx);
     }
 
     @Override

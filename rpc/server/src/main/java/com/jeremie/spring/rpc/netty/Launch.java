@@ -2,13 +2,15 @@ package com.jeremie.spring.rpc.netty;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -43,23 +45,33 @@ public class Launch implements CommandLineRunner {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
-            ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel. class )
-                    .childHandler( new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        public void initChannel(SocketChannel ch)
-                                throws Exception {
-                            ch.pipeline().addLast( new RPCSeverHandler(applicationContext));
-                        }
-                    }).option(ChannelOption.SO_KEEPALIVE , true );
-            ChannelFuture f = serverBootstrap.bind(SERVER_PORT).sync();
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup);
+            b.channel(NioServerSocketChannel.class);
+            b.childHandler(new ChannelInitializer<SocketChannel>(){
+
+                @Override
+                protected void initChannel(SocketChannel socketChannel) throws Exception {
+                    ChannelPipeline pipeline = socketChannel.pipeline();
+                    pipeline.addLast("decoder", new ObjectDecoder(ClassResolvers.softCachingConcurrentResolver(this.getClass().getClassLoader())));
+                    pipeline.addLast("encoder", new ObjectEncoder());
+                    // 客户端的逻辑
+                    pipeline.addLast("handler", new RPCSeverHandler(applicationContext));
+                }
+            });
+
+            // 服务器绑定端口监听
+            ChannelFuture f = b.bind(SERVER_PORT).sync();
+            // 监听服务器关闭监听
             f.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
-            logger.error("error",e);
-        } finally {
-            workerGroup.shutdownGracefully();
+
+            // 可以简写为
+            /* b.bind(portNumber).sync().channel().closeFuture().sync(); */
+        }catch (InterruptedException e){
+            logger.error(e.getMessage(),e);
+        }finally {
             bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
         }
     }
 }

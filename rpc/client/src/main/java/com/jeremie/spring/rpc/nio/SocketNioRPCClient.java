@@ -57,7 +57,7 @@ public class SocketNioRPCClient implements RPCClient {
         }*/
         try {
             synchronized (current) {
-                current.wait(5000);
+                current.wait(500);
             }
         } catch (InterruptedException e) {
             logger.error("error", e);

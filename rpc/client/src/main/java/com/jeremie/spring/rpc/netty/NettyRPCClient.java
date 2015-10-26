@@ -31,13 +31,13 @@ public class NettyRPCClient implements RPCClient {
         Thread current = Thread.currentThread();
         rpcDto.setClientId(UUID.randomUUID().toString());
         threadMap.put(rpcDto.getClientId(),current);
-        nettyRPCBean.channelFuture.channel().write(rpcDto);
+        nettyRPCBean.channel.writeAndFlush(rpcDto);
         try {
             synchronized (current) {
-                current.wait(5000);
+                current.wait(500);
             }
         } catch (InterruptedException e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(),e);
         }
         Object o = resultMap.get(rpcDto.getClientId());
         resultMap.remove(rpcDto.getClientId());

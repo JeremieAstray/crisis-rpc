@@ -34,7 +34,7 @@ public class MinaRPCClient implements RPCClient {
         minaRPCBean.getSession().write(rpcDto);
         try {
             synchronized (current) {
-                current.wait(5000);
+                current.wait(500);
             }
         } catch (InterruptedException e) {
             logger.error("error", e);
