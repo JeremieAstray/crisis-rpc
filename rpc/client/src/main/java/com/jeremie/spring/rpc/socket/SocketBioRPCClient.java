@@ -42,27 +42,27 @@ public class SocketBioRPCClient implements RPCClient {
         } catch (EOFException e) {
             logger.debug("socket连接结束");
         } catch (IOException | ClassNotFoundException e) {
-            logger.error("error",e);
+            logger.error(e.getMessage(),e);
         } finally {
             if (objectOutputStream != null) {
                 try {
                     objectOutputStream.flush();
                     objectOutputStream.close();
                 } catch (IOException e) {
-                    logger.error("error",e);
+                    logger.error(e.getMessage(),e);
                 }
             }
             try {
                 if (objectInputStream != null)
                     objectInputStream.close();
             } catch (IOException e) {
-                logger.error("error",e);
+                logger.error(e.getMessage(),e);
             }
             try {
                 if (socket != null)
                     socket.close();
             } catch (IOException e) {
-                logger.error("error",e);
+                logger.error(e.getMessage(),e);
             }
         }
         return null;

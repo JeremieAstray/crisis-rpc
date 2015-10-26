@@ -60,9 +60,6 @@ public class RPCSeverHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("error", cause);
-        RPCReceive rpcReceive = new RPCReceive();
-        rpcReceive.setStatus(RPCReceive.Status.ERR0R);
-        ctx.writeAndFlush(rpcReceive);
+        logger.error(cause.getMessage(), cause);
     }
 }

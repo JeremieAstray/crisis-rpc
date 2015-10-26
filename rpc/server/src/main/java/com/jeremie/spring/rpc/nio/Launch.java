@@ -65,13 +65,13 @@ public class Launch implements CommandLineRunner {
                     }
                 }
             } catch (Exception e){
-                logger.error("error",e);
+                logger.error(e.getMessage(),e);
             }finally {
                 serverSocketChannel.close();
                 selector.close();
             }
         } catch (Exception e) {
-            logger.error("error",e);
+            logger.error(e.getMessage(),e);
         }
     }
 }

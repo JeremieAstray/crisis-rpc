@@ -51,7 +51,7 @@ public class Launch implements CommandLineRunner {
         try {
             acceptor.bind( new InetSocketAddress(SERVER_PORT) );
         }catch (IOException e){
-            logger.error("error",e);
+            logger.error(e.getMessage(),e);
         }
     }
 }

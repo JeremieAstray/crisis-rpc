@@ -83,7 +83,7 @@ public class RPCSocket implements Runnable {
         } catch (EOFException e) {
             logger.info("与" + this.clientHost + "断开连接");
         } catch (Exception e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(), e);
         }finally {
             try {
                 if(socketChannel !=null){

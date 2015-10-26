@@ -60,7 +60,7 @@ public class SocketNioRPCClient implements RPCClient {
                 current.wait(500);
             }
         } catch (InterruptedException e) {
-            logger.error("error", e);
+            logger.error(e.getMessage(), e);
         }
         Object o = resultMap.get(rpcDto.getClientId());
         threadMap.remove(rpcDto.getClientId());

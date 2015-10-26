@@ -25,7 +25,7 @@ public class RPCSeverHandler extends IoHandlerAdapter {
 
     @Override
     public void exceptionCaught( IoSession session, Throwable cause ) throws Exception {
-        logger.error("error",cause);
+        logger.error(cause.getMessage(),cause);
     }
 
     @Override

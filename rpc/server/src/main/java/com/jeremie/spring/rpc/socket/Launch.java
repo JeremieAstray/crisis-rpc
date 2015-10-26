@@ -45,14 +45,14 @@ public class Launch implements CommandLineRunner {
                 executor.execute(new RPCSocket(socket,applicationContext));
             }
         } catch (IOException e) {
-            logger.error("error",e);
+            logger.error(e.getMessage(),e);
         } finally {
             try {
                 logger.debug("关闭RPC服务");
                 if (serverSocket != null)
                     serverSocket.close();
             } catch (IOException e) {
-                logger.error("error",e);
+                logger.error(e.getMessage(),e);
             }
         }
     }

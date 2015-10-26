@@ -53,33 +53,33 @@ public class RPCSocket implements Runnable {
                 objectOutputStream.writeObject(rpcReceive);
             }
         } catch (IOException |InvocationTargetException | IllegalAccessException |NoSuchMethodException| ClassNotFoundException e) {
-            logger.error("error",e);
+            logger.error(e.getMessage(),e);
         } finally {
             if (objectOutputStream != null) {
                 try {
                     objectOutputStream.flush();
                     objectOutputStream.close();
                 } catch (IOException e) {
-                    logger.error("error",e);
+                    logger.error(e.getMessage(),e);
                 }
             }
             try {
                 if (objectInputStream != null)
                     objectInputStream.close();
             } catch (IOException e) {
-                logger.error("error",e);
+                logger.error(e.getMessage(),e);
             }
             try {
                 if (!socket.isClosed())
                     socket.getInputStream().close();
             } catch (IOException e) {
-                logger.error("error",e);
+                logger.error(e.getMessage(),e);
             }
             try {
                 logger.debug(socket.getInetAddress() + " close!");
                 socket.close();
             } catch (IOException e) {
-                logger.error("error",e);
+                logger.error(e.getMessage(),e);
             }
 
         }
