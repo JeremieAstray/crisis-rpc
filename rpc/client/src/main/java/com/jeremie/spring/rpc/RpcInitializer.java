@@ -4,6 +4,13 @@ import com.jeremie.spring.rpc.dto.RPCDto;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.util.ClassUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +18,7 @@ import java.lang.reflect.Proxy;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -25,157 +30,61 @@ public class RpcInitializer {
 
     protected static Logger logger = Logger.getLogger(RpcInitializer.class);
 
+    private static final String RESOURCE_PATTERN = "/**/*.class";
+
+    private static ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+
+    private static List<String> packagesList = new ArrayList<>();
+
     public static void rpcInit(ConfigurableApplicationContext applicationContext) {
         ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();
-        Set<String> classNames = getClassName("com.jeremie.spring.home.jpaService", true);
-        classNames.forEach(className -> {
-            try {
-                Class clazz = Class.forName(className);
-                Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
-                    RPCDto rpcDto = new RPCDto();
-                    rpcDto.setDestClazz(clazz.getName());
-                    rpcDto.setParams(params);
-                    rpcDto.setMethod(method.getName());
-                    rpcDto.setParamsType(method.getParameterTypes());
-                    rpcDto.setReturnType(method.getReturnType());
-                    return RPCFactory.getNettyRPCClient().invoke(rpcDto);
-                });
-                beanFactory.registerSingleton(clazz.getSimpleName(), o);
-            }catch(ClassNotFoundException e){
-                logger.debug(e);
-            }
+        packagesList.add("com.jeremie.spring.home.jpaService");
+        Set<Class> clazzs = null;
+        try {
+            clazzs = getClassSet();
+        } catch (IOException |ClassNotFoundException e) {
+            logger.error("getClassSet error",e);
+            return;
+        }
+        clazzs.forEach(clazz -> {
+            boolean isInterface = clazz.isInterface();
+            Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
+                RPCDto rpcDto = new RPCDto();
+                rpcDto.setDestClazz(clazz.getName());
+                rpcDto.setParams(params);
+                rpcDto.setMethod(method.getName());
+                rpcDto.setParamsType(method.getParameterTypes());
+                rpcDto.setReturnType(method.getReturnType());
+                return RPCFactory.getNettyRPCClient().invoke(rpcDto);
+            });
+            beanFactory.registerSingleton(clazz.getSimpleName(), o);
         });
     }
 
-    /**
-     * 获取某包下所有类
-     *
-     * @param packageName 包名
-     * @param isRecursion 是否遍历子包
-     * @return 类的完整名称
-     */
-
-    private static Set<String> getClassName(String packageName, boolean isRecursion) {
-        Set<String> classNames = null;
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        String packagePath = packageName.replace(".", "/");
-
-        URL url = loader.getResource(packagePath);
-        if (url != null) {
-            String protocol = url.getProtocol();
-            if (protocol.equals("file")) {
-                classNames = getClassNameFromDir(url.getPath(), packageName, isRecursion);
-            } else if (protocol.equals("jar")) {
-                JarFile jarFile = null;
-                try {
-                    jarFile = ((JarURLConnection) url.openConnection()).getJarFile();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (jarFile != null) {
-                    getClassNameFromJar(jarFile.entries(), packageName, isRecursion);
-                }
-            }
-        } else {
-            /*从所有的jar包中查找包名*/
-            classNames = getClassNameFromJars(((URLClassLoader) loader).getURLs(), packageName, isRecursion);
-        }
-
-        return classNames;
-    }
-
-    /**
-     * 从项目文件获取某包下所有类
-     *
-     * @param filePath    文件路径
-     * @param className   类名集合
-     * @param isRecursion 是否遍历子包
-     * @return 类的完整名称
-     */
-    private static Set<String> getClassNameFromDir(String filePath, String packageName, boolean isRecursion) {
-        Set<String> className = new HashSet<String>();
-        File file = new File(filePath);
-        File[] files = file.listFiles();
-        for (File childFile : files) {
-            if (childFile.isDirectory()) {
-                if (isRecursion) {
-                    className.addAll(getClassNameFromDir(childFile.getPath(), packageName + "." + childFile.getName(), isRecursion));
-                }
-            } else {
-                String fileName = childFile.getName();
-                if (fileName.endsWith(".class") && !fileName.contains("$")) {
-                    className.add(packageName + "." + fileName.replace(".class", ""));
-                }
-            }
-        }
-
-        return className;
-    }
-
-
-    /**
-     * @param jarEntries
-     * @param packageName
-     * @param isRecursion
-     * @return
-     */
-    private static Set<String> getClassNameFromJar(Enumeration<JarEntry> jarEntries, String packageName, boolean isRecursion) {
-        Set<String> classNames = new HashSet<String>();
-
-        while (jarEntries.hasMoreElements()) {
-            JarEntry jarEntry = jarEntries.nextElement();
-            if (!jarEntry.isDirectory()) {
-                /*
-                 * 这里是为了方便，先把"/" 转成 "." 再判断 ".class" 的做法可能会有bug
-                 * (FIXME: 先把"/" 转成 "." 再判断 ".class" 的做法可能会有bug)
-                 */
-                String entryName = jarEntry.getName().replace("/", ".");
-                if (entryName.endsWith(".class") && !entryName.contains("$") && entryName.startsWith(packageName)) {
-                    entryName = entryName.replace(".class", "");
-                    if (isRecursion) {
-                        classNames.add(entryName);
-                    } else if (!entryName.replace(packageName + ".", "").contains(".")) {
-                        classNames.add(entryName);
+    public static Set<Class> getClassSet() throws IOException, ClassNotFoundException {
+        Set<Class> classSet = new HashSet<>();
+        classSet.clear();
+        if (!packagesList.isEmpty()) {
+            for (String pkg : packagesList) {
+                String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
+                        ClassUtils.convertClassNameToResourcePath(pkg) + RESOURCE_PATTERN;
+                Resource[] resources = resourcePatternResolver.getResources(pattern);
+                MetadataReaderFactory readerFactory = new CachingMetadataReaderFactory(resourcePatternResolver);
+                for (Resource resource : resources) {
+                    if (resource.isReadable()) {
+                        MetadataReader reader = readerFactory.getMetadataReader(resource);
+                        String className = reader.getClassMetadata().getClassName();
+                        classSet.add(Class.forName(className));
                     }
                 }
             }
         }
-
-        return classNames;
-    }
-
-    /**
-     * 从所有jar中搜索该包，并获取该包下所有类
-     *
-     * @param urls        URL集合
-     * @param packageName 包路径
-     * @param isRecursion 是否遍历子包
-     * @return 类的完整名称
-     */
-    private static Set<String> getClassNameFromJars(URL[] urls, String packageName, boolean isRecursion) {
-        Set<String> classNames = new HashSet<String>();
-
-        for (int i = 0; i < urls.length; i++) {
-            String classPath = urls[i].getPath();
-
-            //不必搜索classes文件夹
-            if (classPath.endsWith("classes/")) {
-                continue;
-            }
-
-            JarFile jarFile = null;
-            try {
-                jarFile = new JarFile(classPath.substring(classPath.indexOf("/")));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (jarFile != null) {
-                classNames.addAll(getClassNameFromJar(jarFile.entries(), packageName, isRecursion));
+        //输出日志
+        if (logger.isInfoEnabled()) {
+            for (Class<?> clazz : classSet) {
+                logger.info(String.format("Found class:%s", clazz.getName()));
             }
         }
-
-        return classNames;
+        return classSet;
     }
 }
