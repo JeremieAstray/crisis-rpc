@@ -3,7 +3,10 @@ package com.jeremie.spring.rpc;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -28,17 +31,20 @@ import java.util.jar.JarFile;
 
 public class RpcInitializer {
 
-    protected static Logger logger = Logger.getLogger(RpcInitializer.class);
+    protected Logger logger = Logger.getLogger(RpcInitializer.class);
 
-    private static final String RESOURCE_PATTERN = "/**/*.class";
+    private final String RESOURCE_PATTERN = "/**/*.class";
 
-    private static ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
-    private static List<String> packagesList = new ArrayList<>();
+    private List<String> packagesList = new ArrayList<>();
 
-    public static void rpcInit(ConfigurableApplicationContext applicationContext) {
+    public void setPackagesList(List<String> packagesList) {
+        this.packagesList = packagesList;
+    }
+
+    public void rpcInit(ConfigurableApplicationContext applicationContext) {
         ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();
-        packagesList.add("com.jeremie.spring.home.jpaService");
         Set<Class> clazzs = null;
         try {
             clazzs = getClassSet();
@@ -61,11 +67,12 @@ public class RpcInitializer {
         });
     }
 
-    public static Set<Class> getClassSet() throws IOException, ClassNotFoundException {
+    public Set<Class> getClassSet() throws IOException, ClassNotFoundException {
         Set<Class> classSet = new HashSet<>();
         classSet.clear();
-        if (!packagesList.isEmpty()) {
-            for (String pkg : packagesList) {
+        List<String> packages = this.packagesList;
+        if (!packages.isEmpty()) {
+            for (String pkg : packages) {
                 String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
                         ClassUtils.convertClassNameToResourcePath(pkg) + RESOURCE_PATTERN;
                 Resource[] resources = resourcePatternResolver.getResources(pattern);
