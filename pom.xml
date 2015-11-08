@@ -18,8 +18,6 @@
         <module>rpc/client</module>
         <module>rpc/server</module>
         <module>rpc/httpServer</module>
-        <module>DS/client</module>
-        <module>DS/server</module>
         <module>services/home</module>
         <module>services/home-impl</module>
         <module>services/commons</module>
