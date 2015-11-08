@@ -2,7 +2,7 @@ server:
     port: 8080
 spring:
     application:
-        name: rpc-server
+        name: rpc-client
     velocity:
         checkTemplateLocation: true
         properties:
@@ -29,10 +29,10 @@ logging:
                 web: DEBUG
 
 eureka:
-  # these are settings for the client that gets services
-  client:
-    # enable these two settings if you want discovery to work
-    registerWithEureka: false
-    fetchRegistry: false
-    serviceUrl:
-      defaultZone: http://192.168.1.104:8080/eureka/v2
+    # these are settings for the client that gets services
+    client:
+        # enable these two settings if you want discovery to work
+        registerWithEureka: false
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://192.168.1.104:8080/eureka/v2/

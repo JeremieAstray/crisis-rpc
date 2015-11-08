@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.mina;
 
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -10,9 +11,6 @@ import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactor
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.netflix.eureka.CloudEurekaClient;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -22,19 +20,16 @@ import java.util.List;
  */
 public class MinaRPCBean implements DisposableBean {
     private static Logger logger = Logger.getLogger(MinaRPCBean.class);
-
     private String host = "127.0.0.1";
     private int serverPort = 8000;
     private IoSession session;
     private IoConnector connector;
     private boolean isConnect = false;
 
-    public MinaRPCBean(DiscoveryClient discoveryClient){
+    public MinaRPCBean(EurekaClient discoveryClient){
         if (discoveryClient!=null){
-            List<ServiceInstance> host = discoveryClient.getInstances("rpc-server");
-            //this.host = hosts.get(0);
-            System.out.println(123);
-            System.out.println(host.get(1).getHost());
+            List<InstanceInfo> instances = discoveryClient.getInstancesByVipAddress("rpc-server",false);
+            host = instances.get(0).getIPAddr();
         }
     }
 

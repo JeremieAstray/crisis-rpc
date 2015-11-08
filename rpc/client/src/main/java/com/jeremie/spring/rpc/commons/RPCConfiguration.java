@@ -3,10 +3,8 @@ package com.jeremie.spring.rpc.commons;
 import com.jeremie.spring.rpc.mina.MinaRPCBean;
 import com.jeremie.spring.rpc.netty.NettyRPCBean;
 import com.jeremie.spring.rpc.nio.RPCNioBean;
+import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.netflix.eureka.CloudEurekaClient;
-import org.springframework.cloud.netflix.eureka.EurekaClientConfigBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class RPCConfiguration {
 
     @Autowired
-    private DiscoveryClient discoveryClient;
+    private EurekaClient eurekaClient;
 
     @Bean(destroyMethod = "destroy")
     public RPCNioBean rpcNioBean(){
@@ -26,7 +24,7 @@ public class RPCConfiguration {
 
     @Bean(destroyMethod = "destroy")
     public MinaRPCBean minaRPCBean(){
-        return new MinaRPCBean(discoveryClient);
+        return new MinaRPCBean(eurekaClient);
     }
 
     @Bean(destroyMethod = "destroy")

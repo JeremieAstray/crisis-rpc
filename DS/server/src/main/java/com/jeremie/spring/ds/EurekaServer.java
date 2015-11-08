@@ -48,6 +48,7 @@ public class EurekaServer {
     }
 
 
+
     public void unRegisterWithEureka() {
         // Un register from eureka.
         DiscoveryManager.getInstance().shutdownComponent();

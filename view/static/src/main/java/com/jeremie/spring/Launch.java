@@ -20,7 +20,6 @@ import java.util.Arrays;
 @ComponentScan(basePackages = "${spring.ioc.componentScan.basePackages}")
 @SpringBootApplication
 @EnableEurekaClient
-@EnableDiscoveryClient
 public class Launch  extends WebMvcConfigurerAdapter {
 
     private static String[] packagesList = {"com.jeremie.spring.*.jpaService"};
