@@ -25,12 +25,10 @@ public class MinaRPCBean implements DisposableBean {
     private IoSession session;
     private IoConnector connector;
     private boolean isConnect = false;
+    private EurekaClient discoveryClient;
 
     public MinaRPCBean(EurekaClient discoveryClient){
-        if (discoveryClient!=null){
-            List<InstanceInfo> instances = discoveryClient.getInstancesByVipAddress("rpc-server",false);
-            host = instances.get(0).getIPAddr();
-        }
+        this.discoveryClient = discoveryClient;
     }
 
     public IoSession getSession() {
@@ -42,6 +40,10 @@ public class MinaRPCBean implements DisposableBean {
     }
 
     public void init() {
+        if (discoveryClient!=null){
+            List<InstanceInfo> instances = discoveryClient.getInstancesByVipAddress("rpc-server",false);
+            host = instances.get(0).getIPAddr();
+        }
         connector = new NioSocketConnector();
         connector.getFilterChain().addLast( "logger", new LoggingFilter(this.getClass()) );
         connector.getFilterChain().addLast( "codec", new ProtocolCodecFilter( new ObjectSerializationCodecFactory()));
