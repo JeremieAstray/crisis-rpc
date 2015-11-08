@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.mina;
 
+import com.netflix.appinfo.InstanceInfo;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -9,8 +10,12 @@ import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactor
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.netflix.eureka.CloudEurekaClient;
 
 import java.net.InetSocketAddress;
+import java.util.List;
 
 /**
  * @author guanhong 15/10/25 下午4:08.
@@ -23,6 +28,15 @@ public class MinaRPCBean implements DisposableBean {
     private IoSession session;
     private IoConnector connector;
     private boolean isConnect = false;
+
+    public MinaRPCBean(DiscoveryClient discoveryClient){
+        if (discoveryClient!=null){
+            List<ServiceInstance> host = discoveryClient.getInstances("rpc-server");
+            //this.host = hosts.get(0);
+            System.out.println(123);
+            System.out.println(host.get(1).getHost());
+        }
+    }
 
     public IoSession getSession() {
         return session;

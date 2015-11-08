@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -17,6 +19,8 @@ import java.util.Arrays;
  */
 @ComponentScan(basePackages = "${spring.ioc.componentScan.basePackages}")
 @SpringBootApplication
+@EnableEurekaClient
+@EnableDiscoveryClient
 public class Launch  extends WebMvcConfigurerAdapter {
 
     private static String[] packagesList = {"com.jeremie.spring.*.jpaService"};

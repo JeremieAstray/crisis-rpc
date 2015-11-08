@@ -1,4 +1,6 @@
 spring:
+    application:
+        name: rpc-server
     #datasource
     datasource:
         url: jdbc:mysql://127.0.0.1:3306/user?characterEncoding=UTF-8
@@ -48,3 +50,12 @@ logging:
             springframework:
                 web: DEBUG
             hibernate: ERROR
+
+eureka:
+  # these are settings for the client that gets services
+  client:
+    # enable these two settings if you want discovery to work
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://192.168.1.104:8080/eureka/v2/

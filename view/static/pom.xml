@@ -56,12 +56,12 @@
 
     <build>
         <finalName>${app.name}</finalName>
-        <plugins>
+        <!--<plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.6</version>
-                <!--<configuration>
+                &lt;!&ndash;<configuration>
                     <overlays>
                         <overlay>
                             <groupId>${project.groupId}</groupId>
@@ -78,8 +78,8 @@
                             </includes>
                         </overlay>
                     </overlays>
-                </configuration>-->
+                </configuration>&ndash;&gt;
             </plugin>
-        </plugins>
+        </plugins>-->
     </build>
 </project>
