@@ -1,0 +1,19 @@
+server:
+    port: 8761
+spring:
+    application:
+        name: eureka-server
+
+eureka:
+    # these are settings for the client that gets services
+    client:
+        # enable these two settings if you want discovery to work
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://localhost:8761/eureka/
+        healthcheck:
+              enabled: true
+    instance:
+        statusPageUrlPath: ${management.context-path}/info
+        healthCheckUrlPath: ${management.context-path}/health

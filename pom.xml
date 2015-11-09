@@ -26,6 +26,7 @@
         <module>web/commons</module>
         <module>view/static</module>
         <module>view/templates</module>
+        <module>eureka-server</module>
     </modules>
 
     <properties>
