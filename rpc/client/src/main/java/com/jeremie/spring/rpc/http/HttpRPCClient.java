@@ -26,8 +26,8 @@ import java.util.List;
 public class HttpRPCClient implements RPCClient {
     protected Logger logger = Logger.getLogger(this.getClass());
 
-    private String host = "127.0.0.1";
-    private int port = 8081;
+    private String host = RPCConfiguration.DEFAULT_IP;
+    private int port = RPCConfiguration.DEFAULT_PORT;
 
     @Override
     public Object invoke(RPCDto rpcDto) {

@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.netty;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
+import com.jeremie.spring.rpc.common.RPCConfiguration;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -41,10 +42,9 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private static int SERVER_PORT = 8000;
-
     @Override
     public void run(String... args) {
+        int server_port = RPCConfiguration.SERVER_PORT;
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -64,7 +64,7 @@ public class Launch implements CommandLineRunner {
             });
 
             // 服务器绑定端口监听
-            ChannelFuture f = b.bind(SERVER_PORT).sync();
+            ChannelFuture f = b.bind(server_port).sync();
             // 监听服务器关闭监听
             f.channel().closeFuture().sync();
 

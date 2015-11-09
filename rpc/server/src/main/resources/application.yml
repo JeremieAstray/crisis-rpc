@@ -52,10 +52,13 @@ logging:
             hibernate: ERROR
 
 eureka:
-  # these are settings for the client that gets services
-  client:
-    # enable these two settings if you want discovery to work
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://192.168.1.108:8761/eureka/
+    # these are settings for the client that gets services
+    client:
+        # enable these two settings if you want discovery to work
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://192.168.1.108:8761/eureka/
+rpc:
+    server:
+        port: 8000

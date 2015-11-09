@@ -23,8 +23,8 @@ public class SocketBioRPCClient implements RPCClient {
     private Socket socket = null;
     private ObjectOutputStream objectOutputStream = null;
     private ObjectInputStream objectInputStream = null;
-    private String host = "127.0.0.1";
-    private int serverPort = 8000;
+    private String host = RPCConfiguration.DEFAULT_IP;
+    private int port = RPCConfiguration.DEFAULT_PORT;
 
     @Override
     public Object invoke(RPCDto rpcDto) {
@@ -32,7 +32,7 @@ public class SocketBioRPCClient implements RPCClient {
             List<String> hosts = RPCConfiguration.getHosts();
             if(hosts!=null && !hosts.isEmpty())
                 host = hosts.get(0);
-            socket = new Socket(host, serverPort);
+            socket = new Socket(host, port);
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectOutputStream.writeObject(rpcDto);

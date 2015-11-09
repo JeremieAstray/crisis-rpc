@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.netty;
 
+import com.jeremie.spring.rpc.commons.RPCConfiguration;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -25,8 +26,8 @@ import java.util.List;
 public class NettyRPCBean implements DisposableBean {
     private static Logger logger = Logger.getLogger(NettyRPCBean.class);
 
-    private String host = "127.0.0.1";
-    private int serverPort = 8000;
+    private String host = RPCConfiguration.DEFAULT_IP;
+    private int port = RPCConfiguration.DEFAULT_PORT;
     private boolean isConnect = false;
     private Bootstrap bootstrap;
     private EventLoopGroup group;
@@ -57,7 +58,7 @@ public class NettyRPCBean implements DisposableBean {
                         }
                     });
             // 连接服务端
-            channel = bootstrap.connect(host, serverPort).sync().channel();
+            channel = bootstrap.connect(host, port).sync().channel();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(),e);
         }

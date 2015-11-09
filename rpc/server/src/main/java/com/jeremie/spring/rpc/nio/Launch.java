@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.nio;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
+import com.jeremie.spring.rpc.common.RPCConfiguration;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -41,18 +42,18 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private static int SERVER_PORT = 8000;
 
     @Override
     public void run(String... args) {
+        int server_port = RPCConfiguration.SERVER_PORT;
         try {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
             Selector selector = Selector.open();
             try {
                 serverSocketChannel.configureBlocking(false);
-                serverSocketChannel.socket().bind(new InetSocketAddress(SERVER_PORT));
+                serverSocketChannel.socket().bind(new InetSocketAddress(server_port));
                 serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-                logger.debug("开启nioRPC服务，端口号：" + 8000);
+                logger.debug("开启nioRPC服务，端口号：" + server_port);
                 while (true) {
                     selector.select();
                     Iterator it = selector.selectedKeys().iterator();

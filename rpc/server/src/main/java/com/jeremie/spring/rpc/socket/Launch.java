@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.socket;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
+import com.jeremie.spring.rpc.common.RPCConfiguration;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -36,12 +37,14 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
+
     @Override
     public void run(String... args) {
-        logger.debug("开启RPC服务，端口号：" + 8000);
+        int server_port = RPCConfiguration.SERVER_PORT;
+        logger.debug("开启RPC服务，端口号：" + server_port);
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(8000);
+            serverSocket = new ServerSocket(server_port);
             while (true) {
                 Socket socket = serverSocket.accept();
                 executor.execute(new RPCSocket(socket,applicationContext));

@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc;
 
+import com.jeremie.spring.rpc.commons.RPCConfiguration;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -25,10 +26,8 @@ import java.util.Set;
 
 public class RpcInitializer {
 
-    protected Logger logger = Logger.getLogger(RpcInitializer.class);
-
     private final String RESOURCE_PATTERN = "/**/*.class";
-
+    protected Logger logger = Logger.getLogger(RpcInitializer.class);
     private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     private List<String> packagesList = new ArrayList<>();
@@ -42,8 +41,8 @@ public class RpcInitializer {
         Set<Class> clazzs = null;
         try {
             clazzs = getClassSet();
-        } catch (IOException |ClassNotFoundException e) {
-            logger.error("getClassSet error",e);
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("getClassSet error", e);
             return;
         }
         clazzs.forEach(clazz -> {
@@ -55,7 +54,7 @@ public class RpcInitializer {
                 rpcDto.setMethod(method.getName());
                 rpcDto.setParamsType(method.getParameterTypes());
                 rpcDto.setReturnType(method.getReturnType());
-                return RPCFactory.getMinaRPCClient().invoke(rpcDto);
+                return RPCConfiguration.getRPCClient().invoke(rpcDto);
             });
             beanFactory.registerSingleton(clazz.getSimpleName(), o);
         });

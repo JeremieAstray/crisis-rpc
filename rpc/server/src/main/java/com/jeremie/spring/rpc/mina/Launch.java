@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.mina;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
+import com.jeremie.spring.rpc.common.RPCConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
@@ -39,10 +40,10 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private static int SERVER_PORT = 8000;
 
     @Override
     public void run(String... args) {
+        int server_port = RPCConfiguration.SERVER_PORT;
         IoAcceptor acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast( "logger", new LoggingFilter(this.getClass()) );
         acceptor.getFilterChain().addLast( "codec", new ProtocolCodecFilter( new ObjectSerializationCodecFactory()));
@@ -51,7 +52,7 @@ public class Launch implements CommandLineRunner {
         acceptor.getSessionConfig().setReadBufferSize( 2048 );
         acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
         try {
-            acceptor.bind( new InetSocketAddress(SERVER_PORT) );
+            acceptor.bind( new InetSocketAddress(server_port) );
         }catch (IOException e){
             logger.error(e.getMessage(),e);
         }

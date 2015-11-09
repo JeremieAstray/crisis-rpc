@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.nio;
 
 
+import com.jeremie.spring.rpc.commons.RPCConfiguration;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -18,11 +19,11 @@ public class RPCNioBean implements DisposableBean {
 
     private static Logger logger = Logger.getLogger(RPCNioBean.class);
 
-    private static int clientPort = 8001;
+    private static int clientPort = RPCConfiguration.DEFAULT_NIO_CLIENT_PORT;
     private SocketChannel socketChannel = null;
     private Selector selector = null;
-    private String host = "127.0.0.1";
-    private int serverPort = 8000;
+    private String host = RPCConfiguration.DEFAULT_IP;
+    private int port = RPCConfiguration.DEFAULT_PORT;
     protected static boolean running = false;
     protected boolean init = false;
 
@@ -45,7 +46,7 @@ public class RPCNioBean implements DisposableBean {
             socketChannel.configureBlocking(false);
             socketChannel.bind(new InetSocketAddress(clientPort));
             socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-            boolean success = socketChannel.connect(new InetSocketAddress(host, serverPort));
+            boolean success = socketChannel.connect(new InetSocketAddress(host, port));
             if (!success) socketChannel.finishConnect();
             running = true;
             init = true;

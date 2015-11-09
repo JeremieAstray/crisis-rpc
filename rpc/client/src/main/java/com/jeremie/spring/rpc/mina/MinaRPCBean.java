@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.mina;
 
+import com.jeremie.spring.rpc.commons.RPCConfiguration;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
 import org.apache.log4j.Logger;
@@ -20,8 +21,8 @@ import java.util.List;
  */
 public class MinaRPCBean implements DisposableBean {
     private static Logger logger = Logger.getLogger(MinaRPCBean.class);
-    private String host = "127.0.0.1";
-    private int serverPort = 8000;
+    private String host = RPCConfiguration.DEFAULT_IP;
+    private int port = RPCConfiguration.DEFAULT_PORT;
     private IoSession session;
     private IoConnector connector;
     private boolean isConnect = false;
@@ -44,7 +45,7 @@ public class MinaRPCBean implements DisposableBean {
         connector.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
         connector.setHandler(new RPCClientHandler());
-        ConnectFuture connectFuture = connector.connect(new InetSocketAddress(host, serverPort));
+        ConnectFuture connectFuture = connector.connect(new InetSocketAddress(host, port));
         //等待建立连接
         connectFuture.awaitUninterruptibly();
         session = connectFuture.getSession();
