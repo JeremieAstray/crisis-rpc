@@ -27,7 +27,12 @@ public class MinaRPCClient implements RPCClient {
     @Override
     public Object invoke(RPCDto rpcDto) {
         if(!minaRPCBean.isConnect())
-            minaRPCBean.init();
+            try {
+                minaRPCBean.init();
+            } catch (Exception e) {
+                logger.error(e.getMessage(),e);
+                return null;
+            }
         Thread current = Thread.currentThread();
         rpcDto.setClientId(UUID.randomUUID().toString());
         threadMap.put(rpcDto.getClientId(),current);

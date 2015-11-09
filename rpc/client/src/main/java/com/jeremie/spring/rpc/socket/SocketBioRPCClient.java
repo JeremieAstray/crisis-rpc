@@ -2,6 +2,7 @@ package com.jeremie.spring.rpc.socket;
 
 
 import com.jeremie.spring.rpc.RPCClient;
+import com.jeremie.spring.rpc.commons.RPCConfiguration;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import org.apache.log4j.Logger;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
 /**
  * Created by Jeremie on 2015/5/13.
@@ -27,6 +29,9 @@ public class SocketBioRPCClient implements RPCClient {
     @Override
     public Object invoke(RPCDto rpcDto) {
         try {
+            List<String> hosts = RPCConfiguration.getHosts();
+            if(hosts!=null && !hosts.isEmpty())
+                host = hosts.get(0);
             socket = new Socket(host, serverPort);
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());

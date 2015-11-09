@@ -25,10 +25,10 @@ public class MinaRPCBean implements DisposableBean {
     private IoSession session;
     private IoConnector connector;
     private boolean isConnect = false;
-    private EurekaClient discoveryClient;
 
-    public MinaRPCBean(EurekaClient discoveryClient){
-        this.discoveryClient = discoveryClient;
+    public MinaRPCBean(List<String> hosts) {
+        if(hosts!=null && !hosts.isEmpty())
+            host = hosts.get(0);
     }
 
     public IoSession getSession() {
@@ -39,16 +39,12 @@ public class MinaRPCBean implements DisposableBean {
         return isConnect;
     }
 
-    public void init() {
-        if (discoveryClient!=null){
-            List<InstanceInfo> instances = discoveryClient.getInstancesByVipAddress("rpc-server",false);
-            host = instances.get(0).getIPAddr();
-        }
+    public void init() throws Exception{
         connector = new NioSocketConnector();
-        connector.getFilterChain().addLast( "logger", new LoggingFilter(this.getClass()) );
-        connector.getFilterChain().addLast( "codec", new ProtocolCodecFilter( new ObjectSerializationCodecFactory()));
+        connector.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));
+        connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
         connector.setHandler(new RPCClientHandler());
-        ConnectFuture connectFuture = connector.connect(new InetSocketAddress(host,serverPort));
+        ConnectFuture connectFuture = connector.connect(new InetSocketAddress(host, serverPort));
         //等待建立连接
         connectFuture.awaitUninterruptibly();
         session = connectFuture.getSession();
@@ -56,13 +52,17 @@ public class MinaRPCBean implements DisposableBean {
     }
 
     @Override
-    public void destroy() throws Exception {
-        //关闭
-        if(session!=null){
-            if(session.isConnected()){
-                session.getCloseFuture().awaitUninterruptibly();
+    public void destroy() {
+        try {
+            //关闭
+            if (session != null) {
+                if (session.isConnected()) {
+                    session.getCloseFuture().awaitUninterruptibly();
+                }
+                connector.dispose(true);
             }
-            connector.dispose(true);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 }

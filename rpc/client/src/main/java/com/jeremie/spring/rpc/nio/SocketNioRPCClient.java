@@ -20,12 +20,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Component
 public class SocketNioRPCClient implements RPCClient {
 
-    protected Logger logger = Logger.getLogger(this.getClass());
-
-
     protected static Queue<RPCDto> requestQueue = new ConcurrentLinkedQueue<>();
     protected static Map<String, Object> resultMap = new ConcurrentHashMap<>();
     protected static Map<String, Thread> threadMap = new ConcurrentHashMap<>();
+    protected Logger logger = Logger.getLogger(this.getClass());
     //private static ExecutorService executor = Executors.newFixedThreadPool(100);
     Thread nioThread = null;
 
@@ -37,7 +35,7 @@ public class SocketNioRPCClient implements RPCClient {
         Thread current = Thread.currentThread();
         rpcDto.setClientId(UUID.randomUUID().toString());
         requestQueue.add(rpcDto);
-        threadMap.put(rpcDto.getClientId(),current);
+        threadMap.put(rpcDto.getClientId(), current);
         if (!rpcNioBean.init && nioThread == null) {
             rpcNioBean.init();
             Selector selector = rpcNioBean.getSelector();
@@ -45,16 +43,6 @@ public class SocketNioRPCClient implements RPCClient {
             nioThread = new Thread(new RPCNioSocketThread(selector, socketChannel));
             nioThread.start();
         }
-        /*try {
-            executor.execute(new RPCNioWriteSocketThread(selector,socketChannel,rpcDto));
-            threadMap.put(rpcDto.getClientId(),current);
-            Object o = resultMap.get(rpcDto.getClientId());
-            threadMap.remove(rpcDto.getClientId());
-            resultMap.remove(rpcDto.getClientId());
-            return o;
-        } catch (Exception e) {
-            logger.error( "error",e);
-        }*/
         try {
             synchronized (current) {
                 current.wait(500);

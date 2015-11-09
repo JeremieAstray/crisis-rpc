@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.List;
 
 /**
  * @author guanhong 15/10/24 下午9:24.
@@ -25,6 +26,10 @@ public class RPCNioBean implements DisposableBean {
     protected static boolean running = false;
     protected boolean init = false;
 
+    public RPCNioBean(List<String> hosts) {
+        if(hosts!=null && !hosts.isEmpty())
+            host = hosts.get(0);
+    }
     public SocketChannel getSocketChannel() {
         return socketChannel;
     }
@@ -40,10 +45,8 @@ public class RPCNioBean implements DisposableBean {
             socketChannel.configureBlocking(false);
             socketChannel.bind(new InetSocketAddress(clientPort));
             socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-            InetAddress addr = InetAddress.getLocalHost();
-            boolean success = socketChannel.connect(new InetSocketAddress(addr, serverPort));
+            boolean success = socketChannel.connect(new InetSocketAddress(host, serverPort));
             if (!success) socketChannel.finishConnect();
-            //new Thread(new RPCNioReadSocketThread(selector, socketChannel)).start();
             running = true;
             init = true;
         } catch (Exception e) {

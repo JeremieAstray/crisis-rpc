@@ -16,6 +16,8 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 
+import java.util.List;
+
 
 /**
  * @author guanhong 15/10/25 下午4:08.
@@ -30,6 +32,10 @@ public class NettyRPCBean implements DisposableBean {
     private EventLoopGroup group;
     protected Channel channel;
 
+    public NettyRPCBean(List<String> hosts) {
+        if(hosts!=null && !hosts.isEmpty())
+            host = hosts.get(0);
+    }
     public boolean isConnect() {
         return isConnect;
     }
