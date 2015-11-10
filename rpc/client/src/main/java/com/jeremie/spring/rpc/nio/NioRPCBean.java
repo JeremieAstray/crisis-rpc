@@ -1,11 +1,10 @@
 package com.jeremie.spring.rpc.nio;
 
 
-import com.jeremie.spring.rpc.commons.RPCConfiguration;
+import com.jeremie.spring.rpc.commons.RPCBean;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.DisposableBean;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -15,22 +14,14 @@ import java.util.List;
 /**
  * @author guanhong 15/10/24 下午9:24.
  */
-public class RPCNioBean implements DisposableBean {
+public class NioRPCBean extends RPCBean {
 
-    private static Logger logger = Logger.getLogger(RPCNioBean.class);
-
-    private static int clientPort = RPCConfiguration.DEFAULT_NIO_CLIENT_PORT;
-    private SocketChannel socketChannel = null;
-    private Selector selector = null;
-    private String host = RPCConfiguration.DEFAULT_IP;
-    private int port = RPCConfiguration.DEFAULT_PORT;
     protected static boolean running = false;
     protected boolean init = false;
+    private Logger logger = Logger.getLogger(this.getClass());
+    private SocketChannel socketChannel = null;
+    private Selector selector = null;
 
-    public RPCNioBean(List<String> hosts) {
-        if(hosts!=null && !hosts.isEmpty())
-            host = hosts.get(0);
-    }
     public SocketChannel getSocketChannel() {
         return socketChannel;
     }
@@ -41,6 +32,8 @@ public class RPCNioBean implements DisposableBean {
 
     public void init() {
         try {
+            if (hosts != null && !hosts.isEmpty())
+                host = hosts.get(0);
             socketChannel = SocketChannel.open();
             selector = Selector.open();
             socketChannel.configureBlocking(false);
@@ -51,7 +44,7 @@ public class RPCNioBean implements DisposableBean {
             running = true;
             init = true;
         } catch (Exception e) {
-            logger.error("rpcNioBean init error",e);
+            logger.error("rpcNioBean init error", e);
         }
     }
 
@@ -65,7 +58,7 @@ public class RPCNioBean implements DisposableBean {
                 selector.close();
             }
         } catch (Exception e) {
-            logger.error("rpcNioBean destroy error",e);
+            logger.error("rpcNioBean destroy error", e);
         }
     }
 }

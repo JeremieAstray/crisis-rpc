@@ -28,7 +28,7 @@ public class RPCNioSocketThread implements Runnable {
     @Override
     public void run() {
         try {
-            while (RPCNioBean.running) {
+            while (NioRPCBean.running) {
                 selector.select();
                 Iterator it = selector.selectedKeys().iterator();
                 while (it.hasNext()) {

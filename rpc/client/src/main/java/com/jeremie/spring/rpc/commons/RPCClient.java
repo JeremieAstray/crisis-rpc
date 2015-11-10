@@ -1,4 +1,4 @@
-package com.jeremie.spring.rpc;
+package com.jeremie.spring.rpc.commons;
 
 import com.jeremie.spring.rpc.dto.RPCDto;
 

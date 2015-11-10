@@ -1,6 +1,6 @@
 package com.jeremie.spring.rpc.netty;
 
-import com.jeremie.spring.rpc.commons.RPCConfiguration;
+import com.jeremie.spring.rpc.commons.RPCBean;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -9,8 +9,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
@@ -23,25 +21,20 @@ import java.util.List;
 /**
  * @author guanhong 15/10/25 下午4:08.
  */
-public class NettyRPCBean implements DisposableBean {
-    private static Logger logger = Logger.getLogger(NettyRPCBean.class);
-
-    private String host = RPCConfiguration.DEFAULT_IP;
-    private int port = RPCConfiguration.DEFAULT_PORT;
+public class NettyRPCBean extends RPCBean {
+    protected Channel channel;
+    private Logger logger = Logger.getLogger(this.getClass());
     private boolean isConnect = false;
     private Bootstrap bootstrap;
     private EventLoopGroup group;
-    protected Channel channel;
 
-    public NettyRPCBean(List<String> hosts) {
-        if(hosts!=null && !hosts.isEmpty())
-            host = hosts.get(0);
-    }
     public boolean isConnect() {
         return isConnect;
     }
 
     public void init() {
+        if (hosts != null && !hosts.isEmpty())
+            host = hosts.get(0);
         group = new NioEventLoopGroup();
         try {
             bootstrap = new Bootstrap();
@@ -60,7 +53,7 @@ public class NettyRPCBean implements DisposableBean {
             // 连接服务端
             channel = bootstrap.connect(host, port).sync().channel();
         } catch (InterruptedException e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
         }
         isConnect = true;
     }

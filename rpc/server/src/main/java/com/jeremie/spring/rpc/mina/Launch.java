@@ -40,10 +40,12 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private RPCConfiguration rpcConfiguration;
 
     @Override
     public void run(String... args) {
-        int server_port = RPCConfiguration.SERVER_PORT;
+        int serverPort = rpcConfiguration.getServerPort();
         IoAcceptor acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast( "logger", new LoggingFilter(this.getClass()) );
         acceptor.getFilterChain().addLast( "codec", new ProtocolCodecFilter( new ObjectSerializationCodecFactory()));
@@ -52,7 +54,7 @@ public class Launch implements CommandLineRunner {
         acceptor.getSessionConfig().setReadBufferSize( 2048 );
         acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
         try {
-            acceptor.bind( new InetSocketAddress(server_port) );
+            acceptor.bind( new InetSocketAddress(serverPort) );
         }catch (IOException e){
             logger.error(e.getMessage(),e);
         }

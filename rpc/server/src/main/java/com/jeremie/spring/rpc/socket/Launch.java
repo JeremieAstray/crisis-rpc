@@ -37,14 +37,16 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private RPCConfiguration rpcConfiguration;
 
     @Override
     public void run(String... args) {
-        int server_port = RPCConfiguration.SERVER_PORT;
-        logger.debug("开启RPC服务，端口号：" + server_port);
+        int serverPort = rpcConfiguration.getServerPort();
+        logger.debug("开启RPC服务，端口号：" + serverPort);
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(server_port);
+            serverSocket = new ServerSocket(serverPort);
             while (true) {
                 Socket socket = serverSocket.accept();
                 executor.execute(new RPCSocket(socket,applicationContext));

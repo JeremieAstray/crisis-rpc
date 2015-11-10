@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc.http;
 
-import com.jeremie.spring.rpc.RPCClient;
-import com.jeremie.spring.rpc.commons.RPCConfiguration;
+import com.jeremie.spring.rpc.commons.RPCClient;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import com.jeremie.spring.rpc.util.SerializeTool;
@@ -24,15 +23,30 @@ import java.util.List;
  * @author guanhong 15/10/18 下午11:58.
  */
 public class HttpRPCClient implements RPCClient {
-    protected Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = Logger.getLogger(this.getClass());
 
-    private String host = RPCConfiguration.DEFAULT_IP;
-    private int port = RPCConfiguration.DEFAULT_PORT;
+    private String host;
+    private int port;
+    private List<String> hosts;
+
+    public HttpRPCClient setHosts(List<String> hosts) {
+        this.hosts = hosts;
+        return this;
+    }
+
+    public HttpRPCClient setHost(String host) {
+        this.host = host;
+        return this;
+    }
+
+    public HttpRPCClient setPort(int port) {
+        this.port = port;
+        return this;
+    }
 
     @Override
     public Object invoke(RPCDto rpcDto) {
-        List<String> hosts = RPCConfiguration.getHosts();
-        if(hosts!=null && !hosts.isEmpty())
+        if (hosts != null && !hosts.isEmpty())
             host = hosts.get(0);
         Object returnObject = null;
         try {

@@ -1,16 +1,19 @@
-package com.jeremie.spring.rpc;
+package com.jeremie.spring.rpc.commons;
 
-import com.jeremie.spring.rpc.commons.RPCConfiguration;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
@@ -23,11 +26,18 @@ import java.util.Set;
 /**
  * @author guanhong 15/10/17 下午11:40.
  */
-
+@Component
 public class RpcInitializer {
 
     private final String RESOURCE_PATTERN = "/**/*.class";
     protected Logger logger = Logger.getLogger(RpcInitializer.class);
+    private static RPCClient rpcClient;
+
+    @Autowired
+    private void setRpcClient(RPCClient rpcClient) {
+        RpcInitializer.rpcClient = rpcClient;
+    }
+
     private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     private List<String> packagesList = new ArrayList<>();
@@ -54,7 +64,7 @@ public class RpcInitializer {
                 rpcDto.setMethod(method.getName());
                 rpcDto.setParamsType(method.getParameterTypes());
                 rpcDto.setReturnType(method.getReturnType());
-                return RPCConfiguration.getRPCClient().invoke(rpcDto);
+                return rpcClient.invoke(rpcDto);
             });
             beanFactory.registerSingleton(clazz.getSimpleName(), o);
         });

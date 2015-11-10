@@ -42,18 +42,20 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private RPCConfiguration rpcConfiguration;
 
     @Override
     public void run(String... args) {
-        int server_port = RPCConfiguration.SERVER_PORT;
+        int serverPort = rpcConfiguration.getServerPort();
         try {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
             Selector selector = Selector.open();
             try {
                 serverSocketChannel.configureBlocking(false);
-                serverSocketChannel.socket().bind(new InetSocketAddress(server_port));
+                serverSocketChannel.socket().bind(new InetSocketAddress(serverPort));
                 serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-                logger.debug("开启nioRPC服务，端口号：" + server_port);
+                logger.debug("开启nioRPC服务，端口号：" + serverPort);
                 while (true) {
                     selector.select();
                     Iterator it = selector.selectedKeys().iterator();

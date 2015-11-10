@@ -1,8 +1,7 @@
 package com.jeremie.spring.rpc.socket;
 
 
-import com.jeremie.spring.rpc.RPCClient;
-import com.jeremie.spring.rpc.commons.RPCConfiguration;
+import com.jeremie.spring.rpc.commons.RPCClient;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import org.apache.log4j.Logger;
@@ -23,13 +22,28 @@ public class SocketBioRPCClient implements RPCClient {
     private Socket socket = null;
     private ObjectOutputStream objectOutputStream = null;
     private ObjectInputStream objectInputStream = null;
-    private String host = RPCConfiguration.DEFAULT_IP;
-    private int port = RPCConfiguration.DEFAULT_PORT;
+    private String host;
+    private int port;
+    private List<String> hosts;
+
+    public SocketBioRPCClient setHost(String host) {
+        this.host = host;
+        return this;
+    }
+
+    public SocketBioRPCClient setPort(int port) {
+        this.port = port;
+        return this;
+    }
+
+    public SocketBioRPCClient setHosts(List<String> hosts) {
+        this.hosts = hosts;
+        return this;
+    }
 
     @Override
     public Object invoke(RPCDto rpcDto) {
         try {
-            List<String> hosts = RPCConfiguration.getHosts();
             if(hosts!=null && !hosts.isEmpty())
                 host = hosts.get(0);
             socket = new Socket(host, port);

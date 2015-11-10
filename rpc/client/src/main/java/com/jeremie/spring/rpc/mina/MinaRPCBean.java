@@ -1,8 +1,6 @@
 package com.jeremie.spring.rpc.mina;
 
-import com.jeremie.spring.rpc.commons.RPCConfiguration;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
+import com.jeremie.spring.rpc.commons.RPCBean;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -19,18 +17,12 @@ import java.util.List;
 /**
  * @author guanhong 15/10/25 下午4:08.
  */
-public class MinaRPCBean implements DisposableBean {
-    private static Logger logger = Logger.getLogger(MinaRPCBean.class);
-    private String host = RPCConfiguration.DEFAULT_IP;
-    private int port = RPCConfiguration.DEFAULT_PORT;
+public class MinaRPCBean extends RPCBean{
+    private Logger logger = Logger.getLogger(this.getClass());
+
     private IoSession session;
     private IoConnector connector;
     private boolean isConnect = false;
-
-    public MinaRPCBean(List<String> hosts) {
-        if(hosts!=null && !hosts.isEmpty())
-            host = hosts.get(0);
-    }
 
     public IoSession getSession() {
         return session;
@@ -40,7 +32,9 @@ public class MinaRPCBean implements DisposableBean {
         return isConnect;
     }
 
-    public void init() throws Exception{
+    public void init() throws Exception {
+        if (hosts != null && !hosts.isEmpty())
+            host = hosts.get(0);
         connector = new NioSocketConnector();
         connector.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));

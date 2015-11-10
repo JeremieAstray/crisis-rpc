@@ -42,9 +42,12 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private RPCConfiguration rpcConfiguration;
+
     @Override
     public void run(String... args) {
-        int server_port = RPCConfiguration.SERVER_PORT;
+        int serverPort = rpcConfiguration.getServerPort();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -64,7 +67,7 @@ public class Launch implements CommandLineRunner {
             });
 
             // 服务器绑定端口监听
-            ChannelFuture f = b.bind(server_port).sync();
+            ChannelFuture f = b.bind(serverPort).sync();
             // 监听服务器关闭监听
             f.channel().closeFuture().sync();
 
