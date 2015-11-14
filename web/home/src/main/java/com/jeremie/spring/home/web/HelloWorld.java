@@ -21,15 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class HelloWorld extends BaseController{
 
-    //private ApplicationContext applicationContext;
     @Autowired
     private UserService userService;
-
-    /*private UserService jpaUserService(){
-        if(userService == null)
-            userService = applicationContext.getBean(UserService.class);
-        return userService;
-    }*/
 
     @ResponseBody
     @RequestMapping("/")

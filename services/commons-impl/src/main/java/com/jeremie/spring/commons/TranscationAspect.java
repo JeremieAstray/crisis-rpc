@@ -17,7 +17,9 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author guanhong 15/9/10 上午12:18.
@@ -45,11 +47,15 @@ public class TranscationAspect {
     @Autowired
     private JpaTransactionManager transactionManager;
 
-    private Stack<TransactionStatus> transactionStatuses = new Stack<>();
+    private Map<Thread,Stack<TransactionStatus>> threadStackMap = new ConcurrentHashMap<>();
 
 
     @Before("execution(public * com.jeremie.spring.*.jpaService.*.*(..))")
     public void txAdviceBegin(JoinPoint point) {
+        Thread thread = Thread.currentThread();
+        if(!threadStackMap.containsKey(thread));
+        threadStackMap.put(thread,new Stack<>());
+        Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
         if (getMethodsPrefix().stream().anyMatch(prefix -> point.getSignature().getName().startsWith(prefix))) {
             DefaultTransactionDefinition transactionDefinition =
                     new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
@@ -63,13 +69,13 @@ public class TranscationAspect {
             TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
             transactionStatuses.push(transactionStatus);
         }
+        threadStackMap.put(thread,transactionStatuses);
     }
 
     @AfterReturning("execution(public * com.jeremie.spring.*.jpaService.*.*(..))")
     public void txAdviceCommit(JoinPoint point) {
-        //if (getMethodsPrefix().stream().anyMatch(prefix -> point.getSignature().getName().startsWith(prefix)))
-        // transactionManager.commit(transactionStatus);
-        //else
+        Thread thread = Thread.currentThread();
+        Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
         if (!transactionStatuses.isEmpty()) {
             TransactionStatus transactionStatus = transactionStatuses.pop();
             if (transactionStatus != null)
@@ -78,16 +84,23 @@ public class TranscationAspect {
                 else
                     transactionManager.rollback(transactionStatus);
         }
+        threadStackMap.put(thread,transactionStatuses);
+        if(transactionStatuses.isEmpty())
+            threadStackMap.remove(thread);
     }
 
     @AfterThrowing(value = "execution(public * com.jeremie.spring.*.jpaService.*.*(..))", throwing = "e")
     public void txAdviceRollBack(JoinPoint point, Exception e) {
-        //if (getMethodsPrefix().stream().anyMatch(prefix -> point.getSignature().getName().startsWith(prefix)))
+        Thread thread = Thread.currentThread();
+        Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
         if (!transactionStatuses.isEmpty()) {
             TransactionStatus transactionStatus = transactionStatuses.pop();
             if (transactionStatus != null)
                 transactionManager.rollback(transactionStatus);
             logger.error("roll back exception", e);
         }
+        threadStackMap.put(thread,transactionStatuses);
+        if(transactionStatuses.isEmpty())
+            threadStackMap.remove(thread);
     }
 }
