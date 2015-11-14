@@ -1,44 +1,57 @@
 package com.jeremie.spring.rpc.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author guanhong 15/10/24 下午9:32.
  */
-@Component
+@ConfigurationProperties("com.jeremie.rpc")
 public class RPCConfiguration {
 
-    @Value("${rpc.default.ip}")
-    private String defaultIP;
-    @Value("${rpc.default.port}")
+    private String defaultIp;
     private int defaultPort;
-    @Value("${rpc.default.httpport}")
-    private int defaultHttpPort;
-    @Value("${rpc.default.nio.client.port}")
+    private int defaultHttpport;
     private int defaultNioClientPort;
-    @Value("${rpc.connection.method}")
-    private String connectMethod;
+    private String connectionMethod;
 
-
-    protected String getDefaultIP() {
-        return defaultIP;
+    public String getDefaultIp() {
+        return defaultIp;
     }
 
-    protected int getDefaultPort() {
+    public void setDefaultIp(String defaultIp) {
+        this.defaultIp = defaultIp;
+    }
+
+    public int getDefaultPort() {
         return defaultPort;
     }
 
-    protected int getDefaultHttpPort() {
-        return defaultHttpPort;
+    public void setDefaultPort(int defaultPort) {
+        this.defaultPort = defaultPort;
     }
 
-    protected int getDefaultNioClientPort() {
+    public int getDefaultHttpport() {
+        return defaultHttpport;
+    }
+
+    public void setDefaultHttpport(int defaultHttpport) {
+        this.defaultHttpport = defaultHttpport;
+    }
+
+    public int getDefaultNioClientPort() {
         return defaultNioClientPort;
     }
 
-    public String getConnectMethod() {
-        return connectMethod;
+    public void setDefaultNioClientPort(int defaultNioClientPort) {
+        this.defaultNioClientPort = defaultNioClientPort;
+    }
+
+    public String getConnectionMethod() {
+        return connectionMethod;
+    }
+
+    public void setConnectionMethod(String connectionMethod) {
+        this.connectionMethod = connectionMethod;
     }
 
 }

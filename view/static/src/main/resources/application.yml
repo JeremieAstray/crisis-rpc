@@ -36,15 +36,12 @@ eureka:
         fetchRegistry: true
         serviceUrl:
             defaultZone: http://192.168.1.240:8761/eureka/
-
-rpc:
-    default:
-        port: 8000
-        httpport: 8081
-        ip: 127.0.0.1
-        nio:
-            client:
-                port: 8001
-    #连接方式：目前支持mina,netty,nio,bio,http(default:mina)
-    connection:
-        method: mina
+com:
+    jeremie:
+        rpc:
+            default-port: 8000
+            default-httpport: 8081
+            default-ip: 127.0.0.1
+            default-nio-client-port: 8001
+            #连接方式：目前支持mina,netty,nio,bio,http(default:mina)
+            connection-method: mina

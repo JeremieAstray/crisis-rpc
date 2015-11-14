@@ -11,6 +11,7 @@ import com.jeremie.spring.rpc.protocol.nio.SocketNioRPCClient;
 import com.jeremie.spring.rpc.protocol.nio.NioRPCBean;
 import com.jeremie.spring.rpc.protocol.socket.SocketBioRPCClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * @author guanhong 15/10/24 上午11:42.
  */
 @Configuration
+//@EnableConfigurationProperties(RPCConfiguration.class)
 public class RPCFactory {
     @Autowired
     private RPCConfiguration rpcConfiguration;
@@ -28,7 +30,7 @@ public class RPCFactory {
 
     @Bean
     public RPCClient getRPCClient() {
-        switch (rpcConfiguration.getConnectMethod()) {
+        switch (rpcConfiguration.getConnectionMethod()) {
             case "mina":
                 return this.getMinaRPCClient();
             case "http":
@@ -50,9 +52,9 @@ public class RPCFactory {
 
     private HttpRPCClient getHttpRPCClient() {
         return new HttpRPCClient()
-                .setPort(rpcConfiguration.getDefaultHttpPort())
+                .setPort(rpcConfiguration.getDefaultHttpport())
                 .setHosts(eurekaConfiguration.getHosts())
-                .setHost(rpcConfiguration.getDefaultIP());
+                .setHost(rpcConfiguration.getDefaultIp());
     }
 
     private NettyRPCClient getNettyRPCClient() {
@@ -61,7 +63,7 @@ public class RPCFactory {
 
     private SocketBioRPCClient getSocketBioRPCClient() {
         return new SocketBioRPCClient()
-                .setHost(rpcConfiguration.getDefaultIP())
+                .setHost(rpcConfiguration.getDefaultIp())
                 .setHosts(eurekaConfiguration.getHosts())
                 .setPort(rpcConfiguration.getDefaultPort());
     }

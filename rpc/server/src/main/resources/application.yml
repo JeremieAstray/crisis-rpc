@@ -59,6 +59,7 @@ eureka:
         fetchRegistry: true
         serviceUrl:
             defaultZone: http://192.168.1.240:8761/eureka/
-rpc:
-    server:
-        port: 8000
+com:
+    jeremie:
+        rpc:
+          server-port: 8000

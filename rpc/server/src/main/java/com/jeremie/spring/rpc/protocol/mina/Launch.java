@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +30,7 @@ import java.net.InetSocketAddress;
 @EnableJpaRepositories(basePackages = "${spring.ioc.jpaRepositories.basePackages}", repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
 @EntityScan(basePackages = "${spring.ioc.entityScan.basePackages}")
 @SpringBootApplication
+@EnableConfigurationProperties(RPCConfiguration.class)
 @EnableEurekaClient
 public class Launch implements CommandLineRunner {
     protected Logger logger = Logger.getLogger(this.getClass());

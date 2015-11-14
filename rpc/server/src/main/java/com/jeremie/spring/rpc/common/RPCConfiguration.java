@@ -1,19 +1,20 @@
 package com.jeremie.spring.rpc.common;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author guanhong on 2015/11/9 16:25
  */
-@Component
+@ConfigurationProperties("com.jeremie.rpc")
 public class RPCConfiguration {
 
-    @Value("${rpc.server.port}")
     private int serverPort;
 
     public int getServerPort() {
         return serverPort;
+    }
+
+    public void setServerPort(int serverPort) {
+        this.serverPort = serverPort;
     }
 }

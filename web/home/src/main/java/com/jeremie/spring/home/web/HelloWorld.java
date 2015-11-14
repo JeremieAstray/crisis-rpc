@@ -6,8 +6,6 @@ import com.jeremie.spring.home.jpaService.UserService;
 import com.jeremie.spring.web.BaseController;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 
 @Controller
-public class HelloWorld extends BaseController{
+public class HelloWorld extends BaseController {
 
     @Autowired
     private UserService userService;
@@ -31,8 +29,8 @@ public class HelloWorld extends BaseController{
     }
 
     @RequestMapping("/testvm")
-    public String test(Model model, Long id) throws Exception{
-        if(id ==null) {
+    public String test(Model model, Long id) throws Exception {
+        if (id == null) {
             model.addAttribute("user", "null");
             model.addAttribute("vmchange", "vmchangetest");
             return "test";
@@ -50,19 +48,19 @@ public class HelloWorld extends BaseController{
     }
 
     @RequestMapping("/updateUser")
-    public String updateUser(RedirectAttributes redirectAttributes,Long id,String name) throws Exception{
-        if(id ==null)
+    public String updateUser(RedirectAttributes redirectAttributes, Long id, String name) throws Exception {
+        if (id == null)
             id = 1l;
-        if(StringUtils.isBlank(name))
+        if (StringUtils.isBlank(name))
             name = "guanhong!";
         userService.updateUserById(name, id);
-        redirectAttributes.addAttribute("id",id);
+        redirectAttributes.addAttribute("id", id);
         return "redirect:/testvm";
     }
 
     @ResponseBody
     @RequestMapping("/invalidUser")
-    public String invalidUser(Long id) throws Exception{
+    public String invalidUser(Long id) throws Exception {
         userService.deleteUser(id);
         return "success";
     }

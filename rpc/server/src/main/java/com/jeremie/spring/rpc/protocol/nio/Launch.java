@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.ApplicationContext;
@@ -30,6 +31,7 @@ import java.util.concurrent.Executors;
 @EntityScan(basePackages = "${spring.ioc.entityScan.basePackages}")
 @SpringBootApplication
 @EnableEurekaClient
+@EnableConfigurationProperties(RPCConfiguration.class)
 public class Launch implements CommandLineRunner {
     protected Logger logger = Logger.getLogger(this.getClass());
 
