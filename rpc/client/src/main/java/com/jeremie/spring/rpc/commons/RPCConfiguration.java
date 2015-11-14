@@ -51,7 +51,9 @@ public class RPCConfiguration {
     protected List<String> getHosts() {
         List<InstanceInfo> instances = discoverEurekaClient.getInstancesByVipAddress("rpc-server", false);
         List<String> hosts = new ArrayList<>();
-        instances.forEach(instanceInfo -> hosts.add(instanceInfo.getIPAddr()));
+        instances.stream()
+                .filter(instanceInfo -> InstanceInfo.InstanceStatus.UP.equals(instanceInfo.getStatus()))
+                .forEach(instanceInfo -> hosts.add(instanceInfo.getIPAddr()));
         return hosts;
     }
 
