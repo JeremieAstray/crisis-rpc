@@ -1,6 +1,6 @@
 package com.jeremie.spring;
 
-import com.jeremie.spring.rpc.commons.RpcInitializer;
+import com.jeremie.spring.rpc.proxy.RpcInitializer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;

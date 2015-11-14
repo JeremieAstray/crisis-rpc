@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author guanhong 15/11/9 下午1:55.
  */
-@Configuration
 @ComponentScan
 @EnableAutoConfiguration
 @EnableEurekaServer
