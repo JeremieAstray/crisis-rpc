@@ -51,4 +51,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     public User findByUsername(String username) throws Exception {
         return userRepository.findByUsername(username);
     }
+
+    @Override
+    public String testGetString() throws Exception {
+        return "test";
+    }
 }

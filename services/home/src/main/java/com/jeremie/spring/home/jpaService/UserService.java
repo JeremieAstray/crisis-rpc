@@ -22,4 +22,6 @@ public interface UserService {
 
     User findByUsername(String username) throws Exception;
 
+    String testGetString() throws Exception;
+
 }

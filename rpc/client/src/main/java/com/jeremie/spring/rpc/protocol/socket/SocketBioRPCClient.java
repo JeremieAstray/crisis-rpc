@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Jeremie on 2015/5/13.
  */
-public class SocketBioRPCClient implements RPCClient {
+public class SocketBioRPCClient extends RPCClient {
 
     protected Logger logger = Logger.getLogger(this.getClass());
     private Socket socket = null;

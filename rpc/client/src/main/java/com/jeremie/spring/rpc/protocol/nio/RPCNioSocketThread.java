@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.protocol.nio;
 
+import com.jeremie.spring.rpc.config.RPCClient;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import com.jeremie.spring.rpc.util.SerializeTool;
@@ -10,6 +11,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @author guanhong 15/10/25 下午12:32.
@@ -36,36 +38,45 @@ public class RPCNioSocketThread implements Runnable {
                     it.remove();
                     socketChannel = (SocketChannel) key.channel();
                     if (key.isReadable()) {
-                        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(50 * 1024);
-                        if (socketChannel.read((ByteBuffer) byteBuffer.clear()) > 0) {
-                            byteBuffer.flip();
-                            byte[] bytes = new byte[byteBuffer.remaining()];
-                            byteBuffer.get(bytes, 0, bytes.length);
-                            byteBuffer.clear();
-                            Object o = SerializeTool.byteArrayToObject(bytes);
-                            if (o instanceof RPCReceive) {
-                                RPCReceive rpcReceive = (RPCReceive) o;
-                                if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS){
-                                    if(rpcReceive.getReturnPara() != null)
-                                        SocketNioRPCClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
-                                    Thread thread = SocketNioRPCClient.threadMap.get(rpcReceive.getClientId());
-                                    synchronized (thread) {
-                                        thread.notify();
-                                    }
-                                }
-                            }
-                        }
+                        this.dealReaderableMessage();
                     } else if (key.isWritable() && !SocketNioRPCClient.requestQueue.isEmpty()) {
-                        RPCDto rpcDto = SocketNioRPCClient.requestQueue.poll();
-                        byte[] bytes = SerializeTool.objectToByteArray(rpcDto);
-                        if (bytes == null)
-                            throw new IllegalStateException();
-                        socketChannel.write(ByteBuffer.wrap(bytes));
+                        this.dealWritableMessage();
                     }
                 }
             }
         } catch (Exception e) {
-            logger.error("socketchannel read error",e);
+            logger.error("socketchannel read error", e);
         }
     }
+
+    public void dealReaderableMessage() throws Exception {
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(50 * 1024);
+        if (socketChannel.read((ByteBuffer) byteBuffer.clear()) > 0) {
+            byteBuffer.flip();
+            byte[] bytes = new byte[byteBuffer.remaining()];
+            byteBuffer.get(bytes, 0, bytes.length);
+            byteBuffer.clear();
+            Object o = SerializeTool.byteArrayToObject(bytes);
+            if (o instanceof RPCReceive) {
+                RPCReceive rpcReceive = (RPCReceive) o;
+                if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS) {
+                    if (rpcReceive.getReturnPara() != null)
+                        SocketNioRPCClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
+                    Lock lock = RPCClient.lockMap.get(rpcReceive.getClientId());
+                    if (lock != null) {
+                        lock.unlock();
+                    }
+                }
+            }
+        }
+    }
+
+    public void dealWritableMessage() throws Exception {
+        RPCDto rpcDto = SocketNioRPCClient.requestQueue.poll();
+        byte[] bytes = SerializeTool.objectToByteArray(rpcDto);
+        if (bytes == null)
+            throw new IllegalStateException();
+        socketChannel.write(ByteBuffer.wrap(bytes));
+    }
+
 }

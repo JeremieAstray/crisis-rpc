@@ -18,11 +18,13 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author guanhong 15/10/18 下午11:58.
  */
-public class HttpRPCClient implements RPCClient {
+public class HttpRPCClient extends RPCClient {
     private Logger logger = Logger.getLogger(this.getClass());
 
     private String host;

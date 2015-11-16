@@ -17,10 +17,7 @@ import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author guanhong 15/10/17 下午11:40.
@@ -56,16 +53,20 @@ public class RpcInitializer {
         }
         clazzs.forEach(clazz -> {
             boolean isInterface = clazz.isInterface();
-            Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
-                RPCDto rpcDto = new RPCDto();
-                rpcDto.setDestClazz(clazz.getName());
-                rpcDto.setParams(params);
-                rpcDto.setMethod(method.getName());
-                rpcDto.setParamsType(method.getParameterTypes());
-                rpcDto.setReturnType(method.getReturnType());
-                return rpcClient.invoke(rpcDto);
-            });
-            beanFactory.registerSingleton(clazz.getSimpleName(), o);
+            if (isInterface) {
+                //代理服务
+                Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
+                    RPCDto rpcDto = new RPCDto();
+                    rpcDto.setClientId(UUID.randomUUID().toString());
+                    rpcDto.setDestClazz(clazz.getName());
+                    rpcDto.setParams(params);
+                    rpcDto.setMethod(method.getName());
+                    rpcDto.setParamsType(method.getParameterTypes());
+                    rpcDto.setReturnType(method.getReturnType());
+                    return rpcClient.invoke(rpcDto);
+                });
+                beanFactory.registerSingleton(clazz.getSimpleName(), o);
+            }
         });
     }
 

@@ -38,8 +38,9 @@ public class HelloWorld extends BaseController {
         model.addAttribute("vmtest", "guanhong对了~测一下中文");
         //model.addAttribute("vmchange", "vmchange");
         model.addAttribute("vmchange", "vmchangetest");
-        User user;
-        user = userService.getById(id);
+        User user = userService.getById(id);
+        String test = userService.testGetString();
+        model.addAttribute("testGetString" , test);
         if (user != null)
             model.addAttribute("user", user.getUsername());
         else
