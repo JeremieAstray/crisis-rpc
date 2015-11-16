@@ -10,9 +10,6 @@ import org.springframework.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author guanhong 15/10/24 上午11:43.
@@ -23,7 +20,7 @@ public abstract class RPCClient {
     public abstract Object invoke(RPCDto rpcDto);
 
     public static Map<String, Object> resultMap = new ConcurrentHashMap<>();
-    public static Map<String, Lock> lockMap = new ConcurrentHashMap<>();
+    public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
 
     /**
      * 动态代理类
@@ -32,22 +29,25 @@ public abstract class RPCClient {
      * @return
      */
     public Object dynamicProxyObject(RPCDto rpcDto) {
-        Lock lock = new ReentrantLock(true);
-        lockMap.put(rpcDto.getClientId(),lock);
+        Object lock = rpcDto;
+        lockMap.put(rpcDto.getClientId(), lock);
         Class returnType = rpcDto.getReturnType();
         try {
-            if ("void".equals(returnType.getSimpleName())) {
+            if (Void.TYPE.equals(returnType)
+                    || TypeUtils.isStatic(returnType.getModifiers())) {
                 resultMap.remove(rpcDto.getClientId());
                 lockMap.remove(rpcDto.getClientId());
                 return null;
-            }else if (returnType.isArray()
+            } else if (returnType.isArray()
                     || TypeUtils.isFinal(returnType.getModifiers())
                     || TypeUtils.isPrimitive(TypeUtils.getType(returnType.getName()))) {
                 Object o = null;
                 try {
-                    lock.tryLock(5000,TimeUnit.MILLISECONDS);
+                    synchronized (lock) {
+                        lock.wait(500);
+                    }
                     o = resultMap.get(rpcDto.getClientId());
-                }finally {
+                } finally {
                     resultMap.remove(rpcDto.getClientId());
                     lockMap.remove(rpcDto.getClientId());
                 }
@@ -71,19 +71,23 @@ public abstract class RPCClient {
                             if (o != null)
                                 this.setObject(o);
                             else {
-                                lock.tryLock(5000,TimeUnit.MILLISECONDS);
+                                synchronized (lock) {
+                                    lock.wait(500);
+                                }
                                 o = resultMap.get(rpcDto.getClientId());
                             }
                             if (o != null)
                                 this.setObject(o);
                             this.setFirst(false);
-                        }finally {
+                        } finally {
                             resultMap.remove(rpcDto.getClientId());
                             lockMap.remove(rpcDto.getClientId());
                         }
                     }
-                    if (this.getObject() != null)
+                    if (this.getObject() != null) {
+                        logger.info("invoke mwthod : " + method.getName());
                         return method.invoke(this.getObject(), params);
+                    }
                     return null;
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);

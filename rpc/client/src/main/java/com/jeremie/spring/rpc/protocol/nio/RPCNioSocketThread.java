@@ -11,7 +11,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.concurrent.locks.Lock;
 
 /**
  * @author guanhong 15/10/25 下午12:32.
@@ -62,10 +61,11 @@ public class RPCNioSocketThread implements Runnable {
                 if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS) {
                     if (rpcReceive.getReturnPara() != null)
                         SocketNioRPCClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
-                    Lock lock = RPCClient.lockMap.get(rpcReceive.getClientId());
-                    if (lock != null) {
-                        lock.unlock();
-                    }
+                    Object lock = RPCClient.lockMap.get(rpcReceive.getClientId());
+                    if (lock != null)
+                        synchronized (lock) {
+                            lock.notify();
+                        }
                 }
             }
         }
