@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
+
 /**
  * @author guanhong 15/7/27 下午6:58.
  */
@@ -40,6 +42,16 @@ public class HelloWorld extends BaseController {
         model.addAttribute("vmchange", "vmchangetest");
         User user = userService.getById(id);
         String test = userService.testGetString();
+
+        //测试基本类型
+        String[] stringArray = userService.testStringArray();
+        long[] longArray = userService.testlongArray();
+        long num = userService.testLong();
+        Arrays.asList(stringArray).forEach(System.out::println);
+        for (long a :longArray)
+            System.out.println(a);
+        System.out.println(num);
+
         model.addAttribute("testGetString" , test);
         if (user != null)
             model.addAttribute("user", user.getUsername());

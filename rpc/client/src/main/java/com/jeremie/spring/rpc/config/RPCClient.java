@@ -38,15 +38,17 @@ public abstract class RPCClient {
                 resultMap.remove(rpcDto.getClientId());
                 lockMap.remove(rpcDto.getClientId());
                 return null;
-            } else if (returnType.isArray()
-                    || TypeUtils.isFinal(returnType.getModifiers())
+            } else if (TypeUtils.isFinal(returnType.getModifiers())
                     || TypeUtils.isPrimitive(TypeUtils.getType(returnType.getName()))) {
                 Object o = null;
                 try {
-                    synchronized (lock) {
-                        lock.wait(500);
-                    }
                     o = resultMap.get(rpcDto.getClientId());
+                    if(o == null) {
+                        synchronized (lock) {
+                            lock.wait(500);
+                        }
+                        o = resultMap.get(rpcDto.getClientId());
+                    }
                 } finally {
                     resultMap.remove(rpcDto.getClientId());
                     lockMap.remove(rpcDto.getClientId());

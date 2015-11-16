@@ -24,4 +24,10 @@ public interface UserService {
 
     String testGetString() throws Exception;
 
+    String[] testStringArray();
+
+    long[] testlongArray();
+
+    long testLong();
+
 }
