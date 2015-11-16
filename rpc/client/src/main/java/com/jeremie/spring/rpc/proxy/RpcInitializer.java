@@ -5,6 +5,8 @@ import com.jeremie.spring.rpc.dto.RPCDto;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.cglib.proxy.Enhancer;
+import org.springframework.cglib.proxy.InvocationHandler;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.util.*;
 
 /**
@@ -25,18 +26,16 @@ import java.util.*;
 @Component
 public class RpcInitializer {
 
+    private static RPCClient rpcClient;
     private final String RESOURCE_PATTERN = "/**/*.class";
     protected Logger logger = Logger.getLogger(RpcInitializer.class);
-    private static RPCClient rpcClient;
+    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+    private List<String> packagesList = new ArrayList<>();
 
     @Autowired
     private void setRpcClient(RPCClient rpcClient) {
         RpcInitializer.rpcClient = rpcClient;
     }
-
-    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-
-    private List<String> packagesList = new ArrayList<>();
 
     public void setPackagesList(List<String> packagesList) {
         this.packagesList = packagesList;
@@ -55,7 +54,19 @@ public class RpcInitializer {
             boolean isInterface = clazz.isInterface();
             if (isInterface) {
                 //代理服务
-                Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
+                /*Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
+                    RPCDto rpcDto = new RPCDto();
+                    rpcDto.setClientId(UUID.randomUUID().toString());
+                    rpcDto.setDestClazz(clazz.getName());
+                    rpcDto.setParams(params);
+                    rpcDto.setMethod(method.getName());
+                    rpcDto.setParamsType(method.getParameterTypes());
+                    rpcDto.setReturnType(method.getReturnType());
+                    return rpcClient.invoke(rpcDto);
+                });*/
+                Enhancer hancer = new Enhancer();
+                hancer.setInterfaces(new Class[]{clazz});
+                hancer.setCallback((InvocationHandler) (o, method, params) -> {
                     RPCDto rpcDto = new RPCDto();
                     rpcDto.setClientId(UUID.randomUUID().toString());
                     rpcDto.setDestClazz(clazz.getName());
@@ -65,7 +76,7 @@ public class RpcInitializer {
                     rpcDto.setReturnType(method.getReturnType());
                     return rpcClient.invoke(rpcDto);
                 });
-                beanFactory.registerSingleton(clazz.getSimpleName(), o);
+                beanFactory.registerSingleton(clazz.getSimpleName(), hancer.create());
             }
         });
     }
