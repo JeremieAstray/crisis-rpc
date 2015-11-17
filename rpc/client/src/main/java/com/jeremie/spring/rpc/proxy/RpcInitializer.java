@@ -25,18 +25,16 @@ import java.util.*;
 @Component
 public class RpcInitializer {
 
+    private static RPCClient rpcClient;
     private final String RESOURCE_PATTERN = "/**/*.class";
     protected Logger logger = Logger.getLogger(RpcInitializer.class);
-    private static RPCClient rpcClient;
+    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+    private List<String> packagesList = new ArrayList<>();
 
     @Autowired
     private void setRpcClient(RPCClient rpcClient) {
         RpcInitializer.rpcClient = rpcClient;
     }
-
-    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-
-    private List<String> packagesList = new ArrayList<>();
 
     public void setPackagesList(List<String> packagesList) {
         this.packagesList = packagesList;
@@ -65,6 +63,18 @@ public class RpcInitializer {
                     rpcDto.setReturnType(method.getReturnType());
                     return rpcClient.invoke(rpcDto);
                 });
+                /*Enhancer hancer = new Enhancer();
+                hancer.setInterfaces(new Class[]{clazz});
+                hancer.setCallback((InvocationHandler) (o, method, params) -> {
+                    RPCDto rpcDto = new RPCDto();
+                    rpcDto.setClientId(UUID.randomUUID().toString());
+                    rpcDto.setDestClazz(clazz.getName());
+                    rpcDto.setParams(params);
+                    rpcDto.setMethod(method.getName());
+                    rpcDto.setParamsType(method.getParameterTypes());
+                    rpcDto.setReturnType(method.getReturnType());
+                    return rpcClient.invoke(rpcDto);
+                });*/
                 beanFactory.registerSingleton(clazz.getSimpleName(), o);
             }
         });

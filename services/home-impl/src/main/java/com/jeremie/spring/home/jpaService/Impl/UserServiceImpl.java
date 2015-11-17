@@ -16,6 +16,23 @@ import java.util.List;
  */
 @Service("UserService")
 public class UserServiceImpl extends BaseService implements UserService {
+    @Override
+    public String[] testStringArray() {
+        String[] test = new String[]{"test1","test2","test3","test4","test5"};
+        return test;
+    }
+
+    @Override
+    public long[] testlongArray() {
+        long[] longs = new long[]{1L, 2L, 3L, 4L};
+        return longs;
+    }
+
+    @Override
+    public long testLong() {
+        long a = 100L;
+        return a;
+    }
 
     @Autowired
     private UserRepository userRepository;
