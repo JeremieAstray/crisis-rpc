@@ -1,5 +1,5 @@
 server:
-    port: 8761
+    port: 8080
 spring:
     application:
         name: eureka-server
@@ -11,6 +11,6 @@ eureka:
         registerWithEureka: true
         fetchRegistry: true
         serviceUrl:
-            defaultZone: http://localhost:8761/eureka/
+            defaultZone: http://localhost:8080/discovery/eureka/
         healthcheck:
               enabled: true

@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc.protocol.netty;
 
-import com.jeremie.spring.rpc.config.RPCClient;
-import com.jeremie.spring.rpc.dto.RPCReceive;
+import com.jeremie.spring.rpc.config.RPCHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.log4j.Logger;
@@ -15,18 +14,7 @@ public class RPCClientHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof RPCReceive) {
-            RPCReceive rpcReceive = (RPCReceive) msg;
-            if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS) {
-                if (rpcReceive.getReturnPara() != null)
-                    NettyRPCClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
-                Object lock = RPCClient.lockMap.get(rpcReceive.getClientId());
-                if (lock != null)
-                    synchronized (lock) {
-                        lock.notify();
-                    }
-            }
-        }
+        RPCHandler.handleMessage(msg);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc.protocol.mina;
 
-import com.jeremie.spring.rpc.config.RPCClient;
-import com.jeremie.spring.rpc.dto.RPCReceive;
+import com.jeremie.spring.rpc.config.RPCHandler;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
@@ -25,19 +24,7 @@ public class RPCClientHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
-        if (message instanceof RPCReceive) {
-            RPCReceive rpcReceive = (RPCReceive) message;
-            if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS) {
-                if (rpcReceive.getReturnPara() != null)
-                    MinaRPCClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
-                Object lock = RPCClient.lockMap.get(rpcReceive.getClientId());
-                if (lock != null)
-                    synchronized (lock) {
-                        lock.notify();
-                    }
-            }
-        }
-
+        RPCHandler.handleMessage(message);
     }
 
 }

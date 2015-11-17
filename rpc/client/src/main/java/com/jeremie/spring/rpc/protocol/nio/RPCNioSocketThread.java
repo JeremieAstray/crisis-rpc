@@ -1,8 +1,7 @@
 package com.jeremie.spring.rpc.protocol.nio;
 
-import com.jeremie.spring.rpc.config.RPCClient;
+import com.jeremie.spring.rpc.config.RPCHandler;
 import com.jeremie.spring.rpc.dto.RPCDto;
-import com.jeremie.spring.rpc.dto.RPCReceive;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.log4j.Logger;
 
@@ -56,18 +55,7 @@ public class RPCNioSocketThread implements Runnable {
             byteBuffer.get(bytes, 0, bytes.length);
             byteBuffer.clear();
             Object o = SerializeTool.byteArrayToObject(bytes);
-            if (o instanceof RPCReceive) {
-                RPCReceive rpcReceive = (RPCReceive) o;
-                if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS) {
-                    if (rpcReceive.getReturnPara() != null)
-                        SocketNioRPCClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
-                    Object lock = RPCClient.lockMap.get(rpcReceive.getClientId());
-                    if (lock != null)
-                        synchronized (lock) {
-                            lock.notify();
-                        }
-                }
-            }
+            RPCHandler.handleMessage(o);
         }
     }
 

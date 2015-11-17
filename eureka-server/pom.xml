@@ -11,7 +11,7 @@
     </parent>
     <artifactId>${app.name}-eureka-server</artifactId>
     <version>${project.version}</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <dependencies>
         <dependency>
@@ -35,5 +35,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+    <build>
+        <finalName>discovery</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
