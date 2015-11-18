@@ -43,6 +43,7 @@ public class RPCSocket implements Runnable {
                 Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
                 Object result = method.invoke(o1,rpcDto.getParams());
                 RPCReceive rpcReceive = new RPCReceive();
+                rpcReceive.setClientId(rpcDto.getClientId());
                 rpcReceive.setReturnPara(result);
                 rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
                 objectOutputStream.writeObject(rpcReceive);

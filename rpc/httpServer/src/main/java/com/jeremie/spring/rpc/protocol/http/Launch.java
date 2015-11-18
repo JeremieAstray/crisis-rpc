@@ -55,6 +55,7 @@ public class Launch extends WebMvcConfigurerAdapter {
         Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
         Object result = method.invoke(o1, rpcDto.getParams());
         RPCReceive rpcReceive = new RPCReceive();
+        rpcReceive.setClientId(rpcDto.getClientId());
         rpcReceive.setReturnPara(result);
         rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
         return SerializeTool.objectToString(rpcReceive);

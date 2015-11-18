@@ -1,6 +1,8 @@
 server:
     port: 8081
 spring:
+    application:
+        name: rpc-server
     #datasource
     datasource:
         url: jdbc:mysql://127.0.0.1:3306/user?characterEncoding=UTF-8
