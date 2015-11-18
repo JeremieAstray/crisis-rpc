@@ -14,13 +14,13 @@ import java.util.Iterator;
 /**
  * @author guanhong 15/10/25 下午12:32.
  */
-public class RPCNioSocketThread implements Runnable {
+public class NioSocketRPCThread implements Runnable {
     private Logger logger = Logger.getLogger(this.getClass());
 
     private Selector selector;
     private SocketChannel socketChannel;
 
-    public RPCNioSocketThread(Selector selector, SocketChannel socketChannel) {
+    public NioSocketRPCThread(Selector selector, SocketChannel socketChannel) {
         this.selector = selector;
         this.socketChannel = socketChannel;
     }

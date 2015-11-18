@@ -46,17 +46,22 @@ public class HelloWorld extends BaseController {
         //测试基本类型
         String[] stringArray = userService.testStringArray();
         long[] longArray = userService.testlongArray();
-        long num = userService.testLong();
-        Arrays.asList(stringArray).forEach(System.out::println);
-        for (long a :longArray)
-            System.out.println(a);
-        System.out.println(num);
-
-        model.addAttribute("testGetString" , test);
-        if (user != null)
-            model.addAttribute("user", user.getUsername());
+        Long num = userService.testLong();
+        if (stringArray != null)
+            Arrays.asList(stringArray).forEach(System.out::println);
         else
-            model.addAttribute("user", "null");
+            System.out.println("get null StringArray");
+        if (longArray != null)
+            for (long a : longArray)
+                System.out.println(a);
+        else
+            System.out.println("get null longArray");
+        if (num != null)
+            System.out.println(num);
+        else
+            System.out.println("get null number");
+        model.addAttribute("testGetString", test);
+        model.addAttribute("user", user.getUsername());
         return "test";
     }
 

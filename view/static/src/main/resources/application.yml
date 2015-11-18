@@ -44,4 +44,4 @@ com:
             default-ip: 127.0.0.1
             default-nio-client-port: 8001
             #连接方式：目前支持mina,netty,nio,bio,http(default:mina)
-            connection-method: mina
+            connection-method: http

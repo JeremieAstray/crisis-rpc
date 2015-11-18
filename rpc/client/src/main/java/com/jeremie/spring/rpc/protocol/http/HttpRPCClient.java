@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * @author guanhong 15/10/18 下午11:58.
@@ -30,6 +32,7 @@ public class HttpRPCClient extends RPCClient {
     private String host;
     private int port;
     private List<String> hosts;
+    private Executor executor = Executors.newFixedThreadPool(200);
 
     public HttpRPCClient setHosts(List<String> hosts) {
         this.hosts = hosts;
@@ -50,29 +53,7 @@ public class HttpRPCClient extends RPCClient {
     public Object invoke(RPCDto rpcDto) {
         if (hosts != null && !hosts.isEmpty())
             host = hosts.get(0);
-        Object returnObject = null;
-        try {
-            CloseableHttpClient httpClient = HttpClients.createDefault();
-            String url = "http://" + host + ":" + port + "/";
-            HttpPost httpPost = new HttpPost(url);
-            HttpClientContext httpContext = new HttpClientContext();
-            List<BasicNameValuePair> nameValuePairs = new ArrayList<>();
-            nameValuePairs.add(new BasicNameValuePair("rpcDtoStr", SerializeTool.objectToString(rpcDto)));
-            UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(nameValuePairs, "UTF-8");
-            httpPost.setEntity(httpEntity);
-            HttpResponse response = httpClient.execute(httpPost, httpContext);
-            HttpEntity resultEntity = response.getEntity();
-            //防止中文乱码
-            String result = EntityUtils.toString(resultEntity, "UTF-8");
-            Object object = SerializeTool.stringToObject(result);
-            if (object instanceof RPCReceive) {
-                RPCReceive rpcReceive = (RPCReceive) object;
-                if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS)
-                    returnObject = rpcReceive.getReturnPara();
-            }
-        } catch (IOException e) {
-            logger.error("httpRequest error", e);
-        }
-        return returnObject;
+        executor.execute(new HttpRPCThread(port,host,rpcDto));
+        return dynamicProxyObject(rpcDto);
     }
 }

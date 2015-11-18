@@ -86,7 +86,10 @@ public abstract class RPCClient {
                         }
                     }
                     if (this.getObject() != null) {
-                        logger.info("invoke mwthod : " + method.getName());
+                        if("finalize".equals(method.getName())) {
+                            this.finalize();
+                            return null;
+                        }
                         return method.invoke(this.getObject(), params);
                     }
                     return null;

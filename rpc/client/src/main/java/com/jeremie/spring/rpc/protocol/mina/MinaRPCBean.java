@@ -36,7 +36,7 @@ public class MinaRPCBean extends RPCBean{
         connector = new NioSocketConnector();
         connector.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
-        connector.setHandler(new RPCClientHandler());
+        connector.setHandler(new MinaRPCHandler());
         ConnectFuture connectFuture = connector.connect(new InetSocketAddress(host, port));
         //等待建立连接
         connectFuture.awaitUninterruptibly();

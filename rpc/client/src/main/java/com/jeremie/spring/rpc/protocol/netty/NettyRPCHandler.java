@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 /**
  * @author guanhong 15/10/25 下午4:10.
  */
-public class RPCClientHandler extends SimpleChannelInboundHandler<Object> {
+public class NettyRPCHandler extends SimpleChannelInboundHandler<Object> {
     private Logger logger = Logger.getLogger(this.getClass());
 
 

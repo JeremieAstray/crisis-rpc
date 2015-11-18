@@ -9,7 +9,7 @@ import org.apache.mina.core.session.IoSession;
 /**
  * @author guanhong 15/10/25 下午4:10.
  */
-public class RPCClientHandler extends IoHandlerAdapter {
+public class MinaRPCHandler extends IoHandlerAdapter {
     private Logger logger = Logger.getLogger(this.getClass());
 
     @Override

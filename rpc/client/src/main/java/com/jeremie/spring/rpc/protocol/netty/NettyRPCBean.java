@@ -44,7 +44,7 @@ public class NettyRPCBean extends RPCBean {
                             pipeline.addLast("decoder", new ObjectDecoder(ClassResolvers.softCachingConcurrentResolver(this.getClass().getClassLoader())));
                             pipeline.addLast("encoder", new ObjectEncoder());
                             // 客户端的逻辑
-                            pipeline.addLast("handler", new RPCClientHandler());
+                            pipeline.addLast("handler", new NettyRPCHandler());
                         }
                     });
             // 连接服务端

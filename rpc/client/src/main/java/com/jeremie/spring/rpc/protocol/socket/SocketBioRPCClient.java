@@ -12,6 +12,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Jeremie on 2015/5/13.
@@ -19,12 +21,10 @@ import java.util.List;
 public class SocketBioRPCClient extends RPCClient {
 
     protected Logger logger = Logger.getLogger(this.getClass());
-    private Socket socket = null;
-    private ObjectOutputStream objectOutputStream = null;
-    private ObjectInputStream objectInputStream = null;
     private String host;
     private int port;
     private List<String> hosts;
+    private Executor executor = Executors.newFixedThreadPool(200);
 
     public SocketBioRPCClient setHost(String host) {
         this.host = host;
@@ -43,47 +43,9 @@ public class SocketBioRPCClient extends RPCClient {
 
     @Override
     public Object invoke(RPCDto rpcDto) {
-        try {
-            if(hosts!=null && !hosts.isEmpty())
-                host = hosts.get(0);
-            socket = new Socket(host, port);
-            objectInputStream = new ObjectInputStream(socket.getInputStream());
-            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            objectOutputStream.writeObject(rpcDto);
-            Object o = objectInputStream.readObject();
-            if (o instanceof RPCReceive) {
-                RPCReceive rpcReceive = (RPCReceive) o;
-                if (rpcReceive.getStatus() == RPCReceive.Status.SUCCESS)
-                    return rpcReceive.getReturnPara();
-                else
-                    return null;
-            }
-        } catch (EOFException e) {
-            logger.debug("socket连接结束");
-        } catch (IOException | ClassNotFoundException e) {
-            logger.error(e.getMessage(),e);
-        } finally {
-            if (objectOutputStream != null) {
-                try {
-                    objectOutputStream.flush();
-                    objectOutputStream.close();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(),e);
-                }
-            }
-            try {
-                if (objectInputStream != null)
-                    objectInputStream.close();
-            } catch (IOException e) {
-                logger.error(e.getMessage(),e);
-            }
-            try {
-                if (socket != null)
-                    socket.close();
-            } catch (IOException e) {
-                logger.error(e.getMessage(),e);
-            }
-        }
-        return null;
+        if(hosts!=null && !hosts.isEmpty())
+            host = hosts.get(0);
+        executor.execute(new SocketBioRPCThread(port,host,rpcDto));
+        return dynamicProxyObject(rpcDto);
     }
 }

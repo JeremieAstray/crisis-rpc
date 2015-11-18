@@ -32,7 +32,7 @@ public class SocketNioRPCClient extends RPCClient {
             nioRPCBean.init();
             Selector selector = nioRPCBean.getSelector();
             SocketChannel socketChannel = nioRPCBean.getSocketChannel();
-            nioThread = new Thread(new RPCNioSocketThread(selector, socketChannel));
+            nioThread = new Thread(new NioSocketRPCThread(selector, socketChannel));
             nioThread.start();
         }
         return this.dynamicProxyObject(rpcDto);
