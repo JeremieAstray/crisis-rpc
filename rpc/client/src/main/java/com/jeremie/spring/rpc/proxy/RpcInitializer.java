@@ -1,7 +1,7 @@
 package com.jeremie.spring.rpc.proxy;
 
-import com.jeremie.spring.rpc.config.RPCClient;
 import com.jeremie.spring.rpc.dto.RPCDto;
+import com.jeremie.spring.rpc.remote.RPCClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

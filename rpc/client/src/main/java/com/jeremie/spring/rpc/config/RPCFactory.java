@@ -2,16 +2,17 @@ package com.jeremie.spring.rpc.config;
 
 
 import com.jeremie.spring.rpc.cluster.EurekaConfiguration;
-import com.jeremie.spring.rpc.protocol.http.HttpRPCClient;
-import com.jeremie.spring.rpc.protocol.mina.MinaRPCBean;
-import com.jeremie.spring.rpc.protocol.mina.MinaRPCClient;
-import com.jeremie.spring.rpc.protocol.netty.NettyRPCBean;
-import com.jeremie.spring.rpc.protocol.netty.NettyRPCClient;
-import com.jeremie.spring.rpc.protocol.nio.SocketNioRPCClient;
-import com.jeremie.spring.rpc.protocol.nio.NioRPCBean;
-import com.jeremie.spring.rpc.protocol.socket.SocketBioRPCClient;
+import com.jeremie.spring.rpc.remote.RPCBean;
+import com.jeremie.spring.rpc.remote.RPCClient;
+import com.jeremie.spring.rpc.remote.http.HttpRPCClient;
+import com.jeremie.spring.rpc.remote.mina.MinaRPCBean;
+import com.jeremie.spring.rpc.remote.mina.MinaRPCClient;
+import com.jeremie.spring.rpc.remote.netty.NettyRPCBean;
+import com.jeremie.spring.rpc.remote.netty.NettyRPCClient;
+import com.jeremie.spring.rpc.remote.nio.SocketNioRPCClient;
+import com.jeremie.spring.rpc.remote.nio.NioRPCBean;
+import com.jeremie.spring.rpc.remote.socket.SocketBioRPCClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
  * @author guanhong 15/10/24 上午11:42.
  */
 @Configuration
-//@EnableConfigurationProperties(RPCConfiguration.class)
 public class RPCFactory {
     @Autowired
     private RPCConfiguration rpcConfiguration;

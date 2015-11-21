@@ -1,9 +1,10 @@
 package com.jeremie.spring.rpc.config;
 
 import com.jeremie.spring.rpc.cluster.EurekaConfiguration;
-import com.jeremie.spring.rpc.protocol.mina.MinaRPCBean;
-import com.jeremie.spring.rpc.protocol.netty.NettyRPCBean;
-import com.jeremie.spring.rpc.protocol.nio.NioRPCBean;
+import com.jeremie.spring.rpc.remote.RPCBean;
+import com.jeremie.spring.rpc.remote.mina.MinaRPCBean;
+import com.jeremie.spring.rpc.remote.netty.NettyRPCBean;
+import com.jeremie.spring.rpc.remote.nio.NioRPCBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

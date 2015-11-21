@@ -16,6 +16,12 @@
     <modules>
         <module>rpc/commons</module>
         <module>rpc/client</module>
+        <module>rpc/remote/api</module>
+        <module>rpc/remote/bio</module>
+        <module>rpc/remote/http</module>
+        <module>rpc/remote/mina</module>
+        <module>rpc/remote/netty</module>
+        <module>rpc/remote/nio</module>
         <module>rpc/server</module>
         <module>rpc/httpServer</module>
         <module>services/home</module>
