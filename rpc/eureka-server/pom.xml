@@ -7,7 +7,7 @@
         <groupId>com.jeremie.spring</groupId>
         <artifactId>${app.name}</artifactId>
         <version>${project.version}</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>${app.name}-eureka-server</artifactId>
     <version>${project.version}</version>
