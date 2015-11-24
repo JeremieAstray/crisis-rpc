@@ -3,6 +3,7 @@ package com.jeremie.spring.home.jpaService.Impl;
 import com.jeremie.spring.home.entity.User;
 import com.jeremie.spring.home.jpaDAO.UserRepository;
 import com.jeremie.spring.home.jpaService.UserService;
+import com.jeremie.spring.rpc.RpcContext;
 import com.jeremie.spring.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -50,6 +51,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public User getById(long id) throws Exception  {
+        log.info("------------------>" + RpcContext.getContext().getLocalAddress());
+        log.info("------------------>" + RpcContext.getContext().getRemoteAddress());
         return userRepository.findByIdAndValidTrue(id);
     }
 

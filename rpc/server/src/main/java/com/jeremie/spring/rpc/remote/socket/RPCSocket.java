@@ -1,6 +1,8 @@
 package com.jeremie.spring.rpc.remote.socket;
 
 
+import com.jeremie.spring.rpc.RpcContext;
+import com.jeremie.spring.rpc.RpcHandler;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import org.apache.log4j.Logger;
@@ -34,26 +36,12 @@ public class RPCSocket implements Runnable {
         try {
             objectOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
             objectInputStream = new ObjectInputStream(this.socket.getInputStream());
-
             Object o = objectInputStream.readObject();
-            if (o instanceof RPCDto){
-                RPCDto rpcDto = (RPCDto) o;
-                Class clazz = Class.forName(rpcDto.getDestClazz());
-                Object o1 = applicationContext.getBean(clazz);
-                Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
-                Object result = method.invoke(o1,rpcDto.getParams());
-                RPCReceive rpcReceive = new RPCReceive();
-                rpcReceive.setClientId(rpcDto.getClientId());
-                rpcReceive.setReturnPara(result);
-                rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
-                objectOutputStream.writeObject(rpcReceive);
-            }else{
-                RPCReceive rpcReceive = new RPCReceive();
-                rpcReceive.setReturnPara(null);
-                rpcReceive.setStatus(RPCReceive.Status.ERR0R);
-                objectOutputStream.writeObject(rpcReceive);
-            }
-        } catch (IOException |InvocationTargetException | IllegalAccessException |NoSuchMethodException| ClassNotFoundException e) {
+            RpcHandler.setRPCContextAddress(socket.getLocalSocketAddress(),socket.getRemoteSocketAddress());
+            RPCReceive rpcReceive = RpcHandler.handleMessage(o,applicationContext);
+            objectOutputStream.writeObject(rpcReceive);
+
+        } catch (IOException | ClassNotFoundException e) {
             logger.error(e.getMessage(),e);
         } finally {
             if (objectOutputStream != null) {

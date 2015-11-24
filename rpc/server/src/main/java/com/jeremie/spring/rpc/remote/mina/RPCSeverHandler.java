@@ -1,5 +1,7 @@
 package com.jeremie.spring.rpc.remote.mina;
 
+import com.jeremie.spring.rpc.RpcContext;
+import com.jeremie.spring.rpc.RpcHandler;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import org.apache.log4j.Logger;
@@ -30,28 +32,8 @@ public class RPCSeverHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived( IoSession session, Object message ) throws Exception {
-        RPCReceive rpcReceive = new RPCReceive();
-        if (message instanceof RPCDto) {
-            RPCDto rpcDto = (RPCDto) message;
-            try {
-                Class clazz = Class.forName(rpcDto.getDestClazz());
-                Object o1 = applicationContext.getBean(clazz);
-                Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
-                Object result = method.invoke(o1, rpcDto.getParams());
-                rpcReceive.setReturnPara(result);
-                rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
-                rpcReceive.setClientId(rpcDto.getClientId());
-            } catch (Exception e) {
-                logger.error(e.getMessage(),e);
-                rpcReceive.setClientId(rpcDto.getClientId());
-                rpcReceive.setStatus(RPCReceive.Status.ERR0R);
-                rpcReceive.setReturnPara(null);
-            }
-        } else {
-            rpcReceive.setReturnPara(null);
-            rpcReceive.setStatus(RPCReceive.Status.ERR0R);
-        }
-        session.write(rpcReceive);
+        RpcHandler.setRPCContextAddress(session.getLocalAddress(),session.getRemoteAddress());
+        session.write(RpcHandler.handleMessage(message,applicationContext));
     }
 
     @Override

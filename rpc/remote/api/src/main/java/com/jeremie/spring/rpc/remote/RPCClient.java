@@ -21,6 +21,7 @@ public abstract class RPCClient {
 
     public abstract Object invoke(RPCDto rpcDto);
 
+
     /**
      * 动态代理类
      *
@@ -86,7 +87,7 @@ public abstract class RPCClient {
                         }
                     }
                     if (this.getObject() != null) {
-                        if("finalize".equals(method.getName())) {
+                        if ("finalize".equals(method.getName())) {
                             this.finalize();
                             return null;
                         }

@@ -58,7 +58,7 @@ eureka:
         registerWithEureka: true
         fetchRegistry: true
         serviceUrl:
-            defaultZone: http://192.168.1.156:8080/discovery/eureka/
+            defaultZone: http://192.168.1.18:6761/discovery/eureka/
 com:
     jeremie:
         rpc:

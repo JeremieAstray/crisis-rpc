@@ -1,5 +1,7 @@
 package com.jeremie.spring.rpc.remote.nio;
 
+import com.jeremie.spring.rpc.RpcContext;
+import com.jeremie.spring.rpc.RpcHandler;
 import com.jeremie.spring.rpc.dto.RPCDto;
 import com.jeremie.spring.rpc.dto.RPCReceive;
 import com.jeremie.spring.rpc.util.SerializeTool;
@@ -55,24 +57,10 @@ public class RPCSocket implements Runnable {
                         byteBuffer.get(bytes, 0, bytes.length);
                         byteBuffer.clear();
                         //byteBuffer.flip();
-
                         Object o = SerializeTool.byteArrayToObject(bytes);
-                        RPCReceive rpcReceive = new RPCReceive();
-                        if (o instanceof RPCDto) {
-                            RPCDto rpcDto = (RPCDto) o;
-                            Class clazz = Class.forName(rpcDto.getDestClazz());
-                            Object o1 = applicationContext.getBean(clazz);
-                            Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
-                            Object result = method.invoke(o1, rpcDto.getParams());
-                            rpcReceive.setReturnPara(result);
-                            rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
-                            rpcReceive.setClientId(rpcDto.getClientId());
-                        } else {
-                            rpcReceive.setReturnPara(null);
-                            rpcReceive.setStatus(RPCReceive.Status.ERR0R);
-                        }
+                        RpcHandler.setRPCContextAddress(socketChannel.getLocalAddress(),socketChannel.getRemoteAddress());
+                        RPCReceive rpcReceive = RpcHandler.handleMessage(o,applicationContext);
                         byteBuffer.clear();
-
                         byte[] bytes2 = SerializeTool.objectToByteArray(rpcReceive);
                         if (bytes == null)
                             throw new IllegalStateException();

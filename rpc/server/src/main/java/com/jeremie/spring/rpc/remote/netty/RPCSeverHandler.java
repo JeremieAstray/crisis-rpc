@@ -1,13 +1,11 @@
 package com.jeremie.spring.rpc.remote.netty;
 
-import com.jeremie.spring.rpc.dto.RPCDto;
-import com.jeremie.spring.rpc.dto.RPCReceive;
+import com.jeremie.spring.rpc.RpcContext;
+import com.jeremie.spring.rpc.RpcHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
-
-import java.lang.reflect.Method;
 
 /**
  * @author guanhong 15/10/25 下午3:58.
@@ -24,28 +22,8 @@ public class RPCSeverHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        RPCReceive rpcReceive = new RPCReceive();
-        if (msg instanceof RPCDto) {
-            RPCDto rpcDto = (RPCDto) msg;
-            try {
-                Class clazz = Class.forName(rpcDto.getDestClazz());
-                Object o1 = applicationContext.getBean(clazz);
-                Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
-                Object result = method.invoke(o1, rpcDto.getParams());
-                rpcReceive.setReturnPara(result);
-                rpcReceive.setStatus(RPCReceive.Status.SUCCESS);
-                rpcReceive.setClientId(rpcDto.getClientId());
-            } catch (Exception e) {
-                logger.error(e.getMessage(),e);
-                rpcReceive.setClientId(rpcDto.getClientId());
-                rpcReceive.setStatus(RPCReceive.Status.ERR0R);
-                rpcReceive.setReturnPara(null);
-            }
-        } else {
-            rpcReceive.setReturnPara(null);
-            rpcReceive.setStatus(RPCReceive.Status.ERR0R);
-        }
-        ctx.writeAndFlush(rpcReceive);
+        RpcHandler.setRPCContextAddress(ctx.channel().localAddress(),ctx.channel().remoteAddress());
+        ctx.writeAndFlush(RpcHandler.handleMessage(msg, applicationContext));
         logger.info("成功写出数据!!");
     }
 
