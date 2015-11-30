@@ -1,7 +1,7 @@
 package com.jeremie.spring.rpc.proxy;
 
-import com.jeremie.spring.rpc.dto.RPCDto;
-import com.jeremie.spring.rpc.remote.RPCClient;
+import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.remote.RpcClient;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -25,14 +25,14 @@ import java.util.*;
 @Component
 public class RpcInitializer {
 
-    private static RPCClient rpcClient;
+    private static RpcClient rpcClient;
     private final String RESOURCE_PATTERN = "/**/*.class";
     protected Logger logger = Logger.getLogger(RpcInitializer.class);
     private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
     private List<String> packagesList = new ArrayList<>();
 
     @Autowired
-    private void setRpcClient(RPCClient rpcClient) {
+    private void setRpcClient(RpcClient rpcClient) {
         RpcInitializer.rpcClient = rpcClient;
     }
 
@@ -52,9 +52,9 @@ public class RpcInitializer {
         clazzs.forEach(clazz -> {
             boolean isInterface = clazz.isInterface();
             if (isInterface) {
-                //代理服务
+                //jdk方案 代理服务
                 Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
-                    RPCDto rpcDto = new RPCDto();
+                    RpcDto rpcDto = new RpcDto();
                     rpcDto.setClientId(UUID.randomUUID().toString());
                     rpcDto.setDestClazz(clazz.getName());
                     rpcDto.setParams(params);
@@ -63,10 +63,12 @@ public class RpcInitializer {
                     rpcDto.setReturnType(method.getReturnType());
                     return rpcClient.invoke(rpcDto);
                 });
-                /*Enhancer hancer = new Enhancer();
+                /*
+                //cglib方案
+                Enhancer hancer = new Enhancer();
                 hancer.setInterfaces(new Class[]{clazz});
                 hancer.setCallback((InvocationHandler) (o, method, params) -> {
-                    RPCDto rpcDto = new RPCDto();
+                    RpcDto rpcDto = new RpcDto();
                     rpcDto.setClientId(UUID.randomUUID().toString());
                     rpcDto.setDestClazz(clazz.getName());
                     rpcDto.setParams(params);

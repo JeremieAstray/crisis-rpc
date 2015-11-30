@@ -12,12 +12,4 @@
     <artifactId>${app.name}-services-commons</artifactId>
     <version>${project.version}</version>
     <packaging>jar</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${app.name}-rpc-commons</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
 </project>
