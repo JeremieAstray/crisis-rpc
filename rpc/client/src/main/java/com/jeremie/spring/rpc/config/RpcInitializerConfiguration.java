@@ -1,8 +1,6 @@
-package com.jeremie.spring.rpc.proxy;
+package com.jeremie.spring.rpc.config;
 
-import com.jeremie.spring.rpc.config.RpcConfiguration;
 import com.jeremie.spring.rpc.proxy.RpcInitializer;
-import com.jeremie.spring.rpc.remote.RpcClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -24,9 +22,9 @@ public class RpcInitializerConfiguration {
     @Autowired
     private ConfigurableApplicationContext applicationContext;
 
-    @Bean(initMethod = "init")
+    @Bean(initMethod = "init", destroyMethod = "destroy")
     @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-    public RpcInitializer rpcInitializer(){
+    public RpcInitializer rpcInitializer() {
         RpcInitializer rpcInitializer = new RpcInitializer();
         rpcInitializer.setApplicationContext(applicationContext);
         rpcInitializer.setRpcConfiguration(rpcConfiguration);
