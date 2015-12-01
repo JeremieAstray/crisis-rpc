@@ -46,13 +46,12 @@ com:
             #连接方式：目前支持mina,netty,nio,bio,http(default:mina)
             services:
                 -
-                    packages:
-                        - com.jeremie.spring.*.jpaService
                     name: home-test
                     method: mina
-                -
                     packages:
-                        - com.adol.spring.*.service
+                        - com.jeremie.spring.*.jpaService
+                -
                     name: adol-test
                     method: http
-
+                    packages:
+                        - com.adol.spring.*.jpaService
