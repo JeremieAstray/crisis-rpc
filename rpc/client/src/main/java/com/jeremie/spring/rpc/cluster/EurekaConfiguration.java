@@ -16,8 +16,8 @@ public class EurekaConfiguration {
     @Autowired
     private EurekaClient discoverEurekaClient;
 
-    public List<String> getHosts() {
-        List<InstanceInfo> instances = discoverEurekaClient.getInstancesByVipAddress("home-test", false);
+    public List<String> getHosts(String providers) {
+        List<InstanceInfo> instances = discoverEurekaClient.getInstancesByVipAddress(providers, false);
         List<String> hosts = new ArrayList<>();
         instances.stream()
                 .filter(instanceInfo -> InstanceInfo.InstanceStatus.UP.equals(instanceInfo.getStatus()))

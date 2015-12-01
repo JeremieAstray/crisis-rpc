@@ -25,7 +25,7 @@ public class RpcBeanConfiguration {
     @Bean(destroyMethod = "destroy")
     public RpcBean rpcBean() {
         RpcBean rpcBean;
-        switch (rpcConfiguration.getConnectionMethod()) {
+        switch (rpcConfiguration.getServices().get(0).getMethod()) {
             case "mina":
                 rpcBean = new MinaRpcBean();
                 break;
