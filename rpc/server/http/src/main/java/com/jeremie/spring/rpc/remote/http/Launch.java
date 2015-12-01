@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,7 @@ import java.net.InetSocketAddress;
 /**
  * @author guanhong 15/9/10 下午5:04.
  */
-
+@Controller
 public class Launch extends WebMvcConfigurerAdapter {
     protected Logger logger = Logger.getLogger(this.getClass());
 
