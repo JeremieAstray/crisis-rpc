@@ -103,4 +103,60 @@ public class TranscationAspect {
         if(transactionStatuses.isEmpty())
             threadStackMap.remove(thread);
     }
+
+
+
+    @Before("execution(public * com.adol.spring.*.jpaService.*.*(..))")
+    public void txAdviceBeginAdol(JoinPoint point) {
+        Thread thread = Thread.currentThread();
+        if(!threadStackMap.containsKey(thread));
+        threadStackMap.put(thread,new Stack<>());
+        Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
+        if (getMethodsPrefix().stream().anyMatch(prefix -> point.getSignature().getName().startsWith(prefix))) {
+            DefaultTransactionDefinition transactionDefinition =
+                    new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
+            transactionDefinition.setReadOnly(false);
+            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+            transactionStatuses.push(transactionStatus);
+        } else {
+            DefaultTransactionDefinition transactionDefinition =
+                    new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRED);
+            transactionDefinition.setReadOnly(true);
+            TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+            transactionStatuses.push(transactionStatus);
+        }
+        threadStackMap.put(thread,transactionStatuses);
+    }
+
+    @AfterReturning("execution(public * com.adol.spring.*.jpaService.*.*(..))")
+    public void txAdviceCommitAdol(JoinPoint point) {
+        Thread thread = Thread.currentThread();
+        Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
+        if (!transactionStatuses.isEmpty()) {
+            TransactionStatus transactionStatus = transactionStatuses.pop();
+            if (transactionStatus != null)
+                if (!transactionStatus.isRollbackOnly())
+                    transactionManager.commit(transactionStatus);
+                else
+                    transactionManager.rollback(transactionStatus);
+        }
+        threadStackMap.put(thread,transactionStatuses);
+        if(transactionStatuses.isEmpty())
+            threadStackMap.remove(thread);
+    }
+
+    @AfterThrowing(value = "execution(public * com.adol.spring.*.jpaService.*.*(..))", throwing = "e")
+    public void txAdviceRollBackAdol(JoinPoint point, Exception e) {
+        Thread thread = Thread.currentThread();
+        Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
+        if (!transactionStatuses.isEmpty()) {
+            TransactionStatus transactionStatus = transactionStatuses.pop();
+            if (transactionStatus != null)
+                transactionManager.rollback(transactionStatus);
+            logger.error("roll back exception", e);
+        }
+        threadStackMap.put(thread,transactionStatuses);
+        if(transactionStatuses.isEmpty())
+            threadStackMap.remove(thread);
+    }
 }
