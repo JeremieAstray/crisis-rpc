@@ -31,6 +31,8 @@
         <module>rpc/eureka-server</module>
         <module>services/home</module>
         <module>services/home-impl</module>
+        <module>services/adol</module>
+        <module>services/adol-impl</module>
         <module>services/commons</module>
         <module>services/commons-impl</module>
         <module>web/home</module>

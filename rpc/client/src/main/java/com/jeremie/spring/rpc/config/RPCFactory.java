@@ -10,15 +10,18 @@ import com.jeremie.spring.rpc.remote.mina.MinaRpcBean;
 import com.jeremie.spring.rpc.remote.mina.MinaRpcClient;
 import com.jeremie.spring.rpc.remote.netty.NettyRpcBean;
 import com.jeremie.spring.rpc.remote.netty.NettyRpcClient;
-import com.jeremie.spring.rpc.remote.nio.SocketNioRpcClient;
 import com.jeremie.spring.rpc.remote.nio.NioRpcBean;
+import com.jeremie.spring.rpc.remote.nio.SocketNioRpcClient;
 import com.jeremie.spring.rpc.remote.socket.SocketBioRpcClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * @author guanhong 15/10/24 上午11:42.
@@ -30,60 +33,76 @@ public class RpcFactory {
     @Autowired
     private EurekaConfiguration eurekaConfiguration;
     @Autowired
-    private RpcBean rpcBean;
-    @Autowired
     private RpcInitializer rpcInitializer;
 
-    @Bean
-    public RpcClient getRpcClient() {
-        RpcClient rpcClient;
-        switch (rpcConfiguration.getServices().get(0).getMethod()) {
-            case "mina":
-                rpcClient = this.getMinaRpcClient();
-                break;
-            case "http":
-                rpcClient = this.getHttpRpcClient();
-                break;
-            case "netty":
-                rpcClient = this.getNettyRpcClient();
-                break;
-            case "bio":
-                rpcClient = this.getSocketBioRpcClient();
-                break;
-            case "nio":
-                rpcClient =  this.getSocketNioRpcClient();
-                break;
-            default:
-                rpcClient =  this.getMinaRpcClient();
-                break;
+    @Bean(name = "rpcClientList")
+    public List<RpcClient> getRpcClient() {
+        Map<String, RpcClient> rpcClientMap = new ConcurrentHashMap<>();
+        List<RpcBean> rpcBeanList = new ArrayList<>();
+        for (ServiceConfig serviceConfig : rpcConfiguration.getServices()) {
+            RpcBean rpcBean = null;
+            RpcClient rpcClient;
+            switch (serviceConfig.getMethod()) {
+                case "mina":
+                    rpcBean = new MinaRpcBean();
+                    rpcClient = this.getMinaRpcClient((MinaRpcBean) rpcBean);
+                    break;
+                case "http":
+                    rpcClient = this.getHttpRpcClient(serviceConfig.getName());
+                    break;
+                case "netty":
+                    rpcBean = new NettyRpcBean();
+                    rpcClient = this.getNettyRpcClient((NettyRpcBean) rpcBean);
+                    break;
+                case "bio":
+                    rpcClient = this.getSocketBioRpcClient(serviceConfig.getName());
+                    break;
+                case "nio":
+                    rpcBean = new NioRpcBean();
+                    rpcClient = this.getSocketNioRpcClient((NioRpcBean) rpcBean);
+                    break;
+                default:
+                    rpcBean = new MinaRpcBean();
+                    rpcClient = this.getMinaRpcClient((MinaRpcBean) rpcBean);
+                    break;
+            }
+            if (rpcBean != null) {
+                rpcBean.setClientPort(rpcConfiguration.getDefaultNioClientPort());
+                rpcBean.setHost(rpcConfiguration.getDefaultIp());
+                rpcBean.setPort(rpcConfiguration.getDefaultPort());
+                rpcBean.setHosts(eurekaConfiguration.getHosts(serviceConfig.getName()));
+            }
+            rpcBeanList.add(rpcBean);
+            rpcClientMap.put(serviceConfig.getName(), rpcClient);
         }
-        rpcInitializer.setRpcClient(rpcClient);
-        return rpcClient;
+        rpcInitializer.setRpcBeanList(rpcBeanList);
+        rpcInitializer.setRpcClientMap(rpcClientMap);
+        return rpcClientMap.values().stream().collect(Collectors.toList());
     }
 
-    private MinaRpcClient getMinaRpcClient() {
-        return new MinaRpcClient().setMinaRpcBean((MinaRpcBean) rpcBean);
+    private MinaRpcClient getMinaRpcClient(MinaRpcBean minaRpcBean) {
+        return new MinaRpcClient().setMinaRpcBean(minaRpcBean);
     }
 
-    private HttpRpcClient getHttpRpcClient() {
+    private HttpRpcClient getHttpRpcClient(String name) {
         return new HttpRpcClient()
                 .setPort(rpcConfiguration.getDefaultHttpport())
-                .setHosts(eurekaConfiguration.getHosts())
+                .setHosts(eurekaConfiguration.getHosts(name))
                 .setHost(rpcConfiguration.getDefaultIp());
     }
 
-    private NettyRpcClient getNettyRpcClient() {
-        return new NettyRpcClient().setNettyRpcBean((NettyRpcBean) rpcBean);
+    private NettyRpcClient getNettyRpcClient(NettyRpcBean nettyRpcBean) {
+        return new NettyRpcClient().setNettyRpcBean(nettyRpcBean);
     }
 
-    private SocketBioRpcClient getSocketBioRpcClient() {
+    private SocketBioRpcClient getSocketBioRpcClient(String name) {
         return new SocketBioRpcClient()
                 .setHost(rpcConfiguration.getDefaultIp())
-                .setHosts(eurekaConfiguration.getHosts())
+                .setHosts(eurekaConfiguration.getHosts(name))
                 .setPort(rpcConfiguration.getDefaultPort());
     }
 
-    private SocketNioRpcClient getSocketNioRpcClient() {
-        return new SocketNioRpcClient().setNioRpcBean((NioRpcBean) rpcBean);
+    private SocketNioRpcClient getSocketNioRpcClient(NioRpcBean nioRpcBean) {
+        return new SocketNioRpcClient().setNioRpcBean(nioRpcBean);
     }
 }
