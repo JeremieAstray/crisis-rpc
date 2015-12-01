@@ -2,6 +2,7 @@ package com.jeremie.spring.rpc.config;
 
 
 import com.jeremie.spring.rpc.cluster.EurekaConfiguration;
+import com.jeremie.spring.rpc.proxy.RpcInitializer;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import com.jeremie.spring.rpc.remote.http.HttpRpcClient;
@@ -13,8 +14,11 @@ import com.jeremie.spring.rpc.remote.nio.SocketNioRpcClient;
 import com.jeremie.spring.rpc.remote.nio.NioRpcBean;
 import com.jeremie.spring.rpc.remote.socket.SocketBioRpcClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 
 /**
  * @author guanhong 15/10/24 上午11:42.
@@ -27,23 +31,34 @@ public class RpcFactory {
     private EurekaConfiguration eurekaConfiguration;
     @Autowired
     private RpcBean rpcBean;
+    @Autowired
+    private RpcInitializer rpcInitializer;
 
     @Bean
     public RpcClient getRpcClient() {
-        switch (rpcConfiguration.getConnectionMethod()) {
+        RpcClient rpcClient;
+        switch (rpcConfiguration.getServices().get(0).getMethod()) {
             case "mina":
-                return this.getMinaRpcClient();
+                rpcClient = this.getMinaRpcClient();
+                break;
             case "http":
-                return this.getHttpRpcClient();
+                rpcClient = this.getHttpRpcClient();
+                break;
             case "netty":
-                return this.getNettyRpcClient();
+                rpcClient = this.getNettyRpcClient();
+                break;
             case "bio":
-                return this.getSocketBioRpcClient();
+                rpcClient = this.getSocketBioRpcClient();
+                break;
             case "nio":
-                return this.getSocketNioRpcClient();
+                rpcClient =  this.getSocketNioRpcClient();
+                break;
             default:
-                return this.getMinaRpcClient();
+                rpcClient =  this.getMinaRpcClient();
+                break;
         }
+        rpcInitializer.setRpcClient(rpcClient);
+        return rpcClient;
     }
 
     private MinaRpcClient getMinaRpcClient() {
