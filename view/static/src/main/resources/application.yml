@@ -52,7 +52,7 @@ com:
                     method: mina
                 -
                     packages:
-                        - com.jeremie.test.rpc.service
-                    name: rpc-test
+                        - com.adol.spring.*.service
+                    name: adol-test
                     method: http
 

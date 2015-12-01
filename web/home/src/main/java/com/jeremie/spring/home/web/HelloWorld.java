@@ -1,6 +1,7 @@
 package com.jeremie.spring.home.web;
 
 
+import com.adol.spring.home.jpaService.AdolService;
 import com.jeremie.spring.home.entity.User;
 import com.jeremie.spring.home.jpaService.UserService;
 import com.jeremie.spring.web.BaseController;
@@ -23,6 +24,8 @@ public class HelloWorld extends BaseController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AdolService adolService;
 
     @ResponseBody
     @RequestMapping("/")
@@ -62,6 +65,7 @@ public class HelloWorld extends BaseController {
             System.out.println("get null number");
         model.addAttribute("testGetString", test);
         model.addAttribute("user", user.getUsername());
+        model.addAttribute("adol",adolService.getSomethingTest());
         return "test";
     }
 

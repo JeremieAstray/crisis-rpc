@@ -9,6 +9,7 @@ ${vmtest} <br>
 ${user} <br>
 ${testGetString}<br>
 ${vmchange} <br>
+${adol}<br>
 vmreload
 </body>
 </html>
