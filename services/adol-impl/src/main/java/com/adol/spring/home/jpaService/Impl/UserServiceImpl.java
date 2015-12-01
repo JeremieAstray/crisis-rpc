@@ -1,5 +1,7 @@
 package com.adol.spring.home.jpaService.Impl;
 
+import com.adol.spring.home.jpaService.UserService;
+import com.jeremie.spring.service.BaseService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -8,4 +10,8 @@ import org.springframework.stereotype.Service;
 @Service("UserService")
 public class UserServiceImpl extends BaseService implements UserService {
 
+    @Override
+    public String getSomethingTest() {
+        return "this is adol";
+    }
 }

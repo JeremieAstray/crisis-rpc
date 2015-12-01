@@ -2,7 +2,7 @@ server:
     port: 8081
 spring:
     application:
-        name: home-test
+        name: adol-test
     #datasource
     datasource:
         url: jdbc:mysql://127.0.0.1:3306/user?characterEncoding=UTF-8

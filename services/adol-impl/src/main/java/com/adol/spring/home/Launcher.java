@@ -1,8 +1,8 @@
 package com.adol.spring.home;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
+import com.jeremie.spring.rpc.remote.http.Launch;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
-import com.jeremie.spring.rpc.server.mina.Launch;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
