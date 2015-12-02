@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author guanhong 15/12/1 下午2:30.
+ * @author guanhong on 2015/12/2 15:32
  */
 public class ServiceConfig implements Serializable {
 

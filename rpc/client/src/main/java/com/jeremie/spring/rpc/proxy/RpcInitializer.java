@@ -28,12 +28,15 @@ import java.util.UUID;
  * @author guanhong 15/10/17 下午11:40.
  */
 
-public class RpcInitializer implements DisposableBean {
+public class RpcInitializer{
 
+    private final String RESOURCE_PATTERN = "/**/*.class";
+    protected Logger logger = Logger.getLogger(RpcInitializer.class);
     private ConfigurableApplicationContext applicationContext;
     private Map<String, RpcClient> rpcClientMap;
     private List<RpcBean> rpcBeanList;
     private RpcConfiguration rpcConfiguration;
+    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     public void setApplicationContext(ConfigurableApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -50,10 +53,6 @@ public class RpcInitializer implements DisposableBean {
     public void setRpcConfiguration(RpcConfiguration rpcConfiguration) {
         this.rpcConfiguration = rpcConfiguration;
     }
-
-    private final String RESOURCE_PATTERN = "/**/*.class";
-    protected Logger logger = Logger.getLogger(RpcInitializer.class);
-    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
 
     public void init() {
         ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();
@@ -134,7 +133,6 @@ public class RpcInitializer implements DisposableBean {
         return clazzMap;
     }
 
-    @Override
     public void destroy() throws Exception {
         for (RpcBean rpcBean : rpcBeanList)
             rpcBean.destroy();
