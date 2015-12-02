@@ -1,5 +1,7 @@
 server:
     port: 8082
+management:
+    port: 9092
 spring:
     application:
         name: home-test
