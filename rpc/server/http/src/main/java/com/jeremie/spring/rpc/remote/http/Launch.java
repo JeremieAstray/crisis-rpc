@@ -1,13 +1,13 @@
 package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.dto.RpcReceive;
+import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +22,7 @@ import java.net.InetSocketAddress;
  * @author guanhong 15/9/10 下午5:04.
  */
 @Controller
+@EnableConfigurationProperties(RpcConfiguration.class)
 public class Launch extends WebMvcConfigurerAdapter {
     protected Logger logger = Logger.getLogger(this.getClass());
 

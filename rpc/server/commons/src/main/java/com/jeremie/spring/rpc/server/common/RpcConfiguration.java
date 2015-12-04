@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.server.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -7,6 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties("com.jeremie.rpc")
 public class RpcConfiguration {
+
+    @Value("${spring.application.name:${name:null}}")
+    private String serverName;
 
     private int serverPort;
 

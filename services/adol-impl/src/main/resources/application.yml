@@ -1,7 +1,5 @@
 server:
     port: 8081
-management:
-    port: 9091
 spring:
     application:
         name: adol-test

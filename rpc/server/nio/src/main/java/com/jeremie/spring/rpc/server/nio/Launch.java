@@ -4,6 +4,7 @@ import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 
 import java.net.InetSocketAddress;
@@ -19,6 +20,7 @@ import java.util.concurrent.Executors;
  * @author guanhong 15/10/24 下午1:56.
  */
 
+@EnableConfigurationProperties(RpcConfiguration.class)
 public class Launch implements CommandLineRunner {
     protected Logger logger = Logger.getLogger(this.getClass());
 

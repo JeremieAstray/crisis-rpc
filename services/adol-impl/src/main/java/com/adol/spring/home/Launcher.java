@@ -19,7 +19,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = "${spring.ioc.entityScan.basePackages}")
 @SpringBootApplication
 @EnableEurekaClient
-@EnableConfigurationProperties(RpcConfiguration.class)
 public class Launcher extends Launch {
 
     public static void main(String[] args) {
