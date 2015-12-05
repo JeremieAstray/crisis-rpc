@@ -21,4 +21,12 @@ public class RpcConfiguration {
     public void setServerPort(int serverPort) {
         this.serverPort = serverPort;
     }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
+    }
 }

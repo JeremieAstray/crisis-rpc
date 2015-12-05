@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.server.mina;
 
+import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoAcceptor;
@@ -10,9 +11,9 @@ import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -22,6 +23,7 @@ import java.net.InetSocketAddress;
  */
 
 @EnableConfigurationProperties(RpcConfiguration.class)
+@ComponentScan(basePackages = {"com.jeremie.spring"})
 public class Launch implements CommandLineRunner {
     protected Logger logger = Logger.getLogger(this.getClass());
 
@@ -33,6 +35,7 @@ public class Launch implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        MonitorStatus.init(applicationContext, MonitorStatus.Remote.mina);
         int serverPort = rpcConfiguration.getServerPort();
         IoAcceptor acceptor = new NioSocketAcceptor();
         acceptor.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));

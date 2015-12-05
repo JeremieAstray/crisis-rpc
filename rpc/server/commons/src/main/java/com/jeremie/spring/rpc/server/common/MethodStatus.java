@@ -53,8 +53,14 @@ public class MethodStatus implements Serializable {
             this.invokeElapsed = invokeElapsed;
         }
 
+        /**
+         * 调用时间
+         */
         private long invokeTime;
 
+        /**
+         * 调用时长
+         */
         private long invokeElapsed;
 
         public long getInvokeTime() {
