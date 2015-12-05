@@ -42,14 +42,14 @@ public class RpcSeverHandler extends IoHandlerAdapter {
     @Override
     public void sessionCreated(IoSession session) throws Exception {
         InetSocketAddress remoteAddress = (InetSocketAddress)session.getRemoteAddress();
-        MonitorStatus.remoteHostsList.add(remoteAddress.getHostName() + ":" + remoteAddress.getHostString() + ":" + remoteAddress.getPort());
+        MonitorStatus.remoteHostsList.add(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
         super.sessionCreated(session);
     }
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
         InetSocketAddress remoteAddress = (InetSocketAddress)session.getRemoteAddress();
-        MonitorStatus.remoteHostsList.remove(remoteAddress.getHostName() + ":" + remoteAddress.getHostString() + ":" + remoteAddress.getPort());
+        MonitorStatus.remoteHostsList.remove(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
         super.sessionClosed(session);
     }
 }

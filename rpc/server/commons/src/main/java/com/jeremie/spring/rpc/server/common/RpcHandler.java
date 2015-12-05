@@ -44,7 +44,8 @@ public class RpcHandler {
 
                 //monitor日志
                 Class targetClazz = ProxyUtil.getProxyTargetClazz(o1);
-                MethodStatus methodStatus = MonitorStatus.clazzMethodStatusMap.get(targetClazz.getName()).get(method.toGenericString());
+                Method targetMethod = targetClazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
+                MethodStatus methodStatus = MonitorStatus.clazzMethodStatusMap.get(targetClazz.getName()).get(targetMethod.toGenericString());
                 long begin;
 
                 Object result;
