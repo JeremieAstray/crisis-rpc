@@ -1,10 +1,13 @@
 package com.jeremie.spring.rpc.server.netty;
 
+import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+
+import java.net.InetSocketAddress;
 
 /**
  * @author guanhong 15/10/25 下午3:58.
@@ -35,5 +38,19 @@ public class RpcSeverHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error(cause.getMessage(), cause);
+    }
+
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        MonitorStatus.remoteHostsList.add(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
+        super.channelRegistered(ctx);
+    }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        MonitorStatus.remoteHostsList.remove(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
+        super.channelUnregistered(ctx);
     }
 }

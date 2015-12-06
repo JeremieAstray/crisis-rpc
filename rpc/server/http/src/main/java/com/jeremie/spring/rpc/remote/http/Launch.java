@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.dto.RpcReceive;
+import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
@@ -34,10 +35,12 @@ public class Launch extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/", produces = "text/html; charset=utf-8")
     @ResponseBody
     public String rpcServer(String rpcDtoStr, Model model, HttpServletRequest request) throws Exception {
+        MonitorStatus.remoteHostsList.add(request.getRemoteHost() + ":" + request.getRemotePort());
         Object object = SerializeTool.stringToObject(rpcDtoStr);
         RpcHandler.setRpcContextAddress(new InetSocketAddress(request.getLocalAddr(), request.getLocalPort())
                 , new InetSocketAddress(request.getRemoteAddr(), request.getRemotePort()));
         RpcReceive rpcReceive = RpcHandler.handleMessage(object, applicationContext);
+        MonitorStatus.remoteHostsList.remove(request.getRemoteHost() + ":" + request.getRemotePort());
         return SerializeTool.objectToString(rpcReceive);
     }
 
