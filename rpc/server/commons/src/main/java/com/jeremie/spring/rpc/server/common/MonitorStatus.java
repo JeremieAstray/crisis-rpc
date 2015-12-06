@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc.server.common;
 
 import com.jeremie.spring.rpc.server.util.ProxyUtil;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MonitorStatus {
 
     public static Map<String, Map<String, MethodStatus>> clazzMethodStatusMap = new ConcurrentHashMap<>();
+    public static Long firstConntectTime = 0L;
     public static Remote remote;
     public static List<String> remoteHostsList = new Vector<>();
 

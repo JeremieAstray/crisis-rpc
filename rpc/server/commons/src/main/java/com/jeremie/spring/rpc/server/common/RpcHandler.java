@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
 import java.net.SocketAddress;
-import java.util.Map;
 
 /**
  * @author guanhong 15/11/24 下午3:31.
@@ -46,6 +45,8 @@ public class RpcHandler {
                 Class targetClazz = ProxyUtil.getProxyTargetClazz(o1);
                 Method targetMethod = targetClazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
                 MethodStatus methodStatus = MonitorStatus.clazzMethodStatusMap.get(targetClazz.getName()).get(targetMethod.toGenericString());
+                if (MonitorStatus.firstConntectTime == 0L)
+                    MonitorStatus.firstConntectTime = System.currentTimeMillis();
                 long begin;
 
                 Object result;
@@ -53,10 +54,10 @@ public class RpcHandler {
                     //反射调用
                     begin = System.currentTimeMillis();
                     result = method.invoke(o1, rpcDto.getParams());
-                }catch (Exception e){
+                } catch (Exception e) {
 
                     //异常monitor日志
-                    methodStatus.addException(System.currentTimeMillis(),e);
+                    methodStatus.addException(System.currentTimeMillis(), e);
                     methodStatus.increaseErrorCount();
 
                     throw e;
@@ -65,7 +66,7 @@ public class RpcHandler {
                 //monitor日志
                 long invokeElapsed = System.currentTimeMillis() - begin;
                 methodStatus.increaseInvokeCount();
-                methodStatus.addInvokeMethodStatuses(begin,invokeElapsed);
+                methodStatus.addInvokeMethodStatuses(begin, invokeElapsed);
 
                 //返回值
                 rpcReceive.setReturnPara(result);
