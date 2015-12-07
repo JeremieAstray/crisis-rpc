@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author guanhong 15/12/4 下午2:51.
@@ -21,6 +22,8 @@ public class MonitorStatus {
     public static Long firstConntectTime = 0L;
     public static Remote remote;
     public static List<String> remoteHostsList = new Vector<>();
+
+    public static AtomicBoolean init = new AtomicBoolean(false);
 
     public enum Remote {
         bio, http, mina, netty, nio;
@@ -59,6 +62,7 @@ public class MonitorStatus {
             }
             clazzMethodStatusMap.put(clazz.getName(), methodStatusMap);
         });
+        init.set(true);
     }
 
 }

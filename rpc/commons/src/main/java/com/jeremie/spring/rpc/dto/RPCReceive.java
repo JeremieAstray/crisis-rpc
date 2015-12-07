@@ -16,6 +16,8 @@ public class RpcReceive implements Serializable {
 
     private Object returnPara;
 
+    private Exception exception;
+
     public String getClientId() {
         return clientId;
     }
@@ -38,5 +40,13 @@ public class RpcReceive implements Serializable {
 
     public void setReturnPara(Object returnPara) {
         this.returnPara = returnPara;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
 }

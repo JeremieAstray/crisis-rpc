@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.server.netty;
 
+import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -34,6 +35,7 @@ public class Launch implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        MonitorStatus.init(applicationContext, MonitorStatus.Remote.netty);
         int serverPort = rpcConfiguration.getServerPort();
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();

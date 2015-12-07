@@ -1,5 +1,7 @@
 package com.jeremie.spring.rpc.server.common;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Queue;
@@ -122,6 +124,7 @@ public class MethodStatus implements Serializable {
         exceptionQueue.add(new ExceptionStatus(appearTime,exception));
     }
 
+    @JSONField(serialize = false)
     public Queue<InvokeMethodStatus> getInvokeMethodStatuses() {
         return invokeMethodStatuses;
     }

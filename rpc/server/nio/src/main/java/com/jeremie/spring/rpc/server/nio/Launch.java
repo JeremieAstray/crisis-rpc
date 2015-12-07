@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.server.nio;
 
+import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class Launch implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        MonitorStatus.init(applicationContext, MonitorStatus.Remote.nio);
         int serverPort = rpcConfiguration.getServerPort();
         try {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();

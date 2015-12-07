@@ -1,12 +1,14 @@
 package com.jeremie.spring.rpc.server.nio;
 
-import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.dto.RpcReceive;
+import com.jeremie.spring.rpc.server.common.MonitorStatus;
+import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 import java.io.EOFException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -32,7 +34,10 @@ public class RpcSocket implements Runnable {
 
     @Override
     public void run() {
+        InetSocketAddress remoteAddress = null;
         try {
+            remoteAddress = (InetSocketAddress) socketChannel.getRemoteAddress();
+            MonitorStatus.remoteHostsList.add(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(50 * 1024);
             selector = Selector.open();
             socketChannel.configureBlocking(false);
@@ -55,8 +60,8 @@ public class RpcSocket implements Runnable {
                         byteBuffer.clear();
                         //byteBuffer.flip();
                         Object o = SerializeTool.byteArrayToObject(bytes);
-                        RpcHandler.setRpcContextAddress(socketChannel.getLocalAddress(),socketChannel.getRemoteAddress());
-                        RpcReceive rpcReceive = RpcHandler.handleMessage(o,applicationContext);
+                        RpcHandler.setRpcContextAddress(socketChannel.getLocalAddress(), socketChannel.getRemoteAddress());
+                        RpcReceive rpcReceive = RpcHandler.handleMessage(o, applicationContext);
                         byteBuffer.clear();
                         byte[] bytes2 = SerializeTool.objectToByteArray(rpcReceive);
                         if (bytes == null)
@@ -69,14 +74,16 @@ public class RpcSocket implements Runnable {
             logger.info("与" + this.clientHost + "断开连接");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-        }finally {
+        } finally {
+            if (remoteAddress != null)
+                MonitorStatus.remoteHostsList.remove(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
             try {
-                if(socketChannel !=null){
+                if (socketChannel != null) {
                     socketChannel.close();
                     selector.close();
                 }
-            }catch (Exception e){
-                logger.error("close connect error",e);
+            } catch (Exception e) {
+                logger.error("close connect error", e);
             }
         }
     }
