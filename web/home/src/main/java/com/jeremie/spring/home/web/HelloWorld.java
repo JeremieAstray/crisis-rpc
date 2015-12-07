@@ -49,7 +49,7 @@ public class HelloWorld extends BaseController {
         //测试基本类型
         String[] stringArray = userService.testStringArray();
         long[] longArray = userService.testlongArray();
-        Long num = userService.testLong();
+        //Long num = userService.testLong();
         if (stringArray != null)
             Arrays.asList(stringArray).forEach(System.out::println);
         else
@@ -59,10 +59,10 @@ public class HelloWorld extends BaseController {
                 System.out.println(a);
         else
             System.out.println("get null longArray");
-        if (num != null)
-            System.out.println(num);
-        else
-            System.out.println("get null number");
+        //if (num != null)
+        //    System.out.println(num);
+        //else
+        //    System.out.println("get null number");
         model.addAttribute("testGetString", test);
         model.addAttribute("user", user.getUsername());
         model.addAttribute("adol",adolService.getSomethingTest());
