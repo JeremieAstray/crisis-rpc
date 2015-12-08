@@ -58,11 +58,13 @@ public class MethodStatus implements Serializable {
         /**
          * 调用时间
          */
+        @JSONField(name = "it")
         private long invokeTime;
 
         /**
          * 调用时长
          */
+        @JSONField(name = "ie")
         private long invokeElapsed;
 
         public long getInvokeTime() {
@@ -75,7 +77,9 @@ public class MethodStatus implements Serializable {
     }
 
     public class ExceptionStatus{
+        @JSONField(name = "at")
         private long appearTime;
+        @JSONField(name = "er")
         private Exception exception;
 
         public ExceptionStatus(long appearTime, Exception exception) {
@@ -116,6 +120,7 @@ public class MethodStatus implements Serializable {
         return exceptionQueue.stream().collect(Collectors.toList());
     }
 
+    @JSONField(serialize = false)
     public Queue<ExceptionStatus> getExceptionQueue() {
         return exceptionQueue;
     }
