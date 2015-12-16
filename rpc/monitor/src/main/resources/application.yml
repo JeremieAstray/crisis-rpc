@@ -1,9 +1,9 @@
 server:
     port: 8080
-    context-path: /discovery
+    context-path: /monitor-simple
 spring:
     application:
-        name: eureka-server
+        name: monitor-simple
 
 eureka:
     # these are settings for the client that gets services
@@ -12,6 +12,6 @@ eureka:
         registerWithEureka: true
         fetchRegistry: true
         serviceUrl:
-            defaultZone: http://localhost:8080/discovery/eureka/
+            defaultZone: http://192.168.1.156:8080/discovery/eureka/
         healthcheck:
               enabled: true

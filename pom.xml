@@ -29,6 +29,7 @@
         <module>rpc/server/netty</module>
         <module>rpc/server/nio</module>
         <module>rpc/eureka-server</module>
+        <module>rpc/monitor</module>
         <module>services/home</module>
         <module>services/home-impl</module>
         <module>services/adol</module>
@@ -101,6 +102,13 @@
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.1-api</artifactId>
                 <version>1.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-parent</artifactId>
+                <version>Brixton.M2</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
