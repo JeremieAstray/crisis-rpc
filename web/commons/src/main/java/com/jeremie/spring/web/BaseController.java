@@ -92,7 +92,7 @@ public abstract class BaseController {
 
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex) {
-        log.error("系统发生异常", ex);
+        log.error(ex.getMessage(), ex);
         //model.addAttribute("exMsg", ex.getMessage());
         return "error/exception";
     }

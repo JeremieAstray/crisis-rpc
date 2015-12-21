@@ -6,7 +6,6 @@ import com.jeremie.spring.rpc.dto.RpcDto;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
@@ -28,7 +27,7 @@ import java.util.UUID;
  * @author guanhong 15/10/17 下午11:40.
  */
 
-public class RpcInitializer{
+public class RpcInitializer {
 
     private final String RESOURCE_PATTERN = "/**/*.class";
     protected Logger logger = Logger.getLogger(RpcInitializer.class);
@@ -77,9 +76,9 @@ public class RpcInitializer{
                     rpcDto.setReturnType(method.getReturnType());
                     return rpcClientMap.get(serviceName).invoke(rpcDto);
                 });
-                /*
+
                 //cglib方案
-                Enhancer hancer = new Enhancer();
+                /*Enhancer hancer = new Enhancer();
                 hancer.setInterfaces(new Class[]{clazz});
                 hancer.setCallback((InvocationHandler) (o, method, params) -> {
                     RpcDto rpcDto = new RpcDto();
@@ -90,7 +89,8 @@ public class RpcInitializer{
                     rpcDto.setParamsType(method.getParameterTypes());
                     rpcDto.setReturnType(method.getReturnType());
                     return rpcClientMap.get(serviceName).invoke(rpcDto);
-                });*/
+                });
+                Object o = hancer.create();*/
                 beanFactory.registerSingleton(clazz.getSimpleName(), o);
             }
         });

@@ -27,6 +27,7 @@ public class SocketNioRpcClient extends RpcClient {
 
     @Override
     public Object invoke(RpcDto rpcDto) {
+        Object returnObject = this.dynamicProxyObject(rpcDto);
         requestQueue.add(rpcDto);
         if (!nioRpcBean.init && nioThread == null) {
             nioRpcBean.init();
@@ -35,7 +36,7 @@ public class SocketNioRpcClient extends RpcClient {
             nioThread = new Thread(new NioSocketRpcThread(selector, socketChannel));
             nioThread.start();
         }
-        return this.dynamicProxyObject(rpcDto);
+        return returnObject == null ? this.getObject(rpcDto) : returnObject;
     }
 
 

@@ -3,6 +3,7 @@ package com.jeremie.spring.rpc.remote;
 import com.jeremie.spring.rpc.dto.RpcDto;
 import com.jeremie.spring.rpc.remote.proxy.ProxyHandler;
 import org.apache.log4j.Logger;
+import org.springframework.asm.Type;
 import org.springframework.cglib.core.TypeUtils;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodProxy;
@@ -98,15 +99,56 @@ public abstract class RpcClient {
             synchronized (rpcDto) {
                 rpcDto.wait(500);
             }
-            return resultMap.get(rpcDto.getClientId());
+            Object returnObject = resultMap.get(rpcDto.getClientId());
+            if (returnObject == null && rpcDto.getReturnType().isPrimitive())
+                return this.getDefaultPrimitiveValue(Type.getType(rpcDto.getReturnType()).getSort());
+            else
+                return returnObject;
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         } finally {
             resultMap.remove(rpcDto.getClientId());
             lockMap.remove(rpcDto.getClientId());
         }
-        return null;
+        if (rpcDto.getReturnType().isPrimitive())
+            return this.getDefaultPrimitiveValue(Type.getType(rpcDto.getReturnType()).getSort());
+        else
+            return null;
     }
 
+
+    public Object getDefaultPrimitiveValue(int sort){
+        switch (sort){
+            //VOID
+            case 0:
+                return null;
+            //BOOLEAN
+            case 1:
+                return false;
+            //CHAR
+            case 2:
+                return ' ';
+            //BYTE
+            case 3:
+                return (byte)0;
+            //SHORT
+            case 4:
+                return (short)0;
+            //INT
+            case 5:
+                return 0;
+            //FLOAT
+            case 6:
+                return (float)0;
+            //LONG
+            case 7:
+                return 0L;
+            //DOUBLE
+            case 8:
+                return (double)0;
+            default:
+                return null;
+        }
+    }
 
 }
