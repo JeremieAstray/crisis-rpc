@@ -18,9 +18,10 @@ public class NettyRpcClient extends RpcClient {
 
     @Override
     public Object invoke(RpcDto rpcDto) {
+        Object returnObject = this.dynamicProxyObject(rpcDto);
         if (!nettyRpcBean.isConnect())
             nettyRpcBean.init();
         nettyRpcBean.channel.writeAndFlush(rpcDto);
-        return this.dynamicProxyObject(rpcDto);
+        return returnObject == null ? this.getObject(rpcDto) : returnObject;
     }
 }

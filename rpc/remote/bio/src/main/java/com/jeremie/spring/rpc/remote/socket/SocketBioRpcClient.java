@@ -37,9 +37,10 @@ public class SocketBioRpcClient extends RpcClient {
 
     @Override
     public Object invoke(RpcDto rpcDto) {
+        Object returnObject = this.dynamicProxyObject(rpcDto);
         if(hosts!=null && !hosts.isEmpty())
             host = hosts.get(0);
         executor.execute(new SocketBioRpcThread(port,host,rpcDto));
-        return dynamicProxyObject(rpcDto);
+        return returnObject == null ? this.getObject(rpcDto) : returnObject;
     }
 }

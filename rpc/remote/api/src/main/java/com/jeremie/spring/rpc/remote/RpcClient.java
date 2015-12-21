@@ -29,31 +29,14 @@ public abstract class RpcClient {
      * @return
      */
     public Object dynamicProxyObject(RpcDto rpcDto) {
-        Object lock = rpcDto;
-        lockMap.put(rpcDto.getClientId(), lock);
+        lockMap.put(rpcDto.getClientId(), rpcDto);
         Class returnType = rpcDto.getReturnType();
         try {
             if (Void.TYPE.equals(returnType)
-                    || TypeUtils.isStatic(returnType.getModifiers())) {
-                resultMap.remove(rpcDto.getClientId());
-                lockMap.remove(rpcDto.getClientId());
-                return null;
-            } else if (TypeUtils.isFinal(returnType.getModifiers())
+                    || TypeUtils.isStatic(returnType.getModifiers())
+                    || TypeUtils.isFinal(returnType.getModifiers())
                     || TypeUtils.isPrimitive(TypeUtils.getType(returnType.getName()))) {
-                Object o = null;
-                try {
-                    o = resultMap.get(rpcDto.getClientId());
-                    if (o == null) {
-                        synchronized (lock) {
-                            lock.wait(500);
-                        }
-                        o = resultMap.get(rpcDto.getClientId());
-                    }
-                } finally {
-                    resultMap.remove(rpcDto.getClientId());
-                    lockMap.remove(rpcDto.getClientId());
-                }
-                return o;
+                return null;
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -73,8 +56,8 @@ public abstract class RpcClient {
                             if (o != null)
                                 this.setObject(o);
                             else {
-                                synchronized (lock) {
-                                    lock.wait(500);
+                                synchronized (rpcDto) {
+                                    rpcDto.wait(500);
                                 }
                                 o = resultMap.get(rpcDto.getClientId());
                             }
@@ -103,4 +86,27 @@ public abstract class RpcClient {
         //创建代理对象
         return hancer.create();
     }
+
+    /**
+     * 当不能生成代理对象时,使用同步获取rpcDto的方式
+     *
+     * @param rpcDto
+     * @return
+     */
+    public Object getObject(RpcDto rpcDto) {
+        try {
+            synchronized (rpcDto) {
+                rpcDto.wait(500);
+            }
+            return resultMap.get(rpcDto.getClientId());
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            resultMap.remove(rpcDto.getClientId());
+            lockMap.remove(rpcDto.getClientId());
+        }
+        return null;
+    }
+
+
 }
