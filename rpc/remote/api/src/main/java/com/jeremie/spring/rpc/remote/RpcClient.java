@@ -1,5 +1,7 @@
 package com.jeremie.spring.rpc.remote;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.jeremie.spring.rpc.dto.RpcDto;
 import com.jeremie.spring.rpc.remote.proxy.ProxyHandler;
 import org.apache.log4j.Logger;
@@ -11,13 +13,16 @@ import org.springframework.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author guanhong 15/10/24 上午11:43.
  */
 public abstract class RpcClient {
-    public static Map<String, Object> resultMap = new ConcurrentHashMap<>();
+
     public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
+    protected static long TIMEOUT = 500L;
+    public static Cache<String, Object> resultCache = CacheBuilder.newBuilder().expireAfterWrite(TIMEOUT, TimeUnit.MILLISECONDS).build();
     Logger logger = Logger.getLogger(this.getClass());
 
     public abstract Object invoke(RpcDto rpcDto);
@@ -53,20 +58,20 @@ public abstract class RpcClient {
                 try {
                     if (this.isFirst() && this.getObject() == null) {
                         try {
-                            Object o = resultMap.get(rpcDto.getClientId());
+                            Object o = resultCache.getIfPresent(rpcDto.getClientId());
                             if (o != null)
                                 this.setObject(o);
                             else {
                                 synchronized (rpcDto) {
-                                    rpcDto.wait(500);
+                                    rpcDto.wait(TIMEOUT);
                                 }
-                                o = resultMap.get(rpcDto.getClientId());
+                                o = resultCache.getIfPresent(rpcDto.getClientId());
                             }
                             if (o != null)
                                 this.setObject(o);
                             this.setFirst(false);
                         } finally {
-                            resultMap.remove(rpcDto.getClientId());
+                            resultCache.invalidate(rpcDto.getClientId());
                             lockMap.remove(rpcDto.getClientId());
                         }
                     }
@@ -97,9 +102,9 @@ public abstract class RpcClient {
     public Object getObject(RpcDto rpcDto) {
         try {
             synchronized (rpcDto) {
-                rpcDto.wait(500);
+                rpcDto.wait(TIMEOUT);
             }
-            Object returnObject = resultMap.get(rpcDto.getClientId());
+            Object returnObject = resultCache.getIfPresent(rpcDto.getClientId());
             if (returnObject == null && rpcDto.getReturnType().isPrimitive())
                 return this.getDefaultPrimitiveValue(Type.getType(rpcDto.getReturnType()).getSort());
             else
@@ -107,7 +112,7 @@ public abstract class RpcClient {
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            resultMap.remove(rpcDto.getClientId());
+            resultCache.invalidate(rpcDto.getClientId());
             lockMap.remove(rpcDto.getClientId());
         }
         if (rpcDto.getReturnType().isPrimitive())
@@ -117,8 +122,8 @@ public abstract class RpcClient {
     }
 
 
-    public Object getDefaultPrimitiveValue(int sort){
-        switch (sort){
+    public Object getDefaultPrimitiveValue(int sort) {
+        switch (sort) {
             //VOID
             case 0:
                 return null;
@@ -130,22 +135,22 @@ public abstract class RpcClient {
                 return ' ';
             //BYTE
             case 3:
-                return (byte)0;
+                return (byte) 0;
             //SHORT
             case 4:
-                return (short)0;
+                return (short) 0;
             //INT
             case 5:
                 return 0;
             //FLOAT
             case 6:
-                return (float)0;
+                return (float) 0;
             //LONG
             case 7:
                 return 0L;
             //DOUBLE
             case 8:
-                return (double)0;
+                return (double) 0;
             default:
                 return null;
         }
