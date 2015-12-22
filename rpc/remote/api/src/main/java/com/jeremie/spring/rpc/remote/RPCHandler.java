@@ -12,7 +12,7 @@ public class RpcHandler {
             RpcReceive rpcReceive = (RpcReceive) message;
             if (rpcReceive.getStatus() == RpcReceive.Status.SUCCESS) {
                 if (rpcReceive.getReturnPara() != null)
-                    RpcClient.resultMap.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
+                    RpcClient.resultCache.put(rpcReceive.getClientId(), rpcReceive.getReturnPara());
                 Object lock = RpcClient.lockMap.get(rpcReceive.getClientId());
                 if (lock != null)
                     synchronized (lock) {

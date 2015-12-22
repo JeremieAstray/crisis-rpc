@@ -28,6 +28,7 @@ public class NioRpcBean extends RpcBean {
         return selector;
     }
 
+    @Override
     public void init() {
         try {
             if (hosts != null && !hosts.isEmpty())

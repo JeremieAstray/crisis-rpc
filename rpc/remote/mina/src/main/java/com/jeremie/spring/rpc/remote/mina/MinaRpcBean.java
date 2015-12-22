@@ -30,7 +30,8 @@ public class MinaRpcBean extends RpcBean {
         return isConnect;
     }
 
-    public void init() throws Exception {
+    @Override
+    public void init() {
         if (hosts != null && !hosts.isEmpty())
             host = hosts.get(0);
         connector = new NioSocketConnector();

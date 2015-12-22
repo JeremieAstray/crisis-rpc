@@ -13,6 +13,8 @@ public abstract class RpcBean implements DisposableBean {
     protected List<String> hosts;
     protected int clientPort;
 
+    public abstract void init();
+
     public void setHost(String host) {
         this.host = host;
     }

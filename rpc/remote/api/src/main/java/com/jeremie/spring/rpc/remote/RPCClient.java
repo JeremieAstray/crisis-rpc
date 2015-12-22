@@ -1,8 +1,11 @@
 package com.jeremie.spring.rpc.remote;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.jeremie.spring.rpc.dto.RpcDto;
 import com.jeremie.spring.rpc.remote.proxy.ProxyHandler;
 import org.apache.log4j.Logger;
+import org.springframework.asm.Type;
 import org.springframework.cglib.core.TypeUtils;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodProxy;
@@ -10,13 +13,16 @@ import org.springframework.cglib.proxy.MethodProxy;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author guanhong 15/10/24 上午11:43.
  */
 public abstract class RpcClient {
-    public static Map<String, Object> resultMap = new ConcurrentHashMap<>();
+
     public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
+    protected static long TIMEOUT = 500L;
+    public static Cache<String, Object> resultCache = CacheBuilder.newBuilder().expireAfterWrite(TIMEOUT, TimeUnit.MILLISECONDS).build();
     Logger logger = Logger.getLogger(this.getClass());
 
     public abstract Object invoke(RpcDto rpcDto);
@@ -29,31 +35,14 @@ public abstract class RpcClient {
      * @return
      */
     public Object dynamicProxyObject(RpcDto rpcDto) {
-        Object lock = rpcDto;
-        lockMap.put(rpcDto.getClientId(), lock);
+        lockMap.put(rpcDto.getClientId(), rpcDto);
         Class returnType = rpcDto.getReturnType();
         try {
             if (Void.TYPE.equals(returnType)
-                    || TypeUtils.isStatic(returnType.getModifiers())) {
-                resultMap.remove(rpcDto.getClientId());
-                lockMap.remove(rpcDto.getClientId());
-                return null;
-            } else if (TypeUtils.isFinal(returnType.getModifiers())
+                    || TypeUtils.isStatic(returnType.getModifiers())
+                    || TypeUtils.isFinal(returnType.getModifiers())
                     || TypeUtils.isPrimitive(TypeUtils.getType(returnType.getName()))) {
-                Object o = null;
-                try {
-                    o = resultMap.get(rpcDto.getClientId());
-                    if (o == null) {
-                        synchronized (lock) {
-                            lock.wait(500);
-                        }
-                        o = resultMap.get(rpcDto.getClientId());
-                    }
-                } finally {
-                    resultMap.remove(rpcDto.getClientId());
-                    lockMap.remove(rpcDto.getClientId());
-                }
-                return o;
+                return null;
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -69,20 +58,20 @@ public abstract class RpcClient {
                 try {
                     if (this.isFirst() && this.getObject() == null) {
                         try {
-                            Object o = resultMap.get(rpcDto.getClientId());
+                            Object o = resultCache.getIfPresent(rpcDto.getClientId());
                             if (o != null)
                                 this.setObject(o);
                             else {
-                                synchronized (lock) {
-                                    lock.wait(500);
+                                synchronized (rpcDto) {
+                                    rpcDto.wait(TIMEOUT);
                                 }
-                                o = resultMap.get(rpcDto.getClientId());
+                                o = resultCache.getIfPresent(rpcDto.getClientId());
                             }
                             if (o != null)
                                 this.setObject(o);
                             this.setFirst(false);
                         } finally {
-                            resultMap.remove(rpcDto.getClientId());
+                            resultCache.invalidate(rpcDto.getClientId());
                             lockMap.remove(rpcDto.getClientId());
                         }
                     }
@@ -103,4 +92,68 @@ public abstract class RpcClient {
         //创建代理对象
         return hancer.create();
     }
+
+    /**
+     * 当不能生成代理对象时,使用同步获取rpcDto的方式
+     *
+     * @param rpcDto
+     * @return
+     */
+    public Object getObject(RpcDto rpcDto) {
+        try {
+            synchronized (rpcDto) {
+                rpcDto.wait(TIMEOUT);
+            }
+            Object returnObject = resultCache.getIfPresent(rpcDto.getClientId());
+            if (returnObject == null && rpcDto.getReturnType().isPrimitive())
+                return this.getDefaultPrimitiveValue(Type.getType(rpcDto.getReturnType()).getSort());
+            else
+                return returnObject;
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            resultCache.invalidate(rpcDto.getClientId());
+            lockMap.remove(rpcDto.getClientId());
+        }
+        if (rpcDto.getReturnType().isPrimitive())
+            return this.getDefaultPrimitiveValue(Type.getType(rpcDto.getReturnType()).getSort());
+        else
+            return null;
+    }
+
+
+    public Object getDefaultPrimitiveValue(int sort) {
+        switch (sort) {
+            //VOID
+            case 0:
+                return null;
+            //BOOLEAN
+            case 1:
+                return false;
+            //CHAR
+            case 2:
+                return ' ';
+            //BYTE
+            case 3:
+                return (byte) 0;
+            //SHORT
+            case 4:
+                return (short) 0;
+            //INT
+            case 5:
+                return 0;
+            //FLOAT
+            case 6:
+                return (float) 0;
+            //LONG
+            case 7:
+                return 0L;
+            //DOUBLE
+            case 8:
+                return (double) 0;
+            default:
+                return null;
+        }
+    }
+
 }

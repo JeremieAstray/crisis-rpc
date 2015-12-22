@@ -50,6 +50,7 @@ public class RpcInitializerConfiguration implements DisposableBean {
         rpcInitializer.setRpcBeanList(rpcBeanList);
         rpcInitializer.setRpcClientMap(rpcClientMap);
         rpcInitializer.init();
+        rpcBeanList.forEach(RpcBean::init);
     }
 
     @Override
@@ -93,8 +94,8 @@ public class RpcInitializerConfiguration implements DisposableBean {
                 rpcBean.setHost(rpcConfiguration.getDefaultIp());
                 rpcBean.setPort(rpcConfiguration.getDefaultPort());
                 rpcBean.setHosts(eurekaConfiguration.getHosts(serviceConfig.getName()));
+                rpcBeanList.add(rpcBean);
             }
-            rpcBeanList.add(rpcBean);
             rpcClientMap.put(serviceConfig.getName(), rpcClient);
         }
     }
