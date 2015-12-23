@@ -29,6 +29,7 @@ public class NettyRpcBean extends RpcBean {
         return isConnect;
     }
 
+    @Override
     public void init() {
         if (hosts != null && !hosts.isEmpty())
             host = hosts.get(0);
