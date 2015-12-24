@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringApplicationConfiguration(classes = BaseTest.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebIntegrationTest
-@EnableJpaRepositories(basePackages = "${spring.ioc.jpaRepositories.basePackages}",repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
+@EnableJpaRepositories(basePackages = "${spring.ioc.jpaRepositories.basePackages}", repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
 @ComponentScan(basePackages = "${spring.ioc.componentScan.basePackages}")
 @EntityScan(basePackages = "${spring.ioc.entityScan.basePackages}")
 @SpringBootApplication

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author guanhong 15/9/30 下午4:04.
  */
-public interface BaseDAO<T extends BaseEntity> extends BaseRepository<T,Long> {
+public interface BaseDAO<T extends BaseEntity> extends BaseRepository<T, Long> {
 
     T findByIdAndValidTrue(Long id);
 

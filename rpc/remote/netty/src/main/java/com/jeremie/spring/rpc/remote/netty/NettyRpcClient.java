@@ -1,7 +1,7 @@
 package com.jeremie.spring.rpc.remote.netty;
 
 
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
 
 /**
@@ -17,11 +17,11 @@ public class NettyRpcClient extends RpcClient {
     }
 
     @Override
-    public Object invoke(RpcDto rpcDto) {
-        Object returnObject = this.dynamicProxyObject(rpcDto);
+    public Object invoke(RpcInvocation rpcInvocation) {
+        Object returnObject = this.dynamicProxyObject(rpcInvocation);
         if (!nettyRpcBean.isConnect())
             nettyRpcBean.init();
-        nettyRpcBean.channel.writeAndFlush(rpcDto);
-        return returnObject == null ? this.getObject(rpcDto) : returnObject;
+        nettyRpcBean.channel.writeAndFlush(rpcInvocation);
+        return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 }

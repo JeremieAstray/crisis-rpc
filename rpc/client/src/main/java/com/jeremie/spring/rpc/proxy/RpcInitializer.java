@@ -1,8 +1,8 @@
 package com.jeremie.spring.rpc.proxy;
 
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.config.RpcConfiguration;
 import com.jeremie.spring.rpc.config.ServiceConfig;
-import com.jeremie.spring.rpc.dto.RpcDto;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.apache.log4j.Logger;
@@ -67,21 +67,21 @@ public class RpcInitializer {
             if (isInterface) {
                 //jdk方案 代理服务
                 Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
-                    RpcDto rpcDto = new RpcDto();
-                    rpcDto.setClientId(UUID.randomUUID().toString());
-                    rpcDto.setDestClazz(clazz.getName());
-                    rpcDto.setParams(params);
-                    rpcDto.setMethod(method.getName());
-                    rpcDto.setParamsType(method.getParameterTypes());
-                    rpcDto.setReturnType(method.getReturnType());
-                    return rpcClientMap.get(serviceName).invoke(rpcDto);
+                    RpcInvocation rpcInvocation = new RpcInvocation();
+                    rpcInvocation.setClientId(UUID.randomUUID().toString());
+                    rpcInvocation.setDestClazz(clazz.getName());
+                    rpcInvocation.setParams(params);
+                    rpcInvocation.setMethod(method.getName());
+                    rpcInvocation.setParamsType(method.getParameterTypes());
+                    rpcInvocation.setReturnType(method.getReturnType());
+                    return rpcClientMap.get(serviceName).invoke(rpcInvocation);
                 });
 
                 //cglib方案
                 /*Enhancer hancer = new Enhancer();
                 hancer.setInterfaces(new Class[]{clazz});
                 hancer.setCallback((InvocationHandler) (o, method, params) -> {
-                    RpcDto rpcDto = new RpcDto();
+                    RpcInvocation rpcDto = new RpcInvocation();
                     rpcDto.setClientId(UUID.randomUUID().toString());
                     rpcDto.setDestClazz(clazz.getName());
                     rpcDto.setParams(params);

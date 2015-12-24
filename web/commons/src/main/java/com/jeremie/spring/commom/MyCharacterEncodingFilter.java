@@ -12,9 +12,9 @@ import javax.servlet.annotation.WebFilter;
  */
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@WebFilter(filterName = "characterEncodingFilter",urlPatterns = "/*")
-public class MyCharacterEncodingFilter extends CharacterEncodingFilter{
-    public MyCharacterEncodingFilter(){
+@WebFilter(filterName = "characterEncodingFilter", urlPatterns = "/*")
+public class MyCharacterEncodingFilter extends CharacterEncodingFilter {
+    public MyCharacterEncodingFilter() {
         super();
         setEncoding("UTF-8");
     }

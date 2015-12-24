@@ -1,6 +1,6 @@
 package com.jeremie.spring.rpc.remote.nio;
 
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.log4j.Logger;
@@ -60,8 +60,8 @@ public class NioSocketRpcThread implements Runnable {
     }
 
     public void dealWritableMessage() throws Exception {
-        RpcDto rpcDto = SocketNioRpcClient.requestQueue.poll();
-        byte[] bytes = SerializeTool.objectToByteArray(rpcDto);
+        RpcInvocation rpcInvocation = SocketNioRpcClient.requestQueue.poll();
+        byte[] bytes = SerializeTool.objectToByteArray(rpcInvocation);
         if (bytes == null)
             throw new IllegalStateException();
         socketChannel.write(ByteBuffer.wrap(bytes));

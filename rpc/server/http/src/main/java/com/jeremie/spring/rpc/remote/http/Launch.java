@@ -1,6 +1,6 @@
 package com.jeremie.spring.rpc.remote.http;
 
-import com.jeremie.spring.rpc.dto.RpcReceive;
+import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
@@ -35,25 +35,25 @@ public class Launch extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/", produces = "text/html; charset=utf-8")
     @ResponseBody
     public String rpcServer(String rpcDtoStr, Model model, HttpServletRequest request) throws Exception {
-        if(!MonitorStatus.init.get())
+        if (!MonitorStatus.init.get())
             MonitorStatus.init(applicationContext, MonitorStatus.Remote.http);
         MonitorStatus.remoteHostsList.add(request.getRemoteHost() + ":" + request.getRemotePort());
         Object object = SerializeTool.stringToObject(rpcDtoStr);
         RpcHandler.setRpcContextAddress(new InetSocketAddress(request.getLocalAddr(), request.getLocalPort())
                 , new InetSocketAddress(request.getRemoteAddr(), request.getRemotePort()));
-        RpcReceive rpcReceive = RpcHandler.handleMessage(object, applicationContext);
+        RpcResult rpcResult = RpcHandler.handleMessage(object, applicationContext);
         MonitorStatus.remoteHostsList.remove(request.getRemoteHost() + ":" + request.getRemotePort());
-        return SerializeTool.objectToString(rpcReceive);
+        return SerializeTool.objectToString(rpcResult);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String handleException(Exception e) {
         logger.error(e.getMessage(), e);
-        RpcReceive rpcReceive = new RpcReceive();
-        rpcReceive.setReturnPara(null);
-        rpcReceive.setStatus(RpcReceive.Status.ERR0R);
-        return SerializeTool.objectToString(rpcReceive);
+        RpcResult rpcResult = new RpcResult();
+        rpcResult.setReturnPara(null);
+        rpcResult.setStatus(RpcResult.Status.ERR0R);
+        return SerializeTool.objectToString(rpcResult);
     }
 
 

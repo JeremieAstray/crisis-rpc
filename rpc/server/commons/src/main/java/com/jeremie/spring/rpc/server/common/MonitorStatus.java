@@ -25,6 +25,24 @@ public class MonitorStatus {
 
     public static AtomicBoolean init = new AtomicBoolean(false);
 
+    public static void init(ApplicationContext applicationContext, Remote remote) {
+        MonitorStatus.remote = remote;
+        Map<String, Object> rpcServiceMap = applicationContext.getBeansWithAnnotation(Service.class);
+        rpcServiceMap.forEach((beansName, bean) -> {
+            Class clazz = ProxyUtil.getProxyTargetClazz(bean);
+            Method[] methods = clazz.getDeclaredMethods();
+            Map<String, MethodStatus> methodStatusMap = new ConcurrentHashMap<>();
+            for (Method method : methods) {
+                //判断非静态方法
+                if (!Modifier.isStatic(method.getModifiers()))
+                    //初始化方法状态Map
+                    methodStatusMap.put(method.toGenericString(), new MethodStatus(method.toGenericString()));
+            }
+            clazzMethodStatusMap.put(clazz.getName(), methodStatusMap);
+        });
+        init.set(true);
+    }
+
     public enum Remote {
         bio, http, mina, netty, nio;
 
@@ -45,24 +63,6 @@ public class MonitorStatus {
                     return null;
             }
         }
-    }
-
-    public static void init(ApplicationContext applicationContext, Remote remote) {
-        MonitorStatus.remote = remote;
-        Map<String, Object> rpcServiceMap = applicationContext.getBeansWithAnnotation(Service.class);
-        rpcServiceMap.forEach((beansName, bean) -> {
-            Class clazz = ProxyUtil.getProxyTargetClazz(bean);
-            Method[] methods = clazz.getDeclaredMethods();
-            Map<String, MethodStatus> methodStatusMap = new ConcurrentHashMap<>();
-            for (Method method : methods) {
-                //判断非静态方法
-                if (!Modifier.isStatic(method.getModifiers()))
-                    //初始化方法状态Map
-                    methodStatusMap.put(method.toGenericString(), new MethodStatus(method.toGenericString()));
-            }
-            clazzMethodStatusMap.put(clazz.getName(), methodStatusMap);
-        });
-        init.set(true);
     }
 
 }

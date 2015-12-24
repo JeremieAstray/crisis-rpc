@@ -2,7 +2,7 @@ package com.jeremie.spring.rpc.remote;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.proxy.ProxyHandler;
 import org.apache.log4j.Logger;
 import org.springframework.asm.Type;
@@ -25,18 +25,17 @@ public abstract class RpcClient {
     public static Cache<String, Object> resultCache = CacheBuilder.newBuilder().expireAfterWrite(TIMEOUT, TimeUnit.MILLISECONDS).build();
     Logger logger = Logger.getLogger(this.getClass());
 
-    public abstract Object invoke(RpcDto rpcDto);
-
+    public abstract Object invoke(RpcInvocation rpcInvocation);
 
     /**
      * 动态代理类
      *
-     * @param rpcDto
+     * @param rpcInvocation
      * @return
      */
-    public Object dynamicProxyObject(RpcDto rpcDto) {
-        lockMap.put(rpcDto.getClientId(), rpcDto);
-        Class returnType = rpcDto.getReturnType();
+    public Object dynamicProxyObject(RpcInvocation rpcInvocation) {
+        lockMap.put(rpcInvocation.getClientId(), rpcInvocation);
+        Class returnType = rpcInvocation.getReturnType();
         try {
             if (Void.TYPE.equals(returnType)
                     || TypeUtils.isStatic(returnType.getModifiers())
@@ -50,7 +49,7 @@ public abstract class RpcClient {
         //代理返回对象
         Enhancer hancer = new Enhancer();
         //设置代理对象的父类
-        hancer.setSuperclass(rpcDto.getReturnType());
+        hancer.setSuperclass(rpcInvocation.getReturnType());
         //设置回调对象，即调用代理对象里面的方法时，实际上执行的是回调对象（里的intercept方法）。
         hancer.setCallback(new ProxyHandler() {
             @Override
@@ -58,21 +57,21 @@ public abstract class RpcClient {
                 try {
                     if (this.isFirst() && this.getObject() == null) {
                         try {
-                            Object o = resultCache.getIfPresent(rpcDto.getClientId());
+                            Object o = resultCache.getIfPresent(rpcInvocation.getClientId());
                             if (o != null)
                                 this.setObject(o);
                             else {
-                                synchronized (rpcDto) {
-                                    rpcDto.wait(TIMEOUT);
+                                synchronized (rpcInvocation) {
+                                    rpcInvocation.wait(TIMEOUT);
                                 }
-                                o = resultCache.getIfPresent(rpcDto.getClientId());
+                                o = resultCache.getIfPresent(rpcInvocation.getClientId());
                             }
                             if (o != null)
                                 this.setObject(o);
                             this.setFirst(false);
                         } finally {
-                            resultCache.invalidate(rpcDto.getClientId());
-                            lockMap.remove(rpcDto.getClientId());
+                            resultCache.invalidate(rpcInvocation.getClientId());
+                            lockMap.remove(rpcInvocation.getClientId());
                         }
                     }
                     if (this.getObject() != null) {
@@ -96,27 +95,27 @@ public abstract class RpcClient {
     /**
      * 当不能生成代理对象时,使用同步获取rpcDto的方式
      *
-     * @param rpcDto
+     * @param rpcInvocation
      * @return
      */
-    public Object getObject(RpcDto rpcDto) {
+    public Object getObject(RpcInvocation rpcInvocation) {
         try {
-            synchronized (rpcDto) {
-                rpcDto.wait(TIMEOUT);
+            synchronized (rpcInvocation) {
+                rpcInvocation.wait(TIMEOUT);
             }
-            Object returnObject = resultCache.getIfPresent(rpcDto.getClientId());
-            if (returnObject == null && rpcDto.getReturnType().isPrimitive())
-                return this.getDefaultPrimitiveValue(Type.getType(rpcDto.getReturnType()).getSort());
+            Object returnObject = resultCache.getIfPresent(rpcInvocation.getClientId());
+            if (returnObject == null && rpcInvocation.getReturnType().isPrimitive())
+                return this.getDefaultPrimitiveValue(Type.getType(rpcInvocation.getReturnType()).getSort());
             else
                 return returnObject;
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            resultCache.invalidate(rpcDto.getClientId());
-            lockMap.remove(rpcDto.getClientId());
+            resultCache.invalidate(rpcInvocation.getClientId());
+            lockMap.remove(rpcInvocation.getClientId());
         }
-        if (rpcDto.getReturnType().isPrimitive())
-            return this.getDefaultPrimitiveValue(Type.getType(rpcDto.getReturnType()).getSort());
+        if (rpcInvocation.getReturnType().isPrimitive())
+            return this.getDefaultPrimitiveValue(Type.getType(rpcInvocation.getReturnType()).getSort());
         else
             return null;
     }

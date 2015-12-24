@@ -1,11 +1,11 @@
-package com.jeremie.spring.rpc.dto;
+package com.jeremie.spring.rpc;
 
 import java.io.Serializable;
 
 /**
  * @author guanhong 15/10/18 下午1:33.
  */
-public class RpcDto implements Serializable{
+public class RpcInvocation implements Serializable {
     private String clientId;
     private String destClazz;
     private String method;

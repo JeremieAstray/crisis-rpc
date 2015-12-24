@@ -30,9 +30,8 @@ public class NioRpcBean extends RpcBean {
 
     @Override
     public void init() {
+        super.init();
         try {
-            if (hosts != null && !hosts.isEmpty())
-                host = hosts.get(0);
             socketChannel = SocketChannel.open();
             selector = Selector.open();
             socketChannel.configureBlocking(false);

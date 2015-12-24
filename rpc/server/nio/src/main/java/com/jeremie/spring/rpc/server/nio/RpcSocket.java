@@ -1,6 +1,6 @@
 package com.jeremie.spring.rpc.server.nio;
 
-import com.jeremie.spring.rpc.dto.RpcReceive;
+import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
@@ -61,9 +61,9 @@ public class RpcSocket implements Runnable {
                         //byteBuffer.flip();
                         Object o = SerializeTool.byteArrayToObject(bytes);
                         RpcHandler.setRpcContextAddress(socketChannel.getLocalAddress(), socketChannel.getRemoteAddress());
-                        RpcReceive rpcReceive = RpcHandler.handleMessage(o, applicationContext);
+                        RpcResult rpcResult = RpcHandler.handleMessage(o, applicationContext);
                         byteBuffer.clear();
-                        byte[] bytes2 = SerializeTool.objectToByteArray(rpcReceive);
+                        byte[] bytes2 = SerializeTool.objectToByteArray(rpcResult);
                         if (bytes == null)
                             throw new IllegalStateException();
                         socketChannel.write(ByteBuffer.wrap(bytes2));

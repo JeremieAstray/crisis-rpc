@@ -1,10 +1,11 @@
 package com.jeremie.spring.rpc.remote.http;
 
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
+import com.jeremie.spring.rpc.cluster.EurekaHelper;
+import com.jeremie.spring.rpc.loadBalance.LoadBalance;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.apache.log4j.Logger;
 
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -16,11 +17,13 @@ public class HttpRpcClient extends RpcClient {
 
     private String host;
     private int port;
-    private List<String> hosts;
+    private EurekaHelper eurekaHelper;
+    private String appName;
+    private LoadBalance loadBalance;
     private Executor executor = Executors.newFixedThreadPool(200);
 
-    public HttpRpcClient setHosts(List<String> hosts) {
-        this.hosts = hosts;
+    public HttpRpcClient setEurekaHelper(EurekaHelper eurekaHelper) {
+        this.eurekaHelper = eurekaHelper;
         return this;
     }
 
@@ -29,17 +32,26 @@ public class HttpRpcClient extends RpcClient {
         return this;
     }
 
+    public HttpRpcClient setAppName(String appName) {
+        this.appName = appName;
+        return this;
+    }
+
+    public HttpRpcClient setLoadBalance(LoadBalance loadBalance) {
+        this.loadBalance = loadBalance;
+        return this;
+    }
+
     public HttpRpcClient setPort(int port) {
         this.port = port;
         return this;
     }
 
+
     @Override
-    public Object invoke(RpcDto rpcDto) {
-        Object returnObject = this.dynamicProxyObject(rpcDto);
-        if (hosts != null && !hosts.isEmpty())
-            host = hosts.get(0);
-        executor.execute(new HttpRpcThread(port,host,rpcDto));
-        return returnObject == null ? this.getObject(rpcDto) : returnObject;
+    public Object invoke(RpcInvocation rpcInvocation) {
+        Object returnObject = this.dynamicProxyObject(rpcInvocation);
+        executor.execute(new HttpRpcThread(port, host, rpcInvocation));
+        return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 }

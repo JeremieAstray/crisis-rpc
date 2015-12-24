@@ -17,9 +17,12 @@ import java.util.List;
  */
 @Service("UserService")
 public class UserServiceImpl extends BaseService implements UserService {
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public String[] testStringArray() {
-        String[] test = new String[]{"test1","test2","test3","test4","test5"};
+        String[] test = new String[]{"test1", "test2", "test3", "test4", "test5"};
         return test;
     }
 
@@ -35,22 +38,19 @@ public class UserServiceImpl extends BaseService implements UserService {
         return a;
     }
 
-    @Autowired
-    private UserRepository userRepository;
-
     @Override
-    public List<User> getUserList(int page,int size) throws Exception {
-        Pageable pageable = new PageRequest(page,size);
+    public List<User> getUserList(int page, int size) throws Exception {
+        Pageable pageable = new PageRequest(page, size);
         return userRepository.findAll(pageable).getContent();
     }
 
     @Override
-    public User save(User user) throws Exception  {
+    public User save(User user) throws Exception {
         return userRepository.save(user);
     }
 
     @Override
-    public User getById(long id) throws Exception  {
+    public User getById(long id) throws Exception {
         log.info("------------------>" + RpcContext.getContext().getLocalAddress());
         log.info("------------------>" + RpcContext.getContext().getRemoteAddress());
         return userRepository.findByIdAndValidTrue(id);
@@ -58,7 +58,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     //@Transactional(readOnly = false)
     @Override
-    public void updateUserById(String username,Long id) throws Exception {
+    public void updateUserById(String username, Long id) throws Exception {
         userRepository.update(username, id);
     }
 

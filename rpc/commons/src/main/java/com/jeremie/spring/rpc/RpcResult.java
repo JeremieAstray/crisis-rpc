@@ -1,21 +1,15 @@
-package com.jeremie.spring.rpc.dto;
+package com.jeremie.spring.rpc;
 
 import java.io.Serializable;
 
 /**
  * @author guanhong 15/10/18 下午2:45.
  */
-public class RpcReceive implements Serializable {
+public class RpcResult implements Serializable {
 
     private String clientId;
-
-    public enum Status{
-        SUCCESS,ERR0R
-    }
     private Status status;
-
     private Object returnPara;
-
     private Exception exception;
 
     public String getClientId() {
@@ -48,5 +42,9 @@ public class RpcReceive implements Serializable {
 
     public void setException(Exception exception) {
         this.exception = exception;
+    }
+
+    public enum Status {
+        SUCCESS, ERR0R
     }
 }

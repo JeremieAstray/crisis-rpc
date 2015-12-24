@@ -29,7 +29,7 @@ public abstract class ProxyHandler implements MethodInterceptor {
     }
 
     public abstract Object intercept(Object obj, java.lang.reflect.Method method, Object[] args,
-                            MethodProxy proxy) throws Throwable;
+                                     MethodProxy proxy) throws Throwable;
 
     @Override
     public void finalize() throws Throwable {

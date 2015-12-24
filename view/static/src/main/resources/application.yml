@@ -50,10 +50,12 @@ com:
                 -
                     name: home-test
                     method: mina
+                    loadBalance: random
                     packages:
                         - com.jeremie.spring.*.jpaService
                 -
                     name: adol-test
                     method: http
+                    loadBalance: random
                     packages:
                         - com.adol.spring.*.jpaService

@@ -1,7 +1,7 @@
 package com.jeremie.spring.rpc.remote.mina;
 
 
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.apache.log4j.Logger;
 
@@ -20,8 +20,8 @@ public class MinaRpcClient extends RpcClient {
     }
 
     @Override
-    public Object invoke(RpcDto rpcDto) {
-        Object returnObject = this.dynamicProxyObject(rpcDto);
+    public Object invoke(RpcInvocation rpcInvocation) {
+        Object returnObject = this.dynamicProxyObject(rpcInvocation);
         if (!minaRpcBean.isConnect())
             try {
                 minaRpcBean.init();
@@ -29,7 +29,7 @@ public class MinaRpcClient extends RpcClient {
                 logger.error(e.getMessage(), e);
                 return null;
             }
-        minaRpcBean.getSession().write(rpcDto);
-        return returnObject == null ? this.getObject(rpcDto) : returnObject;
+        minaRpcBean.getSession().write(rpcInvocation);
+        return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 }

@@ -6,5 +6,5 @@ package com.adol.spring.home.jpaService;
  */
 public interface AdolService {
 
-   String getSomethingTest();
+    String getSomethingTest();
 }

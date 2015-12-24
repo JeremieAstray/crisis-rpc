@@ -32,8 +32,7 @@ public class MinaRpcBean extends RpcBean {
 
     @Override
     public void init() {
-        if (hosts != null && !hosts.isEmpty())
-            host = hosts.get(0);
+        super.init();
         connector = new NioSocketConnector();
         connector.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));

@@ -18,9 +18,9 @@ import java.util.Date;
  */
 public abstract class BaseController {
 
-    protected Logger log = Logger.getLogger(this.getClass());
     public final static String ERROR = "error";
     public final static String SUCCESS = "success";
+    protected Logger log = Logger.getLogger(this.getClass());
 
     /**
      * 添加Model消息
@@ -33,10 +33,11 @@ public abstract class BaseController {
 
     /**
      * 添加Model消息
-     * @param type 消息类型
+     *
+     * @param type    消息类型
      * @param message
      */
-    protected void addMessage(Model model,String type, String message) {
+    protected void addMessage(Model model, String type, String message) {
         model.addAttribute("message", message);
         model.addAttribute("type", type);
     }
@@ -52,7 +53,8 @@ public abstract class BaseController {
 
     /**
      * 添加Flash消息
-     * @param type 消息类型
+     *
+     * @param type    消息类型
      * @param message
      */
     protected void addMessage(RedirectAttributes redirectAttributes, String type, String message) {

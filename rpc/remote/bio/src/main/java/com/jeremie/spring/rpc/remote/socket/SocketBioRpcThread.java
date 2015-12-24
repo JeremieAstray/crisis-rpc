@@ -1,6 +1,6 @@
 package com.jeremie.spring.rpc.remote.socket;
 
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import org.apache.log4j.Logger;
 
@@ -18,15 +18,15 @@ public class SocketBioRpcThread implements Runnable {
 
     private String host;
     private int port;
-    private RpcDto rpcDto;
+    private RpcInvocation rpcInvocation;
     private Socket socket = null;
     private ObjectOutputStream objectOutputStream = null;
     private ObjectInputStream objectInputStream = null;
 
-    public SocketBioRpcThread(int port, String host, RpcDto rpcDto) {
+    public SocketBioRpcThread(int port, String host, RpcInvocation rpcInvocation) {
         this.port = port;
         this.host = host;
-        this.rpcDto = rpcDto;
+        this.rpcInvocation = rpcInvocation;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SocketBioRpcThread implements Runnable {
             socket = new Socket(host, port);
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            objectOutputStream.writeObject(rpcDto);
+            objectOutputStream.writeObject(rpcInvocation);
             Object o = objectInputStream.readObject();
             RpcHandler.handleMessage(o);
         } catch (EOFException e) {

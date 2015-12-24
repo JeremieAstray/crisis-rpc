@@ -45,7 +45,7 @@ public class HelloWorld extends BaseController {
         model.addAttribute("vmchange", "vmchangetest");
         User user = userService.getById(id);
         String test = userService.testGetString();
-        userService.updateUserById("test",1L);
+        userService.updateUserById("test", 1L);
         //测试基本类型
         String[] stringArray = userService.testStringArray();
         long[] longArray = userService.testlongArray();
@@ -65,7 +65,7 @@ public class HelloWorld extends BaseController {
             System.out.println("get null number");
         model.addAttribute("testGetString", test);
         model.addAttribute("user", user.getUsername());
-        model.addAttribute("adol",adolService.getSomethingTest());
+        model.addAttribute("adol", adolService.getSomethingTest());
         return "test";
     }
 

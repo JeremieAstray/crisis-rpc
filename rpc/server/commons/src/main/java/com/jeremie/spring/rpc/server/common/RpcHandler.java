@@ -1,8 +1,8 @@
 package com.jeremie.spring.rpc.server.common;
 
 import com.jeremie.spring.rpc.RpcContext;
-import com.jeremie.spring.rpc.dto.RpcDto;
-import com.jeremie.spring.rpc.dto.RpcReceive;
+import com.jeremie.spring.rpc.RpcInvocation;
+import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.util.ProxyUtil;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
@@ -17,11 +17,11 @@ public class RpcHandler {
 
     private final static Logger logger = Logger.getLogger(RpcHandler.class);
 
-    private static void setRpcContext(RpcDto rpcDto) {
+    private static void setRpcContext(RpcInvocation rpcInvocation) {
         RpcContext rpcContext = RpcContext.getContext();
-        rpcContext.setArguments(rpcDto.getParams());
-        rpcContext.setMethodName(rpcDto.getMethod());
-        rpcContext.setParameterTypes(rpcDto.getParamsType());
+        rpcContext.setArguments(rpcInvocation.getParams());
+        rpcContext.setMethodName(rpcInvocation.getMethod());
+        rpcContext.setParameterTypes(rpcInvocation.getParamsType());
     }
 
     public static void setRpcContextAddress(SocketAddress localAddress, SocketAddress remoteAddress) {
@@ -30,20 +30,20 @@ public class RpcHandler {
         rpcContext.setRemoteAddress(remoteAddress);
     }
 
-    public static RpcReceive handleMessage(Object message, ApplicationContext applicationContext) {
-        RpcReceive rpcReceive = new RpcReceive();
-        if (message instanceof RpcDto) {
-            RpcDto rpcDto = (RpcDto) message;
-            setRpcContext(rpcDto);
+    public static RpcResult handleMessage(Object message, ApplicationContext applicationContext) {
+        RpcResult rpcResult = new RpcResult();
+        if (message instanceof RpcInvocation) {
+            RpcInvocation rpcInvocation = (RpcInvocation) message;
+            setRpcContext(rpcInvocation);
             try {
                 //获取需要被调用的class(applicationContext中)和方法
-                Class clazz = Class.forName(rpcDto.getDestClazz());
+                Class clazz = Class.forName(rpcInvocation.getDestClazz());
                 Object o1 = applicationContext.getBean(clazz);
-                Method method = clazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
+                Method method = clazz.getMethod(rpcInvocation.getMethod(), rpcInvocation.getParamsType());
 
                 //monitor日志
                 Class targetClazz = ProxyUtil.getProxyTargetClazz(o1);
-                Method targetMethod = targetClazz.getMethod(rpcDto.getMethod(), rpcDto.getParamsType());
+                Method targetMethod = targetClazz.getMethod(rpcInvocation.getMethod(), rpcInvocation.getParamsType());
                 MethodStatus methodStatus = MonitorStatus.clazzMethodStatusMap.get(targetClazz.getName()).get(targetMethod.toGenericString());
                 if (MonitorStatus.firstConntectTime == 0L)
                     MonitorStatus.firstConntectTime = System.currentTimeMillis();
@@ -53,7 +53,7 @@ public class RpcHandler {
                 try {
                     //反射调用
                     begin = System.currentTimeMillis();
-                    result = method.invoke(o1, rpcDto.getParams());
+                    result = method.invoke(o1, rpcInvocation.getParams());
                 } catch (Exception e) {
 
                     //异常monitor日志
@@ -69,20 +69,20 @@ public class RpcHandler {
                 methodStatus.addInvokeMethodStatuses(begin, invokeElapsed);
 
                 //返回值
-                rpcReceive.setReturnPara(result);
-                rpcReceive.setStatus(RpcReceive.Status.SUCCESS);
-                rpcReceive.setClientId(rpcDto.getClientId());
+                rpcResult.setReturnPara(result);
+                rpcResult.setStatus(RpcResult.Status.SUCCESS);
+                rpcResult.setClientId(rpcInvocation.getClientId());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                rpcReceive.setClientId(rpcDto.getClientId());
-                rpcReceive.setStatus(RpcReceive.Status.ERR0R);
-                rpcReceive.setReturnPara(null);
-                rpcReceive.setException(e);
+                rpcResult.setClientId(rpcInvocation.getClientId());
+                rpcResult.setStatus(RpcResult.Status.ERR0R);
+                rpcResult.setReturnPara(null);
+                rpcResult.setException(e);
             }
         } else {
-            rpcReceive.setReturnPara(null);
-            rpcReceive.setStatus(RpcReceive.Status.ERR0R);
+            rpcResult.setReturnPara(null);
+            rpcResult.setStatus(RpcResult.Status.ERR0R);
         }
-        return rpcReceive;
+        return rpcResult;
     }
 }

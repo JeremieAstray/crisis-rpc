@@ -1,6 +1,6 @@
 package com.jeremie.spring.rpc.remote.nio;
 
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.apache.log4j.Logger;
 
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class SocketNioRpcClient extends RpcClient {
 
-    protected static Queue<RpcDto> requestQueue = new ConcurrentLinkedQueue<>();
+    protected static Queue<RpcInvocation> requestQueue = new ConcurrentLinkedQueue<>();
     protected Logger logger = Logger.getLogger(this.getClass());
     private Thread nioThread = null;
 
@@ -26,9 +26,9 @@ public class SocketNioRpcClient extends RpcClient {
     }
 
     @Override
-    public Object invoke(RpcDto rpcDto) {
-        Object returnObject = this.dynamicProxyObject(rpcDto);
-        requestQueue.add(rpcDto);
+    public Object invoke(RpcInvocation rpcInvocation) {
+        Object returnObject = this.dynamicProxyObject(rpcInvocation);
+        requestQueue.add(rpcInvocation);
         if (!nioRpcBean.init && nioThread == null) {
             nioRpcBean.init();
             Selector selector = nioRpcBean.getSelector();
@@ -36,7 +36,7 @@ public class SocketNioRpcClient extends RpcClient {
             nioThread = new Thread(new NioSocketRpcThread(selector, socketChannel));
             nioThread.start();
         }
-        return returnObject == null ? this.getObject(rpcDto) : returnObject;
+        return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 
 

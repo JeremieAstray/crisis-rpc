@@ -15,7 +15,7 @@ import java.net.InetSocketAddress;
  */
 public class RpcSeverHandler extends IoHandlerAdapter {
 
-    private  Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger = Logger.getLogger(this.getClass());
 
     private ApplicationContext applicationContext;
 
@@ -24,31 +24,31 @@ public class RpcSeverHandler extends IoHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught( IoSession session, Throwable cause ) throws Exception {
-        logger.error(cause.getMessage(),cause);
+    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+        logger.error(cause.getMessage(), cause);
     }
 
     @Override
-    public void messageReceived( IoSession session, Object message ) throws Exception {
-        RpcHandler.setRpcContextAddress(session.getLocalAddress(),session.getRemoteAddress());
-        session.write(RpcHandler.handleMessage(message,applicationContext));
+    public void messageReceived(IoSession session, Object message) throws Exception {
+        RpcHandler.setRpcContextAddress(session.getLocalAddress(), session.getRemoteAddress());
+        session.write(RpcHandler.handleMessage(message, applicationContext));
     }
 
     @Override
-    public void sessionIdle( IoSession session, IdleStatus status ) throws Exception {
-        logger.info("IDLE " + session.getIdleCount( status ));
+    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
+        logger.info("IDLE " + session.getIdleCount(status));
     }
 
     @Override
     public void sessionCreated(IoSession session) throws Exception {
-        InetSocketAddress remoteAddress = (InetSocketAddress)session.getRemoteAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) session.getRemoteAddress();
         MonitorStatus.remoteHostsList.add(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
         super.sessionCreated(session);
     }
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
-        InetSocketAddress remoteAddress = (InetSocketAddress)session.getRemoteAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) session.getRemoteAddress();
         MonitorStatus.remoteHostsList.remove(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
         super.sessionClosed(session);
     }

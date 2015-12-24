@@ -22,13 +22,13 @@ public class UserServiceTest extends JpaBaseTest {
     }
 
     @Test
-    public void testGetById() throws Exception{
+    public void testGetById() throws Exception {
         User user = jpaUserService.getById(1l);
         System.out.println(user.getUsername());
     }
 
     @Test
-    public void testFindByUsername() throws Exception{
+    public void testFindByUsername() throws Exception {
         User user = jpaUserService.findByUsername("test");
         System.out.println(user.getUsername());
     }

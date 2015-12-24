@@ -16,8 +16,9 @@ import javax.persistence.EntityManagerFactory;
 public class JpaBaseTest extends BaseTest {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
+
     @Before
-    public void before(){
+    public void before() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         TransactionSynchronizationManager.bindResource(entityManagerFactory, new EntityManagerHolder(entityManager));
     }

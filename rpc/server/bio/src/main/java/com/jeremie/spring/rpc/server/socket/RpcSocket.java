@@ -1,7 +1,7 @@
 package com.jeremie.spring.rpc.server.socket;
 
 
-import com.jeremie.spring.rpc.dto.RpcReceive;
+import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
 import org.apache.log4j.Logger;
@@ -18,9 +18,9 @@ import java.net.Socket;
  */
 public class RpcSocket implements Runnable {
 
-    protected Logger logger = Logger.getLogger(this.getClass());
     public ObjectOutputStream objectOutputStream = null;
     public ObjectInputStream objectInputStream = null;
+    protected Logger logger = Logger.getLogger(this.getClass());
     private Socket socket;
     private ApplicationContext applicationContext;
 
@@ -39,8 +39,8 @@ public class RpcSocket implements Runnable {
             objectInputStream = new ObjectInputStream(this.socket.getInputStream());
             Object o = objectInputStream.readObject();
             RpcHandler.setRpcContextAddress(socket.getLocalSocketAddress(), socket.getRemoteSocketAddress());
-            RpcReceive rpcReceive = RpcHandler.handleMessage(o, applicationContext);
-            objectOutputStream.writeObject(rpcReceive);
+            RpcResult rpcResult = RpcHandler.handleMessage(o, applicationContext);
+            objectOutputStream.writeObject(rpcResult);
 
         } catch (IOException | ClassNotFoundException e) {
             logger.error(e.getMessage(), e);

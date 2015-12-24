@@ -16,19 +16,16 @@ public class MethodStatus implements Serializable {
 
     /**
      * 方法名
-     *
      */
     private String method;
 
     /**
      * 错误统计
-     *
      */
     private AtomicLong errorCount = new AtomicLong(0);
 
     /**
      * 调用统计
-     *
      */
     private AtomicLong invokeCount = new AtomicLong(0);
 
@@ -39,61 +36,12 @@ public class MethodStatus implements Serializable {
 
     /**
      * 调用队列
-     *
      */
     private Queue<InvokeMethodStatus> invokeMethodStatuses = new ConcurrentLinkedQueue<>();
 
 
     public MethodStatus(String method) {
         this.method = method;
-    }
-
-    public class InvokeMethodStatus {
-
-        public InvokeMethodStatus(long invokeTime, long invokeElapsed) {
-            this.invokeTime = invokeTime;
-            this.invokeElapsed = invokeElapsed;
-        }
-
-        /**
-         * 调用时间
-         */
-        @JSONField(name = "it")
-        private long invokeTime;
-
-        /**
-         * 调用时长
-         */
-        @JSONField(name = "ie")
-        private long invokeElapsed;
-
-        public long getInvokeTime() {
-            return invokeTime;
-        }
-
-        public long getInvokeElapsed() {
-            return invokeElapsed;
-        }
-    }
-
-    public class ExceptionStatus{
-        @JSONField(name = "at")
-        private long appearTime;
-        @JSONField(name = "er")
-        private Exception exception;
-
-        public ExceptionStatus(long appearTime, Exception exception) {
-            this.appearTime = appearTime;
-            this.exception = exception;
-        }
-
-        public long getAppearTime() {
-            return appearTime;
-        }
-
-        public Exception getException() {
-            return exception;
-        }
     }
 
     public String getMethod() {
@@ -126,19 +74,67 @@ public class MethodStatus implements Serializable {
     }
 
     public void addException(long appearTime, Exception exception) {
-        exceptionQueue.add(new ExceptionStatus(appearTime,exception));
+        exceptionQueue.add(new ExceptionStatus(appearTime, exception));
     }
 
     @JSONField(serialize = false)
     public Queue<InvokeMethodStatus> getInvokeMethodStatuses() {
         return invokeMethodStatuses;
     }
+
     public List<InvokeMethodStatus> getInvokeMethodStatusList() {
         return invokeMethodStatuses.stream().collect(Collectors.toList());
     }
 
-    public void addInvokeMethodStatuses(long invokeTime,long invokeElapsed) {
-        invokeMethodStatuses.add(new InvokeMethodStatus(invokeTime,invokeElapsed));
+    public void addInvokeMethodStatuses(long invokeTime, long invokeElapsed) {
+        invokeMethodStatuses.add(new InvokeMethodStatus(invokeTime, invokeElapsed));
+    }
+
+    public class InvokeMethodStatus {
+
+        /**
+         * 调用时间
+         */
+        @JSONField(name = "it")
+        private long invokeTime;
+        /**
+         * 调用时长
+         */
+        @JSONField(name = "ie")
+        private long invokeElapsed;
+
+        public InvokeMethodStatus(long invokeTime, long invokeElapsed) {
+            this.invokeTime = invokeTime;
+            this.invokeElapsed = invokeElapsed;
+        }
+
+        public long getInvokeTime() {
+            return invokeTime;
+        }
+
+        public long getInvokeElapsed() {
+            return invokeElapsed;
+        }
+    }
+
+    public class ExceptionStatus {
+        @JSONField(name = "at")
+        private long appearTime;
+        @JSONField(name = "er")
+        private Exception exception;
+
+        public ExceptionStatus(long appearTime, Exception exception) {
+            this.appearTime = appearTime;
+            this.exception = exception;
+        }
+
+        public long getAppearTime() {
+            return appearTime;
+        }
+
+        public Exception getException() {
+            return exception;
+        }
     }
 
 }

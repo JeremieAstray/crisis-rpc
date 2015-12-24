@@ -2,10 +2,8 @@ package com.adol.spring.home;
 
 import com.jeremie.spring.commons.BaseRepositoryFactoryBean;
 import com.jeremie.spring.rpc.remote.http.Launch;
-import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.ComponentScan;

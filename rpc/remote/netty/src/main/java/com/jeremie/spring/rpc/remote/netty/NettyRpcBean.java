@@ -31,8 +31,7 @@ public class NettyRpcBean extends RpcBean {
 
     @Override
     public void init() {
-        if (hosts != null && !hosts.isEmpty())
-            host = hosts.get(0);
+        super.init();
         group = new NioEventLoopGroup();
         try {
             bootstrap = new Bootstrap();

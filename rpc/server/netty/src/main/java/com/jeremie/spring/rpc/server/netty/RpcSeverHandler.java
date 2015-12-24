@@ -24,7 +24,7 @@ public class RpcSeverHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        RpcHandler.setRpcContextAddress(ctx.channel().localAddress(),ctx.channel().remoteAddress());
+        RpcHandler.setRpcContextAddress(ctx.channel().localAddress(), ctx.channel().remoteAddress());
         ctx.writeAndFlush(RpcHandler.handleMessage(msg, applicationContext));
         logger.info("成功写出数据!!");
     }
@@ -42,14 +42,14 @@ public class RpcSeverHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         MonitorStatus.remoteHostsList.add(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
         super.channelRegistered(ctx);
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        InetSocketAddress remoteAddress = (InetSocketAddress)ctx.channel().remoteAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         MonitorStatus.remoteHostsList.remove(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
         super.channelUnregistered(ctx);
     }

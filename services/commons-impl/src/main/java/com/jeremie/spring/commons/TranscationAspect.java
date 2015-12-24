@@ -34,6 +34,9 @@ public class TranscationAspect {
     private static Logger logger = Logger.getLogger(TranscationAspect.class);
 
     private List<String> methodsPrefix = new ArrayList<>();
+    @Autowired
+    private JpaTransactionManager transactionManager;
+    private Map<Thread, Stack<TransactionStatus>> threadStackMap = new ConcurrentHashMap<>();
 
     /**
      * important!!!!!!
@@ -44,17 +47,11 @@ public class TranscationAspect {
         return methodsPrefix;
     }
 
-    @Autowired
-    private JpaTransactionManager transactionManager;
-
-    private Map<Thread,Stack<TransactionStatus>> threadStackMap = new ConcurrentHashMap<>();
-
-
     @Before("execution(public * com.jeremie.spring.*.jpaService.*.*(..))")
     public void txAdviceBegin(JoinPoint point) {
         Thread thread = Thread.currentThread();
-        if(!threadStackMap.containsKey(thread));
-        threadStackMap.put(thread,new Stack<>());
+        if (!threadStackMap.containsKey(thread)) ;
+        threadStackMap.put(thread, new Stack<>());
         Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
         if (getMethodsPrefix().stream().anyMatch(prefix -> point.getSignature().getName().startsWith(prefix))) {
             DefaultTransactionDefinition transactionDefinition =
@@ -69,7 +66,7 @@ public class TranscationAspect {
             TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
             transactionStatuses.push(transactionStatus);
         }
-        threadStackMap.put(thread,transactionStatuses);
+        threadStackMap.put(thread, transactionStatuses);
     }
 
     @AfterReturning("execution(public * com.jeremie.spring.*.jpaService.*.*(..))")
@@ -84,8 +81,8 @@ public class TranscationAspect {
                 else
                     transactionManager.rollback(transactionStatus);
         }
-        threadStackMap.put(thread,transactionStatuses);
-        if(transactionStatuses.isEmpty())
+        threadStackMap.put(thread, transactionStatuses);
+        if (transactionStatuses.isEmpty())
             threadStackMap.remove(thread);
     }
 
@@ -99,18 +96,17 @@ public class TranscationAspect {
                 transactionManager.rollback(transactionStatus);
             logger.error("roll back exception", e);
         }
-        threadStackMap.put(thread,transactionStatuses);
-        if(transactionStatuses.isEmpty())
+        threadStackMap.put(thread, transactionStatuses);
+        if (transactionStatuses.isEmpty())
             threadStackMap.remove(thread);
     }
-
 
 
     @Before("execution(public * com.adol.spring.*.jpaService.*.*(..))")
     public void txAdviceBeginAdol(JoinPoint point) {
         Thread thread = Thread.currentThread();
-        if(!threadStackMap.containsKey(thread));
-        threadStackMap.put(thread,new Stack<>());
+        if (!threadStackMap.containsKey(thread)) ;
+        threadStackMap.put(thread, new Stack<>());
         Stack<TransactionStatus> transactionStatuses = threadStackMap.get(thread);
         if (getMethodsPrefix().stream().anyMatch(prefix -> point.getSignature().getName().startsWith(prefix))) {
             DefaultTransactionDefinition transactionDefinition =
@@ -125,7 +121,7 @@ public class TranscationAspect {
             TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
             transactionStatuses.push(transactionStatus);
         }
-        threadStackMap.put(thread,transactionStatuses);
+        threadStackMap.put(thread, transactionStatuses);
     }
 
     @AfterReturning("execution(public * com.adol.spring.*.jpaService.*.*(..))")
@@ -140,8 +136,8 @@ public class TranscationAspect {
                 else
                     transactionManager.rollback(transactionStatus);
         }
-        threadStackMap.put(thread,transactionStatuses);
-        if(transactionStatuses.isEmpty())
+        threadStackMap.put(thread, transactionStatuses);
+        if (transactionStatuses.isEmpty())
             threadStackMap.remove(thread);
     }
 
@@ -155,8 +151,8 @@ public class TranscationAspect {
                 transactionManager.rollback(transactionStatus);
             logger.error("roll back exception", e);
         }
-        threadStackMap.put(thread,transactionStatuses);
-        if(transactionStatuses.isEmpty())
+        threadStackMap.put(thread, transactionStatuses);
+        if (transactionStatuses.isEmpty())
             threadStackMap.remove(thread);
     }
 }

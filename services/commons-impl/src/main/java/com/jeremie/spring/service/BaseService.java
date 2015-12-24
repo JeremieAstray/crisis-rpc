@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class BaseService implements Serializable {
 
     protected Logger log = Logger.getLogger(this.getClass());
+
     protected String getKeyWords(String keyWords) {
         return "%" + keyWords + "%";
     }

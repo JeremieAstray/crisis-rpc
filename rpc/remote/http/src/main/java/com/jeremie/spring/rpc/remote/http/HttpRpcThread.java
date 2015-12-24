@@ -1,6 +1,6 @@
 package com.jeremie.spring.rpc.remote.http;
 
-import com.jeremie.spring.rpc.dto.RpcDto;
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.http.HttpEntity;
@@ -26,12 +26,12 @@ public class HttpRpcThread implements Runnable {
 
     private String host;
     private int port;
-    private RpcDto rpcDto;
+    private RpcInvocation rpcInvocation;
 
-    public HttpRpcThread(int port, String host, RpcDto rpcDto) {
+    public HttpRpcThread(int port, String host, RpcInvocation rpcInvocation) {
         this.port = port;
         this.host = host;
-        this.rpcDto = rpcDto;
+        this.rpcInvocation = rpcInvocation;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class HttpRpcThread implements Runnable {
             HttpPost httpPost = new HttpPost(url);
             HttpClientContext httpContext = new HttpClientContext();
             List<BasicNameValuePair> nameValuePairs = new ArrayList<>();
-            nameValuePairs.add(new BasicNameValuePair("rpcDtoStr", SerializeTool.objectToString(rpcDto)));
+            nameValuePairs.add(new BasicNameValuePair("rpcDtoStr", SerializeTool.objectToString(rpcInvocation)));
             UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(nameValuePairs, "UTF-8");
             httpPost.setEntity(httpEntity);
             HttpResponse response = httpClient.execute(httpPost, httpContext);
