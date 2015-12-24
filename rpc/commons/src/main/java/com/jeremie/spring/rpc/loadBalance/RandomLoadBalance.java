@@ -15,6 +15,8 @@ public class RandomLoadBalance implements LoadBalance {
 
     @Override
     public InstanceInfo select(List<InstanceInfo> instanceInfos) {
+        if(instanceInfos.isEmpty())
+            return null;
         int length = instanceInfos.size();
         return instanceInfos.get(random.nextInt(length));
     }
