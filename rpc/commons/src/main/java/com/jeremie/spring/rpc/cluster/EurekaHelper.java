@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.cluster;
 
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +16,9 @@ import java.util.stream.Collectors;
 public class EurekaHelper {
 
     @Autowired
-    private EurekaClient discoverEurekaClient;
+    private DiscoveryClient discoverEurekaClient;
 
-    public List<InstanceInfo> getHosts(String providers) {
-        return discoverEurekaClient.getInstancesByVipAddress(providers, false)
-                .stream()
-                .filter(instanceInfo -> com.netflix.appinfo.InstanceInfo.InstanceStatus.UP.equals(instanceInfo.getStatus()))
-                .collect(Collectors.toList());
+    public InstanceInfo getHost(String providers) {
+        return discoverEurekaClient.getNextServerFromEureka(providers,false);
     }
 }

@@ -2,7 +2,6 @@ package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.cluster.EurekaHelper;
-import com.jeremie.spring.rpc.loadBalance.LoadBalance;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.apache.log4j.Logger;
 
@@ -19,7 +18,6 @@ public class HttpRpcClient extends RpcClient {
     private int port;
     private EurekaHelper eurekaHelper;
     private String appName;
-    private LoadBalance loadBalance;
     private Executor executor = Executors.newFixedThreadPool(200);
 
     public HttpRpcClient setEurekaHelper(EurekaHelper eurekaHelper) {
@@ -34,11 +32,6 @@ public class HttpRpcClient extends RpcClient {
 
     public HttpRpcClient setAppName(String appName) {
         this.appName = appName;
-        return this;
-    }
-
-    public HttpRpcClient setLoadBalance(LoadBalance loadBalance) {
-        this.loadBalance = loadBalance;
         return this;
     }
 

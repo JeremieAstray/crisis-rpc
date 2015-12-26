@@ -34,7 +34,7 @@ eureka:
     # these are settings for the client that gets services
     client:
         # enable these two settings if you want discovery to work
-        registerWithEureka: false
+        registerWithEureka: true
         fetchRegistry: true
         serviceUrl:
             defaultZone: http://192.168.1.156:8080/discovery/eureka/
@@ -50,12 +50,10 @@ com:
                 -
                     name: home-test
                     method: mina
-                    loadBalance: random
                     packages:
                         - com.jeremie.spring.*.jpaService
                 -
                     name: adol-test
                     method: http
-                    loadBalance: random
                     packages:
                         - com.adol.spring.*.jpaService

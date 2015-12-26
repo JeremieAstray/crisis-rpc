@@ -6,8 +6,11 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * Deprecated
+ * using eureka server loadBalance
  * @author guanhong 15/12/24 下午5:18.
  */
+@Deprecated
 public class RandomLoadBalance implements LoadBalance {
 
 

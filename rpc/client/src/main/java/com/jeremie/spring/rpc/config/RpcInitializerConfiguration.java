@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc.config;
 
 import com.jeremie.spring.rpc.cluster.EurekaHelper;
-import com.jeremie.spring.rpc.loadBalance.LoadBalance;
 import com.jeremie.spring.rpc.proxy.RpcInitializer;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
@@ -73,14 +72,14 @@ public class RpcInitializerConfiguration implements DisposableBean {
                     rpcClient = this.getMinaRpcClient((MinaRpcBean) rpcBean);
                     break;
                 case "http":
-                    rpcClient = this.getHttpRpcClient(serviceConfig.getName(), serviceConfig.getLoadBalance());
+                    rpcClient = this.getHttpRpcClient(serviceConfig.getName());
                     break;
                 case "netty":
                     rpcBean = new NettyRpcBean();
                     rpcClient = this.getNettyRpcClient((NettyRpcBean) rpcBean);
                     break;
                 case "bio":
-                    rpcClient = this.getSocketBioRpcClient(serviceConfig.getName(), serviceConfig.getLoadBalance());
+                    rpcClient = this.getSocketBioRpcClient(serviceConfig.getName());
                     break;
                 case "nio":
                     rpcBean = new NioRpcBean();
@@ -98,7 +97,6 @@ public class RpcInitializerConfiguration implements DisposableBean {
                 rpcBean.setEurekaHelper(eurekaHelper);
                 rpcBean.setAppName(serviceConfig.getName());
                 rpcBean.setEurekaHelper(eurekaHelper);
-                rpcBean.setLoadBalance(LoadBalance.getLoadBalance(serviceConfig.getLoadBalance()));
                 rpcBeanList.add(rpcBean);
             }
             rpcClientMap.put(serviceConfig.getName(), rpcClient);
@@ -110,17 +108,15 @@ public class RpcInitializerConfiguration implements DisposableBean {
         return new MinaRpcClient().setMinaRpcBean(minaRpcBean);
     }
 
-    private HttpRpcClient getHttpRpcClient(String name, String loadBalance) {
-        LoadBalance loadBalanceInstance = LoadBalance.getLoadBalance(loadBalance);
+    private HttpRpcClient getHttpRpcClient(String name) {
         String host = null;
-        InstanceInfo instanceInfo = loadBalanceInstance.select(eurekaHelper.getHosts(name));
+        InstanceInfo instanceInfo = eurekaHelper.getHost(name);
         if (instanceInfo != null)
             host = instanceInfo.getIPAddr();
         return new HttpRpcClient()
                 .setPort(rpcConfiguration.getDefaultHttpport())
                 .setEurekaHelper(eurekaHelper)
                 .setAppName(name)
-                .setLoadBalance(loadBalanceInstance)
                 .setHost(host != null ? host : rpcConfiguration.getDefaultIp());
     }
 
@@ -128,17 +124,15 @@ public class RpcInitializerConfiguration implements DisposableBean {
         return new NettyRpcClient().setNettyRpcBean(nettyRpcBean);
     }
 
-    private SocketBioRpcClient getSocketBioRpcClient(String name, String loadBalance) {
-        LoadBalance loadBalanceInstance = LoadBalance.getLoadBalance(loadBalance);
+    private SocketBioRpcClient getSocketBioRpcClient(String name) {
         String host = null;
-        InstanceInfo instanceInfo = loadBalanceInstance.select(eurekaHelper.getHosts(name));
+        InstanceInfo instanceInfo = eurekaHelper.getHost(name);
         if (instanceInfo != null)
             host = instanceInfo.getIPAddr();
         return new SocketBioRpcClient()
                 .setHost(host != null ? host : rpcConfiguration.getDefaultIp())
                 .setEurekaHelper(eurekaHelper)
                 .setAppName(name)
-                .setLoadBalance(loadBalanceInstance)
                 .setPort(rpcConfiguration.getDefaultPort());
     }
 

@@ -12,15 +12,6 @@ public class ServiceConfig implements Serializable {
     private String name;
     private String method;
     private List<String> packages = new ArrayList<>();
-    private String loadBalance;
-
-    public String getLoadBalance() {
-        return loadBalance;
-    }
-
-    public void setLoadBalance(String loadBalance) {
-        this.loadBalance = loadBalance;
-    }
 
     public String getName() {
         return name;

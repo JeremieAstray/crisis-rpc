@@ -3,9 +3,7 @@ package com.jeremie.spring.rpc.remote.socket;
 
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.cluster.EurekaHelper;
-import com.jeremie.spring.rpc.loadBalance.LoadBalance;
 import com.jeremie.spring.rpc.remote.RpcClient;
-import com.netflix.discovery.EurekaClient;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.Executor;
@@ -21,7 +19,6 @@ public class SocketBioRpcClient extends RpcClient {
     private int port;
     private EurekaHelper eurekaHelper;
     private String AppName;
-    private LoadBalance loadBalance;
     private Executor executor = Executors.newFixedThreadPool(200);
 
     public SocketBioRpcClient setHost(String host) {
@@ -41,11 +38,6 @@ public class SocketBioRpcClient extends RpcClient {
 
     public SocketBioRpcClient setEurekaHelper(EurekaHelper eurekaHelper) {
         this.eurekaHelper = eurekaHelper;
-        return this;
-    }
-
-    public SocketBioRpcClient setLoadBalance(LoadBalance loadBalance) {
-        this.loadBalance = loadBalance;
         return this;
     }
 
