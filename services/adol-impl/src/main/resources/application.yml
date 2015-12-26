@@ -61,6 +61,8 @@ eureka:
         fetchRegistry: true
         serviceUrl:
             defaultZone: http://192.168.1.156:8080/discovery/eureka/
+    instance:
+        non-secure-port:  ${com.jeremie.rpc.server-port}
 com:
     jeremie:
         rpc:

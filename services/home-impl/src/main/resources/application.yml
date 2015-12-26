@@ -56,11 +56,14 @@ logging:
 eureka:
     # these are settings for the client that gets services
     client:
+        registry-refresh-single-vip-address: home
         # enable these two settings if you want discovery to work
         registerWithEureka: true
         fetchRegistry: true
         serviceUrl:
             defaultZone: http://192.168.1.156:8080/discovery/eureka/
+    instance:
+        non-secure-port:  ${com.jeremie.rpc.server-port}
 com:
     jeremie:
         rpc:
