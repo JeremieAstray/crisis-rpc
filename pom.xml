@@ -9,7 +9,7 @@
         <version>1.3.0.RELEASE</version>-->
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>Brixton.M3</version>
+        <version>Brixton.M4</version>
     </parent>
     <artifactId>${app.name}</artifactId>
     <version>${project.version}</version>
