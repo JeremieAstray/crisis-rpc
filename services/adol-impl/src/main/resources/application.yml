@@ -62,4 +62,5 @@ eureka:
         serviceUrl:
             defaultZone: http://192.168.1.156:8080/discovery/eureka/
     instance:
-        non-secure-port:  8081
+        #beacause of http connect
+        non-secure-port:  ${server.port}
