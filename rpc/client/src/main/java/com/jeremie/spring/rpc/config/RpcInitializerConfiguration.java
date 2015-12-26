@@ -110,11 +110,14 @@ public class RpcInitializerConfiguration implements DisposableBean {
 
     private HttpRpcClient getHttpRpcClient(String name) {
         String host = null;
+        int port = rpcConfiguration.getDefaultPort();
         InstanceInfo instanceInfo = eurekaHelper.getHost(name);
-        if (instanceInfo != null)
+        if (instanceInfo != null) {
             host = instanceInfo.getIPAddr();
+            port = instanceInfo.getPort();
+        }
         return new HttpRpcClient()
-                .setPort(rpcConfiguration.getDefaultHttpport())
+                .setPort(port)
                 .setEurekaHelper(eurekaHelper)
                 .setAppName(name)
                 .setHost(host != null ? host : rpcConfiguration.getDefaultIp());
@@ -126,14 +129,17 @@ public class RpcInitializerConfiguration implements DisposableBean {
 
     private SocketBioRpcClient getSocketBioRpcClient(String name) {
         String host = null;
+        int port = rpcConfiguration.getDefaultPort();
         InstanceInfo instanceInfo = eurekaHelper.getHost(name);
-        if (instanceInfo != null)
+        if (instanceInfo != null) {
             host = instanceInfo.getIPAddr();
+            port = instanceInfo.getPort();
+        }
         return new SocketBioRpcClient()
                 .setHost(host != null ? host : rpcConfiguration.getDefaultIp())
                 .setEurekaHelper(eurekaHelper)
                 .setAppName(name)
-                .setPort(rpcConfiguration.getDefaultPort());
+                .setPort(port);
     }
 
     private SocketNioRpcClient getSocketNioRpcClient(NioRpcBean nioRpcBean) {

@@ -16,8 +16,10 @@ public abstract class RpcBean implements DisposableBean {
 
     public void init() {
         InstanceInfo instanceInfo = eurekaHelper.getHost(appName);
-        if (instanceInfo != null)
+        if (instanceInfo != null) {
             this.host = instanceInfo.getIPAddr();
+            this.port = instanceInfo.getPort();
+        }
     }
 
     public void setHost(String host) {
