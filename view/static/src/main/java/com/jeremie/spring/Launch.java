@@ -3,6 +3,7 @@ package com.jeremie.spring;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan(basePackages = "${spring.ioc.componentScan.basePackages}")
 @SpringBootApplication
 @EnableEurekaClient
+@RibbonClient(name = "rpc-consumer")
 public class Launch extends WebMvcConfigurerAdapter {
 
     public static void main(String[] args) {

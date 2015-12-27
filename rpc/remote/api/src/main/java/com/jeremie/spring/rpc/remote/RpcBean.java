@@ -1,8 +1,8 @@
 package com.jeremie.spring.rpc.remote;
 
-import com.jeremie.spring.rpc.cluster.EurekaHelper;
-import com.netflix.appinfo.InstanceInfo;
+import com.jeremie.spring.rpc.remote.cluster.EurekaLoadBalance;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.cloud.client.ServiceInstance;
 
 /**
  * @author guanhong on 2015/11/10 17:54
@@ -10,15 +10,15 @@ import org.springframework.beans.factory.DisposableBean;
 public abstract class RpcBean implements DisposableBean {
     protected String host;
     protected int port;
-    protected EurekaHelper eurekaHelper;
+    protected EurekaLoadBalance eurekaLoadBalance;
     protected String appName;
     protected int clientPort;
 
     public void init() {
-        InstanceInfo instanceInfo = eurekaHelper.getHost(appName);
-        if (instanceInfo != null) {
-            this.host = instanceInfo.getIPAddr();
-            this.port = instanceInfo.getPort();
+        ServiceInstance serviceInstance = eurekaLoadBalance.doSelect(appName);
+        if (serviceInstance != null) {
+            this.host = serviceInstance.getHost();
+            this.port = serviceInstance.getPort();
         }
     }
 
@@ -30,8 +30,8 @@ public abstract class RpcBean implements DisposableBean {
         this.port = port;
     }
 
-    public void setEurekaHelper(EurekaHelper eurekaHelper) {
-        this.eurekaHelper = eurekaHelper;
+    public void setEurekaLoadBalance(EurekaLoadBalance eurekaLoadBalance) {
+        this.eurekaLoadBalance = eurekaLoadBalance;
     }
 
     public void setAppName(String appName) {

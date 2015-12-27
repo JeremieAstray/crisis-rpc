@@ -1,0 +1,25 @@
+package com.jeremie.spring.rpc.remote.cluster;
+
+import com.netflix.discovery.EurekaClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @author guanhong 15/12/24 下午5:59.
+ */
+@Configuration
+public class EurekaLoadBalance {
+
+    @Autowired
+    private LoadBalancerClient loadBalancerClient;
+
+    @Autowired
+    private EurekaClient eurekaClient;
+
+    public ServiceInstance doSelect(String appName) {
+        eurekaClient.getApplications();
+        return loadBalancerClient.choose(appName);
+    }
+}

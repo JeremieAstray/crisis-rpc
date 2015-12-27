@@ -4,7 +4,7 @@ management:
     port: 9090
 spring:
     application:
-        name: rpc-client
+        name: rpc-consumer
     velocity:
         checkTemplateLocation: true
         properties:
@@ -57,3 +57,6 @@ com:
                     method: http
                     packages:
                         - com.adol.spring.*.jpaService
+ribbon:
+    eureka:
+        enabled: true

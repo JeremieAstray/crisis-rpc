@@ -8,6 +8,7 @@ import java.util.Random;
 /**
  * Deprecated
  * using eureka server loadBalance
+ * use Netflix Ribbon instead of this
  * @author guanhong 15/12/24 下午5:18.
  */
 @Deprecated

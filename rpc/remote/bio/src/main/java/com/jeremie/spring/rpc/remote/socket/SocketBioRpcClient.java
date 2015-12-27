@@ -2,8 +2,8 @@ package com.jeremie.spring.rpc.remote.socket;
 
 
 import com.jeremie.spring.rpc.RpcInvocation;
-import com.jeremie.spring.rpc.cluster.EurekaHelper;
 import com.jeremie.spring.rpc.remote.RpcClient;
+import com.jeremie.spring.rpc.remote.cluster.EurekaLoadBalance;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.Executor;
@@ -17,7 +17,7 @@ public class SocketBioRpcClient extends RpcClient {
     protected Logger logger = Logger.getLogger(this.getClass());
     private String host;
     private int port;
-    private EurekaHelper eurekaHelper;
+    private EurekaLoadBalance eurekaLoadBalance;
     private String AppName;
     private Executor executor = Executors.newFixedThreadPool(200);
 
@@ -36,8 +36,8 @@ public class SocketBioRpcClient extends RpcClient {
         return this;
     }
 
-    public SocketBioRpcClient setEurekaHelper(EurekaHelper eurekaHelper) {
-        this.eurekaHelper = eurekaHelper;
+    public SocketBioRpcClient setEurekaLoadBalance(EurekaLoadBalance eurekaLoadBalance) {
+        this.eurekaLoadBalance = eurekaLoadBalance;
         return this;
     }
 

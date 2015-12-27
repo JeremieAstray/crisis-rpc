@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Deprecated
  * using eureka server loadBalance
+ * use Netflix Ribbon instead of this
  * @author guanhong 15/12/24 下午5:01.
  */
 @Deprecated

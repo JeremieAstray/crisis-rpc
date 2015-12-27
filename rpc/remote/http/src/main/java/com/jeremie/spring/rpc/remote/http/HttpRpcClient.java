@@ -1,8 +1,8 @@
 package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.RpcInvocation;
-import com.jeremie.spring.rpc.cluster.EurekaHelper;
 import com.jeremie.spring.rpc.remote.RpcClient;
+import com.jeremie.spring.rpc.remote.cluster.EurekaLoadBalance;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.Executor;
@@ -12,16 +12,15 @@ import java.util.concurrent.Executors;
  * @author guanhong 15/10/18 下午11:58.
  */
 public class HttpRpcClient extends RpcClient {
+    private EurekaLoadBalance eurekaLoadBalance;
     private Logger logger = Logger.getLogger(this.getClass());
-
     private String host;
     private int port;
-    private EurekaHelper eurekaHelper;
     private String appName;
     private Executor executor = Executors.newFixedThreadPool(200);
 
-    public HttpRpcClient setEurekaHelper(EurekaHelper eurekaHelper) {
-        this.eurekaHelper = eurekaHelper;
+    public HttpRpcClient setEurekaLoadBalance(EurekaLoadBalance eurekaLoadBalance) {
+        this.eurekaLoadBalance = eurekaLoadBalance;
         return this;
     }
 
