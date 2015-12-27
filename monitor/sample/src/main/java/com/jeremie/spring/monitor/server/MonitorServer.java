@@ -38,11 +38,9 @@ public class MonitorServer {
         JSONObject result = new JSONObject();
         applicationList.forEach(application -> {
             String applicationName = application.getName();
-            if (!"EUREKA-SERVER".equals(applicationName)) {
-                application.getInstances().forEach(instanceInfoList::add);
-                if (!result.containsKey(applicationName))
-                    result.put(applicationName, new JSONArray());
-            }
+            application.getInstances().forEach(instanceInfoList::add);
+            if (!result.containsKey(applicationName))
+                result.put(applicationName, new JSONArray());
         });
         instanceInfoList.forEach(instanceInfo -> {
             try {
