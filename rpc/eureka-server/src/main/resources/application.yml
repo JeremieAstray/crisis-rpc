@@ -4,26 +4,30 @@ server:
 spring:
     application:
         name: eureka-server
-
+#Standalone Mode
 eureka:
+    instance:
+        hostname: localhost
     # these are settings for the client that gets services
     client:
         # enable these two settings if you want discovery to work
-        registerWithEureka: true
-        fetchRegistry: true
+        registerWithEureka: false
+        fetchRegistry: false
         serviceUrl:
-            defaultZone: http://localhost:8080/discovery/eureka/
+            defaultZone: http://${eureka.instance.hostname}:${server.port}/discovery/eureka/
+
+# Peer Awareness
 #eureka:
+#    instance:
+#        hostname: crisis.lan # hostname: crisis-etop-pc.lan
 #    # these are settings for the client that gets services
 #    client:
 #        # enable these two settings if you want discovery to work
-#        registerWithEureka: true
-#        fetchRegistry: true
+#        registerWithEureka: false
+#        fetchRegistry: false
 #        serviceUrl:
-#            defaultZone: http://192.168.1.156:8080/discovery/eureka/
-#            slave: http://127.0.0.1:8080/discovery/eureka/
-#    server:
-#        registry-sync-retries:  10
+#            defaultZone: http://crisis-etop-pc.lan:${server.port}/discovery/eureka/ # hostname: crisis.lan
+
 logging:
     file: discovery.log
     level:
