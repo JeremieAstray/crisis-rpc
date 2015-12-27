@@ -17,32 +17,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>rpc/commons</module>
-        <module>rpc/client</module>
-        <module>rpc/remote/api</module>
-        <module>rpc/remote/bio</module>
-        <module>rpc/remote/http</module>
-        <module>rpc/remote/mina</module>
-        <module>rpc/remote/netty</module>
-        <module>rpc/remote/nio</module>
-        <module>rpc/server/commons</module>
-        <module>rpc/server/bio</module>
-        <module>rpc/server/http</module>
-        <module>rpc/server/mina</module>
-        <module>rpc/server/netty</module>
-        <module>rpc/server/nio</module>
-        <module>rpc/eureka-server</module>
-        <module>rpc/monitor</module>
-        <module>services/home</module>
-        <module>services/home-impl</module>
-        <module>services/adol</module>
-        <module>services/adol-impl</module>
-        <module>services/commons</module>
-        <module>services/commons-impl</module>
-        <module>web/home</module>
-        <module>web/commons</module>
-        <module>view/static</module>
-        <module>view/templates</module>
+        <module>common</module>
+        <module>client</module>
+        <module>remote</module>
+        <module>server</module>
+        <module>discovery</module>
+        <module>monitor</module>
+        <module>demo</module>
     </modules>
 
     <properties>
@@ -95,7 +76,7 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-entitymanager</artifactId>
                 <version>5.0.6.Final</version>
-               <!-- <version>4.3.11.Final</version>-->
+                <!-- <version>4.3.11.Final</version>-->
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
