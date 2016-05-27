@@ -18,10 +18,7 @@ import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author guanhong 15/10/17 下午11:40.
@@ -55,14 +52,14 @@ public class RpcInitializer {
 
     public void init() {
         ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();
-        Map<String, Class> clazzMap;
+        Map<String, List<Class>> clazzMap;
         try {
             clazzMap = getClassMap();
         } catch (IOException | ClassNotFoundException e) {
             logger.error("getClassSet error", e);
             return;
         }
-        clazzMap.forEach((serviceName, clazz) -> {
+        clazzMap.forEach((serviceName, clazzList) -> clazzList.forEach(clazz -> {
             boolean isInterface = clazz.isInterface();
             if (isInterface) {
                 //jdk方案 代理服务
@@ -93,7 +90,7 @@ public class RpcInitializer {
                 Object o = hancer.create();*/
                 beanFactory.registerSingleton(clazz.getSimpleName(), o);
             }
-        });
+        }));
     }
 
     /**
@@ -103,8 +100,8 @@ public class RpcInitializer {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public Map<String, Class> getClassMap() throws IOException, ClassNotFoundException {
-        Map<String, Class> clazzMap = new HashMap<>();
+    public Map<String, List<Class>> getClassMap() throws IOException, ClassNotFoundException {
+        Map<String, List<Class>> clazzMap = new HashMap<>();
         clazzMap.clear();
         for (ServiceConfig serviceConfig : rpcConfiguration.getServices()) {
             List<String> packages = serviceConfig.getPackages();
@@ -118,7 +115,8 @@ public class RpcInitializer {
                         if (resource.isReadable()) {
                             MetadataReader reader = readerFactory.getMetadataReader(resource);
                             String className = reader.getClassMetadata().getClassName();
-                            clazzMap.put(serviceConfig.getName(), Class.forName(className));
+                            clazzMap.putIfAbsent(serviceConfig.getName(), new ArrayList<>());
+                            clazzMap.get(serviceConfig.getName()).add(Class.forName(className));
                         }
                     }
                 }
@@ -126,8 +124,8 @@ public class RpcInitializer {
         }
         //输出日志
         if (logger.isInfoEnabled()) {
-            for (Map.Entry<String, Class> clazzEntry : clazzMap.entrySet()) {
-                logger.info(String.format("Found rpc Services:%s's class:%s", clazzEntry.getKey(), clazzEntry.getValue().getName()));
+            for (Map.Entry<String, List<Class>> clazzEntry : clazzMap.entrySet()) {
+                clazzEntry.getValue().forEach(clazz -> logger.info(String.format("Found rpc Services:%s's class:%s", clazzEntry.getKey(), clazz.getName())));
             }
         }
         return clazzMap;
