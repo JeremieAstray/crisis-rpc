@@ -7,7 +7,7 @@ import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+//import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,7 @@ import java.net.InetSocketAddress;
  * @author guanhong 15/9/10 下午5:04.
  */
 @Controller
-@EnableConfigurationProperties(RpcConfiguration.class)
+//@EnableConfigurationProperties(RpcConfiguration.class)
 @ComponentScan(basePackages = {"com.jeremie.spring"})
 public class Launch extends WebMvcConfigurerAdapter {
     protected Logger logger = Logger.getLogger(this.getClass());

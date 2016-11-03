@@ -2,22 +2,16 @@ package com.jeremie.spring.entity;
 
 import org.springframework.context.annotation.Lazy;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 /**
  * @author guanhong 15/9/12 下午3:35.
  */
-@MappedSuperclass
 @Lazy(false)
 public class BaseEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id", updatable = false, nullable = false)
     private Long id;
 
-    @Column
     private Boolean valid;
 
     public Long getId() {

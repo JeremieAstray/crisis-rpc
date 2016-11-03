@@ -15,16 +15,16 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+//import org.springframework.boot.CommandLineRunner;
+//import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 
 /**
  * @author guanhong 15/10/24 下午1:56.
  */
 
-@EnableConfigurationProperties(RpcConfiguration.class)
-public class Launch implements CommandLineRunner {
+//@EnableConfigurationProperties(RpcConfiguration.class)
+public class Launch /*implements CommandLineRunner*/ {
     protected Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
@@ -33,7 +33,7 @@ public class Launch implements CommandLineRunner {
     @Autowired
     private RpcConfiguration rpcConfiguration;
 
-    @Override
+    //@Override
     public void run(String... args) {
         MonitorStatus.init(applicationContext, MonitorStatus.Remote.netty);
         int serverPort = rpcConfiguration.getServerPort();

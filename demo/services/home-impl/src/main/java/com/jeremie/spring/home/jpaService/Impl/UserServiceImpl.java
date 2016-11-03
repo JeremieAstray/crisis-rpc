@@ -6,10 +6,9 @@ import com.jeremie.spring.home.jpaService.UserService;
 import com.jeremie.spring.rpc.RpcContext;
 import com.jeremie.spring.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,13 +39,14 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public List<User> getUserList(int page, int size) throws Exception {
-        Pageable pageable = new PageRequest(page, size);
-        return userRepository.findAll(pageable).getContent();
+        //Pageable pageable = new PageRequest(page, size);
+        //return userRepository.findAll(pageable).getContent();
+        return new ArrayList<>();
     }
 
     @Override
     public User save(User user) throws Exception {
-        return userRepository.save(user);
+        return /*userRepository.save(user)*/new User();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public void deleteUser(Long id) throws Exception {
-        userRepository.invalid(id);
+        //userRepository.invalid(id);
     }
 
     @Override

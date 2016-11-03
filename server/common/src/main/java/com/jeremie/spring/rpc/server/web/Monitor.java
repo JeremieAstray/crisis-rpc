@@ -5,7 +5,6 @@ import com.jeremie.spring.rpc.server.common.MethodStatus;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,8 +22,6 @@ public class Monitor {
 
     @Autowired
     private RpcConfiguration rpcConfiguration;
-    @Autowired
-    private ServerProperties serverProperties;
 
     @RequestMapping(value = "/connectorCount", method = RequestMethod.GET, produces = "text/html;charset=utf-8")
     public String getConnectorCount() {

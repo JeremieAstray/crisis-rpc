@@ -5,7 +5,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.beans.PropertyEditorSupport;
 import java.time.Instant;
@@ -46,21 +45,20 @@ public abstract class BaseController {
      * 添加Flash消息
      *
      * @param message
-     */
     protected void addMessage(RedirectAttributes redirectAttributes, String message) {
         redirectAttributes.addFlashAttribute("message", message);
     }
 
-    /**
+    *//**
      * 添加Flash消息
      *
      * @param type    消息类型
      * @param message
-     */
+     *//*
     protected void addMessage(RedirectAttributes redirectAttributes, String type, String message) {
         redirectAttributes.addFlashAttribute("message", message);
         redirectAttributes.addFlashAttribute("type", type);
-    }
+    }*/
 
     /**
      * 初始化数据绑定

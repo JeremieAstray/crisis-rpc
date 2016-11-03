@@ -2,20 +2,13 @@ package com.jeremie.spring.home.entity;
 
 import com.jeremie.spring.entity.BaseEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * @author guanhong 15/8/18 下午4:07.
  */
-@Entity
-@Table(name = "user")
 public class User extends BaseEntity {
 
-    @Column
     private String username;
-    @Column
     private String password;
 
     public String getPassword() {
