@@ -2,7 +2,8 @@ package com.jeremie.spring.rpc.remote.socket;
 
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.net.Socket;
  * @author guanhong 15/11/18 下午4:13.
  */
 public class SocketBioRpcThread implements Runnable {
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(SocketBioRpcThread.class);
 
     private String host;
     private int port;

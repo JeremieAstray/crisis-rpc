@@ -4,7 +4,8 @@ package com.jeremie.spring.rpc.server.socket;
 import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class RpcSocket implements Runnable {
 
     public ObjectOutputStream objectOutputStream = null;
     public ObjectInputStream objectInputStream = null;
-    protected Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(RpcSocket.class);
     private Socket socket;
     private ApplicationContext applicationContext;
 

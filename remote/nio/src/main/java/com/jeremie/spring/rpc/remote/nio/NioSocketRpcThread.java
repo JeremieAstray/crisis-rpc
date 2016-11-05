@@ -3,7 +3,8 @@ package com.jeremie.spring.rpc.remote.nio;
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -15,7 +16,7 @@ import java.util.Iterator;
  * @author guanhong 15/10/25 下午12:32.
  */
 public class NioSocketRpcThread implements Runnable {
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(NioSocketRpcThread.class);
 
     private Selector selector;
     private SocketChannel socketChannel;

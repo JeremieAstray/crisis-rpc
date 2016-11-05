@@ -1,6 +1,8 @@
 package com.jeremie.spring.rpc.util;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
@@ -9,7 +11,7 @@ import java.io.*;
  */
 public class SerializeTool {
 
-    private static Logger logger = Logger.getLogger(SerializeTool.class);
+    private static final Logger logger = LoggerFactory.getLogger(SerializeTool.class);
 
     public static String objectToString(Object object) {
         ByteArrayOutputStream byteArrayOutputStream = null;

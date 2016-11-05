@@ -3,14 +3,6 @@ package com.jeremie.spring.rpc.config;
 import com.jeremie.spring.rpc.proxy.RpcInitializer;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
-import com.jeremie.spring.rpc.remote.http.HttpRpcClient;
-import com.jeremie.spring.rpc.remote.mina.MinaRpcBean;
-import com.jeremie.spring.rpc.remote.mina.MinaRpcClient;
-import com.jeremie.spring.rpc.remote.netty.NettyRpcBean;
-import com.jeremie.spring.rpc.remote.netty.NettyRpcClient;
-import com.jeremie.spring.rpc.remote.nio.NioRpcBean;
-import com.jeremie.spring.rpc.remote.nio.SocketNioRpcClient;
-import com.jeremie.spring.rpc.remote.socket.SocketBioRpcClient;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -35,6 +27,8 @@ public class RpcInitializerConfiguration implements DisposableBean {
     private RpcConfiguration rpcConfiguration;
     @Autowired
     private ConfigurableApplicationContext applicationContext;
+    @Autowired
+    private RpcClient rpcClient;
 
     private RpcInitializer rpcInitializer;
 
@@ -63,8 +57,7 @@ public class RpcInitializerConfiguration implements DisposableBean {
         rpcClientMap.clear();
         for (ServiceConfig serviceConfig : rpcConfiguration.getServices()) {
             RpcBean rpcBean = null;
-            RpcClient rpcClient;
-            switch (serviceConfig.getMethod()) {
+            /*switch (serviceConfig.getMethod()) {
                 case "mina":
                     rpcBean = new MinaRpcBean();
                     rpcClient = this.getMinaRpcClient((MinaRpcBean) rpcBean);
@@ -87,7 +80,7 @@ public class RpcInitializerConfiguration implements DisposableBean {
                     rpcBean = new MinaRpcBean();
                     rpcClient = this.getMinaRpcClient((MinaRpcBean) rpcBean);
                     break;
-            }
+            }*/
             if (rpcBean != null) {
                 rpcBean.setClientPort(rpcConfiguration.getDefaultNioClientPort());
                 rpcBean.setHost(rpcConfiguration.getDefaultIp());
@@ -101,7 +94,7 @@ public class RpcInitializerConfiguration implements DisposableBean {
     }
 
 
-    private MinaRpcClient getMinaRpcClient(MinaRpcBean minaRpcBean) {
+    /*private MinaRpcClient getMinaRpcClient(MinaRpcBean minaRpcBean) {
         return new MinaRpcClient().setMinaRpcBean(minaRpcBean);
     }
 
@@ -109,10 +102,10 @@ public class RpcInitializerConfiguration implements DisposableBean {
         String host = null;
         int port = rpcConfiguration.getDefaultPort();
         //ServiceInstance serviceInstance = eurekaLoadBalance.doSelect(name);
-        /*if (serviceInstance != null) {
+        *//*if (serviceInstance != null) {
             host = serviceInstance.getHost();
             port = serviceInstance.getPort();
-        }*/
+        }*//*
         return new HttpRpcClient()
                 .setPort(port)
                 //.setEurekaLoadBalance(eurekaLoadBalance)
@@ -127,11 +120,11 @@ public class RpcInitializerConfiguration implements DisposableBean {
     private SocketBioRpcClient getSocketBioRpcClient(String name) {
         String host = null;
         int port = rpcConfiguration.getDefaultPort();
-        /*ServiceInstance serviceInstance = eurekaLoadBalance.doSelect(name);
+        *//*ServiceInstance serviceInstance = eurekaLoadBalance.doSelect(name);
         if (serviceInstance != null) {
             host = serviceInstance.getHost();
             port = serviceInstance.getPort();
-        }*/
+        }*//*
         return new SocketBioRpcClient()
                 .setHost(host != null ? host : rpcConfiguration.getDefaultIp())
                 //.setEurekaLoadBalance(eurekaLoadBalance)
@@ -141,5 +134,5 @@ public class RpcInitializerConfiguration implements DisposableBean {
 
     private SocketNioRpcClient getSocketNioRpcClient(NioRpcBean nioRpcBean) {
         return new SocketNioRpcClient().setNioRpcBean(nioRpcBean);
-    }
+    }*/
 }

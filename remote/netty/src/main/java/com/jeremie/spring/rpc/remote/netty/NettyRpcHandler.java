@@ -3,13 +3,14 @@ package com.jeremie.spring.rpc.remote.netty;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author guanhong 15/10/25 下午4:10.
  */
 public class NettyRpcHandler extends SimpleChannelInboundHandler<Object> {
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(NettyRpcHandler.class);
 
 
     @Override

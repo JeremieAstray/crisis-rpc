@@ -12,7 +12,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -20,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public class NettyRpcBean extends RpcBean {
     protected Channel channel;
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(NettyRpcBean.class);
     private boolean isConnect = false;
     private Bootstrap bootstrap;
     private EventLoopGroup group;

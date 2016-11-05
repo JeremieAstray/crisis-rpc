@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc.remote.mina;
 
 import com.jeremie.spring.rpc.remote.RpcBean;
-import org.apache.log4j.Logger;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
 import org.apache.mina.core.session.IoSession;
@@ -9,6 +8,8 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
@@ -16,7 +17,7 @@ import java.net.InetSocketAddress;
  * @author guanhong 15/10/25 下午4:08.
  */
 public class MinaRpcBean extends RpcBean {
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(MinaRpcBean.class);
 
     private IoSession session;
     private IoConnector connector;

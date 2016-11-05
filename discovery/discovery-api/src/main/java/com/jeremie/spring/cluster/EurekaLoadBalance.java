@@ -1,6 +1,5 @@
-package com.jeremie.spring.rpc.remote.cluster;
+package com.jeremie.spring.cluster;
 
-import com.netflix.discovery.EurekaClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,8 +13,8 @@ public class EurekaLoadBalance {
     @Autowired
     private LoadBalancerClient loadBalancerClient;*/
 
-    @Autowired
-    private EurekaClient eurekaClient;
+   /* @Autowired
+    private EurekaClient eurekaClient;*/
 /*
     public ServiceInstance doSelect(String appName) {
         eurekaClient.getApplications();

@@ -3,7 +3,8 @@ package com.jeremie.spring.rpc.remote.socket;
 
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -13,7 +14,7 @@ import java.util.concurrent.Executors;
  */
 public class SocketBioRpcClient extends RpcClient {
 
-    protected Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(SocketBioRpcClient.class);
     private String host;
     private int port;
     //private EurekaLoadBalance eurekaLoadBalance;

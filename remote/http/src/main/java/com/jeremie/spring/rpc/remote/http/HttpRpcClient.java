@@ -2,7 +2,8 @@ package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -12,7 +13,7 @@ import java.util.concurrent.Executors;
  */
 public class HttpRpcClient extends RpcClient {
     //private EurekaLoadBalance eurekaLoadBalance;
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(HttpRpcClient.class);
     private String host;
     private int port;
     private String appName;

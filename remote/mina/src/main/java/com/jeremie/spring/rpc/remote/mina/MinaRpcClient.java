@@ -3,14 +3,16 @@ package com.jeremie.spring.rpc.remote.mina;
 
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Jeremie on 2015/5/13.
  */
 public class MinaRpcClient extends RpcClient {
 
-    protected Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(MinaRpcClient.class);
+
 
     private MinaRpcBean minaRpcBean;
 

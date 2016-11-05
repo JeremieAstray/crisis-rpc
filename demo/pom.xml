@@ -3,13 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}</artifactId>
-        <version>${project.version}</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
     <artifactId>${app.name}-demo</artifactId>
+    <groupId>com.jeremie.spring</groupId>
     <version>${project.version}</version>
     <packaging>pom</packaging>
     <modules>
@@ -17,6 +12,11 @@
         <module>web</module>
         <module>view</module>
     </modules>
+    <properties>
+        <app.name>crisis-rpc</app.name>
+        <project.groupId>com.jeremie.spring</project.groupId>
+        <project.version>1.0.0-SNAPSHOT</project.version>
+    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -46,6 +46,11 @@
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.1-api</artifactId>
                 <version>1.0.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.40</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -5,7 +5,8 @@ import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +28,7 @@ import java.net.InetSocketAddress;
 //@EnableConfigurationProperties(RpcConfiguration.class)
 @ComponentScan(basePackages = {"com.jeremie.spring"})
 public class Launch extends WebMvcConfigurerAdapter {
-    protected Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(Launch.class);
 
     @Autowired
     private ApplicationContext applicationContext;

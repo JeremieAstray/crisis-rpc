@@ -5,7 +5,8 @@ import com.jeremie.spring.rpc.config.RpcConfiguration;
 import com.jeremie.spring.rpc.config.ServiceConfig;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
@@ -27,7 +28,7 @@ import java.util.*;
 public class RpcInitializer {
 
     private final String RESOURCE_PATTERN = "/**/*.class";
-    protected Logger logger = Logger.getLogger(RpcInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcInitializer.class);
     private ConfigurableApplicationContext applicationContext;
     private Map<String, RpcClient> rpcClientMap;
     private List<RpcBean> rpcBeanList;

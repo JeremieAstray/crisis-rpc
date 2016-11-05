@@ -2,10 +2,11 @@ package com.jeremie.spring.rpc.server.mina;
 
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
-import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.net.InetSocketAddress;
@@ -15,7 +16,7 @@ import java.net.InetSocketAddress;
  */
 public class RpcSeverHandler extends IoHandlerAdapter {
 
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(RpcSeverHandler.class);
 
     private ApplicationContext applicationContext;
 

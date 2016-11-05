@@ -1,16 +1,17 @@
 package com.jeremie.spring.rpc.remote.mina;
 
 import com.jeremie.spring.rpc.remote.RpcHandler;
-import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author guanhong 15/10/25 下午4:10.
  */
 public class MinaRpcHandler extends IoHandlerAdapter {
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(MinaRpcHandler.class);
 
     @Override
     public void sessionIdle(IoSession session, IdleStatus status) throws Exception {

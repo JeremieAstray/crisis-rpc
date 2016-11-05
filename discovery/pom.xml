@@ -13,6 +13,7 @@
     <version>${project.version}</version>
     <packaging>pom</packaging>
     <modules>
+        <module>discovery-api</module>
         <module>eureka-server</module>
     </modules>
 </project>

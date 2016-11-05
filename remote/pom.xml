@@ -15,6 +15,7 @@
 
     <modules>
         <module>api</module>
+        <module>client</module>
         <module>bio</module>
         <module>http</module>
         <module>mina</module>

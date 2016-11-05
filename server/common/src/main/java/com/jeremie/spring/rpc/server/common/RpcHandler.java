@@ -4,7 +4,8 @@ import com.jeremie.spring.rpc.RpcContext;
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.util.ProxyUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
@@ -15,7 +16,7 @@ import java.net.SocketAddress;
  */
 public class RpcHandler {
 
-    private final static Logger logger = Logger.getLogger(RpcHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcHandler.class);
 
     private static void setRpcContext(RpcInvocation rpcInvocation) {
         RpcContext rpcContext = RpcContext.getContext();

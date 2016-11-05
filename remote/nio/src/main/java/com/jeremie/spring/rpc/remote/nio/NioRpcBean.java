@@ -2,7 +2,8 @@ package com.jeremie.spring.rpc.remote.nio;
 
 
 import com.jeremie.spring.rpc.remote.RpcBean;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
@@ -16,7 +17,7 @@ public class NioRpcBean extends RpcBean {
 
     protected static boolean running = false;
     protected boolean init = false;
-    private Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(NioRpcBean.class);
     private SocketChannel socketChannel = null;
     private Selector selector = null;
 

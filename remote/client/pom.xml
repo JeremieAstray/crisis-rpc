@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}</artifactId>
+        <artifactId>${app.name}-remote</artifactId>
         <version>${project.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>${app.name}-client</artifactId>
+    <artifactId>${app.name}-remote-client</artifactId>
     <version>${project.version}</version>
     <packaging>jar</packaging>
 
@@ -20,7 +20,7 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>${app.name}-remote-http</artifactId>
             <version>${project.version}</version>
@@ -49,7 +49,7 @@
             <artifactId>${app.name}-remote-mina</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
-        </dependency>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>

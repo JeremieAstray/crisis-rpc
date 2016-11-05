@@ -4,7 +4,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.proxy.ProxyHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.asm.Type;
 import org.springframework.cglib.core.TypeUtils;
 import org.springframework.cglib.proxy.Enhancer;
@@ -23,7 +24,7 @@ public abstract class RpcClient {
     public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
     protected static long TIMEOUT = 500L;
     public static Cache<String, Object> resultCache = CacheBuilder.newBuilder().expireAfterWrite(TIMEOUT, TimeUnit.MILLISECONDS).build();
-    Logger logger = Logger.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
 
     public abstract Object invoke(RpcInvocation rpcInvocation);
 
