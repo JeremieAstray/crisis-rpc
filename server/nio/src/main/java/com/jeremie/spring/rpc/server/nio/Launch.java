@@ -5,8 +5,6 @@ import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.CommandLineRunner;
-//import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 
 import java.net.InetSocketAddress;
@@ -22,8 +20,7 @@ import java.util.concurrent.Executors;
  * @author guanhong 15/10/24 下午1:56.
  */
 
-//@EnableConfigurationProperties(RpcConfiguration.class)
-public class Launch /*implements CommandLineRunner*/ {
+public class Launch {
     private static final Logger logger = LoggerFactory.getLogger(Launch.class);
 
     private Executor executor = Executors.newFixedThreadPool(200);
@@ -34,7 +31,6 @@ public class Launch /*implements CommandLineRunner*/ {
     @Autowired
     private RpcConfiguration rpcConfiguration;
 
-    //@Override
     public void run(String... args) {
         MonitorStatus.init(applicationContext, MonitorStatus.Remote.nio);
         int serverPort = rpcConfiguration.getServerPort();

@@ -2,13 +2,11 @@ package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
-import com.jeremie.spring.rpc.server.common.RpcConfiguration;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
@@ -25,7 +23,6 @@ import java.net.InetSocketAddress;
  * @author guanhong 15/9/10 下午5:04.
  */
 @Controller
-//@EnableConfigurationProperties(RpcConfiguration.class)
 @ComponentScan(basePackages = {"com.jeremie.spring"})
 public class Launch extends WebMvcConfigurerAdapter {
     private static final Logger logger = LoggerFactory.getLogger(Launch.class);

@@ -17,7 +17,6 @@ public class SocketBioRpcClient extends RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(SocketBioRpcClient.class);
     private String host;
     private int port;
-    //private EurekaLoadBalance eurekaLoadBalance;
     private String AppName;
     private Executor executor = Executors.newFixedThreadPool(200);
 
@@ -35,11 +34,6 @@ public class SocketBioRpcClient extends RpcClient {
         AppName = appName;
         return this;
     }
-
-    /*public SocketBioRpcClient setEurekaLoadBalance(EurekaLoadBalance eurekaLoadBalance) {
-        this.eurekaLoadBalance = eurekaLoadBalance;
-        return this;
-    }*/
 
     @Override
     public Object invoke(RpcInvocation rpcInvocation) {

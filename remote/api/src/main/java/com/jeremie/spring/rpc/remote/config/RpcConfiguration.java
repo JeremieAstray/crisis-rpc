@@ -1,7 +1,5 @@
-package com.jeremie.spring.rpc.config;
+package com.jeremie.spring.rpc.remote.config;
 
-//import org.springframework.boot.context.properties.ConfigurationProperties;
-//import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +7,6 @@ import java.util.List;
 /**
  * @author guanhong 15/10/24 下午9:32.
  */
-//@Component
-//@ConfigurationProperties("com.jeremie.rpc")
 public class RpcConfiguration {
 
     private String defaultIp;

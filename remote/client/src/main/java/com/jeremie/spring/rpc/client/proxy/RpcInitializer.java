@@ -1,8 +1,8 @@
-package com.jeremie.spring.rpc.proxy;
+package com.jeremie.spring.rpc.client.proxy;
 
 import com.jeremie.spring.rpc.RpcInvocation;
-import com.jeremie.spring.rpc.config.RpcConfiguration;
-import com.jeremie.spring.rpc.config.ServiceConfig;
+import com.jeremie.spring.rpc.remote.config.RpcConfiguration;
+import com.jeremie.spring.rpc.remote.config.ServiceConfig;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.slf4j.Logger;

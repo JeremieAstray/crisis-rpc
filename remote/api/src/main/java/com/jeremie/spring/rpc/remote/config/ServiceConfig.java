@@ -1,4 +1,4 @@
-package com.jeremie.spring.rpc.config;
+package com.jeremie.spring.rpc.remote.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;

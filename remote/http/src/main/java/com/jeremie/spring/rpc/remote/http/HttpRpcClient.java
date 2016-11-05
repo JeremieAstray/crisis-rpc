@@ -12,17 +12,11 @@ import java.util.concurrent.Executors;
  * @author guanhong 15/10/18 下午11:58.
  */
 public class HttpRpcClient extends RpcClient {
-    //private EurekaLoadBalance eurekaLoadBalance;
     private static final Logger logger = LoggerFactory.getLogger(HttpRpcClient.class);
     private String host;
     private int port;
     private String appName;
     private Executor executor = Executors.newFixedThreadPool(200);
-
-    /*public HttpRpcClient setEurekaLoadBalance(EurekaLoadBalance eurekaLoadBalance) {
-        this.eurekaLoadBalance = eurekaLoadBalance;
-        return this;
-    }*/
 
     public HttpRpcClient setHost(String host) {
         this.host = host;

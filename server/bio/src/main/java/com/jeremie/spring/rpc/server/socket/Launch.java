@@ -17,8 +17,7 @@ import java.util.concurrent.Executors;
  * @author guanhong 15/9/10 下午5:04.
  */
 
-//@EnableConfigurationProperties(RpcConfiguration.class)
-public class Launch /*implements CommandLineRunner*/ {
+public class Launch {
     private static final Logger logger = LoggerFactory.getLogger(Launch.class);
     private Executor executor = Executors.newFixedThreadPool(200);
 
