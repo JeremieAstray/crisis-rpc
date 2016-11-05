@@ -38,7 +38,8 @@ public class HelloWorld extends BaseController {
             model.addAttribute("vmchange", "vmchangetest");
             return "test";
         }
-        model.addAttribute("vmtest", "guanhong对了~测一下中文");
+        String test2 = "guanhong对了~测一下中文";
+        model.addAttribute("vmtest", test2);
         //model.addAttribute("vmchange", "vmchange");
         model.addAttribute("vmchange", "vmchangetest");
         User user = userService.getById(id);
@@ -84,4 +85,5 @@ public class HelloWorld extends BaseController {
         userService.deleteUser(id);
         return "success";
     }
+
 }

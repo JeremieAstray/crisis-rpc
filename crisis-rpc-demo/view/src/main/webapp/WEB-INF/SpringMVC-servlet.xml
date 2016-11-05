@@ -14,7 +14,7 @@
         <property name="order" value="1"/>
         <property name="suffix" value=".vm"/>
         <property name="contentType" value="text/html;charset=UTF-8"/>
-        <property name="toolboxConfigLocation" value="WEB-INF/velocity-toolbox.xml"/>
+        <property name="toolboxConfigLocation" value="/WEB-INF/velocity-toolbox.xml"/>
     </bean>
 
     <!-- 配置Velocity引擎 -->

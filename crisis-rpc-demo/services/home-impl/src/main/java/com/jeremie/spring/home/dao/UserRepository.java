@@ -23,8 +23,8 @@ public class UserRepository {
     public User findByIdAndValidTrue(Long id) {
         User user = new User();
         user.setId(id);
-        user.setUsername("test");
-        user.setPassword("test");
+        user.setUsername("卧槽");
+        user.setPassword("嘿嘿");
         return user;
     }
 
