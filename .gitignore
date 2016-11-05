@@ -10,3 +10,4 @@ MANIFEST.MF
 .idea/*
 deploy/
 log/
+crisis-rpc-demo/.idea/*
