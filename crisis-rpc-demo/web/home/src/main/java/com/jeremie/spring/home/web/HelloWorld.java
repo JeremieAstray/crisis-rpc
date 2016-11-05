@@ -1,15 +1,16 @@
 package com.jeremie.spring.home.web;
 
 
-import com.adol.spring.home.jpaService.AdolService;
+import com.jeremie.spring.adol.service.AdolService;
 import com.jeremie.spring.home.entity.User;
-import com.jeremie.spring.home.jpaService.UserService;
+import com.jeremie.spring.home.service.UserService;
 import com.jeremie.spring.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 
@@ -66,7 +67,7 @@ public class HelloWorld extends BaseController {
         return "test";
     }
 
-    /*@RequestMapping("/updateUser")
+    @RequestMapping("/updateUser")
     public String updateUser(RedirectAttributes redirectAttributes, Long id, String name) throws Exception {
         if (id == null)
             id = 1l;
@@ -74,8 +75,8 @@ public class HelloWorld extends BaseController {
             name = "guanhong!";
         userService.updateUserById(name, id);
         redirectAttributes.addAttribute("id", id);
-        return "redirect:/testvm";
-    }*/
+        return "redirect:/templates/testvm";
+    }
 
     @ResponseBody
     @RequestMapping("/invalidUser")

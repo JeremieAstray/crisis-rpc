@@ -1,6 +1,7 @@
 package com.jeremie.spring.utils;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +20,7 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
 
     @Autowired
     private static ApplicationContext applicationContext;
-    private static Logger logger = Logger.getLogger(SpringContextHolder.class);
+    private static Logger logger = LoggerFactory.getLogger(SpringContextHolder.class);
 
     /**
      * 取得存储在静态变量中的ApplicationContext.

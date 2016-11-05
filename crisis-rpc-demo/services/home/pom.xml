@@ -5,19 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}-demo-services</artifactId>
-        <version>${project.version}</version>
+        <artifactId>crisis-rpc-demo-services</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>${app.name}-services-home</artifactId>
-    <version>${project.version}</version>
+    <artifactId>crisis-rpc-demo-services-home</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.jeremie.spring</groupId>
-            <artifactId>${app.name}-services-commons</artifactId>
-            <version>${project.version}</version>
+            <artifactId>crisis-rpc-demo-services-commons</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -26,8 +26,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,13 +1,10 @@
 package com.jeremie.spring.entity;
 
-import org.springframework.context.annotation.Lazy;
-
 import java.io.Serializable;
 
 /**
  * @author guanhong 15/9/12 下午3:35.
  */
-@Lazy(false)
 public class BaseEntity implements Serializable {
 
     private Long id;

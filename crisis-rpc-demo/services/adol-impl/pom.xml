@@ -5,42 +5,24 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}-demo-services</artifactId>
-        <version>${project.version}</version>
+        <artifactId>crisis-rpc-demo-services</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>${app.name}-services-adol-impl</artifactId>
-    <version>${project.version}</version>
-    <packaging>war</packaging>
+    <artifactId>crisis-rpc-demo-services-adol-impl</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.jeremie.spring</groupId>
-            <artifactId>${app.name}-services-commons-impl</artifactId>
-            <version>${project.version}</version>
+            <artifactId>crisis-rpc-demo-services-adol</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.jeremie.spring</groupId>
-            <artifactId>${app.name}-services-adol</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${app.name}-server-http</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client</artifactId>
+            <artifactId>crisis-rpc-demo-services-commons-impl</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -49,8 +31,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>

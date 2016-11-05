@@ -1,10 +1,12 @@
 package com.jeremie.spring.web;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.beans.PropertyEditorSupport;
 import java.time.Instant;
@@ -17,10 +19,10 @@ import java.util.Date;
  */
 public abstract class BaseController {
 
+    private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
+
     public final static String ERROR = "error";
     public final static String SUCCESS = "success";
-    protected Logger log = Logger.getLogger(this.getClass());
-
     /**
      * 添加Model消息
      *
@@ -49,16 +51,16 @@ public abstract class BaseController {
         redirectAttributes.addFlashAttribute("message", message);
     }
 
-    *//**
+    /**
      * 添加Flash消息
      *
      * @param type    消息类型
      * @param message
-     *//*
+     */
     protected void addMessage(RedirectAttributes redirectAttributes, String type, String message) {
         redirectAttributes.addFlashAttribute("message", message);
         redirectAttributes.addFlashAttribute("type", type);
-    }*/
+    }
 
     /**
      * 初始化数据绑定
@@ -92,7 +94,7 @@ public abstract class BaseController {
 
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex) {
-        log.error(ex.getMessage(), ex);
+        logger.error(ex.getMessage(), ex);
         //model.addAttribute("exMsg", ex.getMessage());
         return "error/exception";
     }
