@@ -5,6 +5,7 @@ import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -12,6 +13,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Jeremie on 2015/5/13.
  */
+@Component
 public class SocketBioRpcClient extends RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketBioRpcClient.class);

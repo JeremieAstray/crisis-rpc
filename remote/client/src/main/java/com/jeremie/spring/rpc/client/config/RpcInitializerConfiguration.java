@@ -26,8 +26,8 @@ public class RpcInitializerConfiguration implements DisposableBean {
     private RpcConfiguration rpcConfiguration;
     @Autowired
     private ConfigurableApplicationContext applicationContext;
-    @Autowired
-    private RpcClient rpcClient;
+    /*@Autowired
+    private RpcClient rpcClient;*/
 
     private RpcInitializer rpcInitializer;
 

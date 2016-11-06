@@ -10,12 +10,14 @@ import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 
 /**
  * @author guanhong 15/10/25 下午4:08.
  */
+@Component
 public class MinaRpcBean extends RpcBean {
     private static final Logger logger = LoggerFactory.getLogger(MinaRpcBean.class);
 

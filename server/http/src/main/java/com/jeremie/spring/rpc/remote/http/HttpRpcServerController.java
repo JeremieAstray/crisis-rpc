@@ -24,8 +24,8 @@ import java.net.InetSocketAddress;
  */
 @Controller
 @ComponentScan(basePackages = {"com.jeremie.spring"})
-public class Launch extends WebMvcConfigurerAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(Launch.class);
+public class HttpRpcServerController extends WebMvcConfigurerAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(HttpRpcServerController.class);
 
     @Autowired
     private ApplicationContext applicationContext;

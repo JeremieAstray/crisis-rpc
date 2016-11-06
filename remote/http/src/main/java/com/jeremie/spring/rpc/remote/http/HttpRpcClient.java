@@ -4,6 +4,7 @@ import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -11,6 +12,7 @@ import java.util.concurrent.Executors;
 /**
  * @author guanhong 15/10/18 下午11:58.
  */
+@Component
 public class HttpRpcClient extends RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(HttpRpcClient.class);
     private String host;

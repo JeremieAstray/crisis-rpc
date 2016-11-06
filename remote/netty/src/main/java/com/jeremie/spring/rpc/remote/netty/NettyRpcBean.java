@@ -14,11 +14,13 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 
 /**
  * @author guanhong 15/10/25 下午4:08.
  */
+@Component
 public class NettyRpcBean extends RpcBean {
     protected Channel channel;
     private static final Logger logger = LoggerFactory.getLogger(NettyRpcBean.class);

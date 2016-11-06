@@ -17,13 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 /**
  * @author guanhong 15/10/24 下午1:56.
  */
-
-public class Launch {
-    private static final Logger logger = LoggerFactory.getLogger(Launch.class);
+@Component
+public class NettyRpcServerBean {
+    private static final Logger logger = LoggerFactory.getLogger(NettyRpcServerBean.class);
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -31,17 +32,20 @@ public class Launch {
     @Autowired
     private RpcConfiguration rpcConfiguration;
 
-    public void run(String... args) {
-        MonitorStatus.init(applicationContext, MonitorStatus.Remote.netty);
-        int serverPort = rpcConfiguration.getServerPort();
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup);
-            b.channel(NioServerSocketChannel.class);
-            b.childHandler(new ChannelInitializer<SocketChannel>() {
+    private ChannelFuture channelFuture;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
 
+    public void init() {
+        MonitorStatus.init(this.applicationContext, MonitorStatus.Remote.netty);
+        int serverPort = this.rpcConfiguration.getServerPort();
+        this.bossGroup = new NioEventLoopGroup();
+        this.workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.group(this.bossGroup, this.workerGroup);
+            serverBootstrap.channel(NioServerSocketChannel.class);
+            serverBootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel socketChannel) throws Exception {
                     ChannelPipeline pipeline = socketChannel.pipeline();
@@ -51,19 +55,35 @@ public class Launch {
                     pipeline.addLast("handler", new RpcSeverHandler(applicationContext));
                 }
             });
-
             // 服务器绑定端口监听
-            ChannelFuture f = b.bind(serverPort).sync();
-            // 监听服务器关闭监听
-            f.channel().closeFuture().sync();
-
-            // 可以简写为
-            /* b.bind(portNumber).sync().channel().closeFuture().sync(); */
+            this.channelFuture = serverBootstrap.bind(serverPort).sync();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+            if (this.bossGroup != null) {
+                this.bossGroup.shutdownGracefully();
+            }
+            if (this.workerGroup != null) {
+                this.workerGroup.shutdownGracefully();
+            }
+        }
+    }
+
+    public void destory() {
+        try {
+            // 监听服务器关闭监听
+            if (this.channelFuture != null) {
+                this.channelFuture.channel().closeFuture().sync();
+            }
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (this.bossGroup != null) {
+                this.bossGroup.shutdownGracefully();
+            }
+            if (this.workerGroup != null) {
+                this.workerGroup.shutdownGracefully();
+            }
         }
     }
 }
