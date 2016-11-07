@@ -8,14 +8,45 @@
     http://www.springframework.org/schema/aop
     http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <!-- 自动扫描 ,将带有注解的类 纳入spring容器管理 -->
-    <context:component-scan base-package="com.jeremie.spring">
-        <context:exclude-filter type="regex" expression="com.jeremie.spring.home.web.*"/>
-    </context:component-scan>
-
     <bean id="springContextHolder" class="com.jeremie.spring.utils.SpringContextHolder" lazy-init="false"/>
 
     <!-- 配置使Spring采用CGLIB代理 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
+    <bean id="rpcConfiguration" class="com.jeremie.spring.rpc.remote.config.RpcConfiguration">
+        <property name="defaultHttpport" value="80"/>
+        <property name="defaultIp" value="127.0.0.1"/>
+        <property name="defaultNioClientPort" value="8090"/>
+        <property name="defaultPort" value="8091"/>
+        <property name="services">
+            <list>
+                <bean id="minaServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">
+                    <property name="method" value="mina"/>
+                    <property name="name" value="adol-impl"/>
+                    <property name="packages">
+                        <list>
+                            <value>com.jeremie.spring.adol.service</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean id="httpServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">
+                    <property name="method" value="http"/>
+                    <property name="name" value="home-impl"/>
+                    <property name="packages">
+                        <list>
+                            <value>com.jeremie.spring.home.service</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer" init-method="init">
+        <property name="rpcConfiguration" ref="rpcConfiguration"/>
+    </bean>
+
+    <!-- 自动扫描 ,将带有注解的类 纳入spring容器管理 -->
+    <context:component-scan base-package="com.jeremie.spring">
+        <context:exclude-filter type="regex" expression="com.jeremie.spring.home.web.*"/>
+    </context:component-scan>
 </beans>

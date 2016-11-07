@@ -5,19 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}</artifactId>
-        <version>${project.version}</version>
+        <artifactId>crisis-rpc</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>${app.name}-client</artifactId>
-    <version>${project.version}</version>
+    <artifactId>crisis-rpc-client</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>${app.name}-remote-api</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.jeremie.spring</groupId>
+            <artifactId>crisis-rpc-remote-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
     </dependencies>

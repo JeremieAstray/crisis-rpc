@@ -5,18 +5,18 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}-remote</artifactId>
-        <version>${project.version}</version>
+        <artifactId>crisis-rpc-remote</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>${app.name}-remote-api</artifactId>
-    <version>${project.version}</version>
+    <artifactId>crisis-rpc-remote-api</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>com.jeremie.spring</groupId>
-            <artifactId>${app.name}-common</artifactId>
-            <version>${project.version}</version>
+            <artifactId>crisis-rpc-common</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.netflix.eureka</groupId>

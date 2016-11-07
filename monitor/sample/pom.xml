@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}-monitor</artifactId>
-        <version>${project.version}</version>
+        <artifactId>crisis-rpc-monitor</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>${app.name}-monitor-simple</artifactId>
-    <version>${project.version}</version>
+    <artifactId>crisis-rpc-monitor-simple</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <dependencies>

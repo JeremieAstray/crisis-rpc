@@ -23,6 +23,7 @@ import org.springframework.util.ClassUtils;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author guanhong 15/10/17 下午11:40.
@@ -39,17 +40,8 @@ public class RpcInitializer {
 
     private RpcConfiguration rpcConfiguration;
 
-    private Map<String, RpcClient> rpcClientMap;
-    private List<RpcBean> rpcBeanList;
-
-    public void setRpcBeanList(List<RpcBean> rpcBeanList) {
-        this.rpcBeanList = rpcBeanList;
-    }
-
-    public void setRpcClientMap(Map<String, RpcClient> rpcClientMap) {
-        this.rpcClientMap = rpcClientMap;
-    }
-
+    private Map<String, RpcClient> rpcClientMap = new ConcurrentHashMap<>();
+    private List<RpcBean> rpcBeanList = new ArrayList<>();
     public void setRpcConfiguration(RpcConfiguration rpcConfiguration) {
         this.rpcConfiguration = rpcConfiguration;
     }
@@ -60,9 +52,9 @@ public class RpcInitializer {
                 String name = serviceConfig.getName();
                 String method = serviceConfig.getMethod();
                 RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(method);
-                rpcClientMap.put(name, rpcClient);
+                this.rpcClientMap.put(name, rpcClient);
                 if (rpcClient.getRpcBean() != null) {
-                    rpcBeanList.add(rpcClient.getRpcBean());
+                    this.rpcBeanList.add(rpcClient.getRpcBean());
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {

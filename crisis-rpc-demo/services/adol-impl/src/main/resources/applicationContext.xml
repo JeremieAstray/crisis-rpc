@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="springContextHolder" class="com.jeremie.spring.utils.SpringContextHolder" lazy-init="false"/>
+
+    <bean class="com.jeremie.spring.rpc.server.common.RpcConfiguration" id="rpcConfiguration">
+        <property name="serverName" value="adol-impl"/>
+        <property name="serverPort" value="8091"/>
+    </bean>
+
+    <!-- 配置使Spring采用CGLIB代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <!-- 自动扫描 ,将带有注解的类 纳入spring容器管理 -->
+    <context:component-scan base-package="com.jeremie.spring">
+    </context:component-scan>
+</beans>

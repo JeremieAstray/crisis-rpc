@@ -31,6 +31,7 @@ public enum RpcClientEnum {
                 if (!"".equals(rpcClientEnum.beanClazzName)) {
                     rpcClient.setRpcBean((RpcBean) Class.forName(rpcClientEnum.beanClazzName).newInstance());
                 }
+                return rpcClient;
             }
         }
         throw new ClassNotFoundException("can not case to rpc client class name " + name + " !");
