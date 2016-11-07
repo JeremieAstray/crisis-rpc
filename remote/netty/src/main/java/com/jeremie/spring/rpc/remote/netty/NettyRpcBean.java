@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.remote.netty;
 
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -14,31 +15,34 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 
 /**
  * @author guanhong 15/10/25 下午4:08.
  */
-@Component
 public class NettyRpcBean extends RpcBean {
-    protected Channel channel;
+    private Channel channel;
     private static final Logger logger = LoggerFactory.getLogger(NettyRpcBean.class);
     private boolean isConnect = false;
     private Bootstrap bootstrap;
     private EventLoopGroup group;
 
+    @Override
     public boolean isConnect() {
-        return isConnect;
+        return this.isConnect;
+    }
+
+    @Override
+    public void write(RpcInvocation rpcInvocation) {
+        this.channel.writeAndFlush(rpcInvocation);
     }
 
     @Override
     public void init() {
-        super.init();
-        group = new NioEventLoopGroup();
+        this.group = new NioEventLoopGroup();
         try {
-            bootstrap = new Bootstrap();
-            bootstrap.group(group)
+            this.bootstrap = new Bootstrap();
+            this.bootstrap.group(this.group)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -51,18 +55,18 @@ public class NettyRpcBean extends RpcBean {
                         }
                     });
             // 连接服务端
-            channel = bootstrap.connect(host, port).sync().channel();
+            this.channel = this.bootstrap.connect(this.host, this.port).sync().channel();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
-        isConnect = true;
+        this.isConnect = true;
     }
 
     @Override
     public void destroy() throws Exception {
         //关闭
-        if (bootstrap != null) {
-            group.shutdownGracefully();
+        if (this.bootstrap != null) {
+            this.group.shutdownGracefully();
         }
     }
 }

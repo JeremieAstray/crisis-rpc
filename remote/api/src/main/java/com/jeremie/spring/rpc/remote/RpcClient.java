@@ -26,6 +26,10 @@ public abstract class RpcClient {
     public static Cache<String, Object> resultCache = CacheBuilder.newBuilder().expireAfterWrite(TIMEOUT, TimeUnit.MILLISECONDS).build();
     private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
 
+    public abstract void setRpcBean(RpcBean rpcBean);
+
+    public abstract RpcBean getRpcBean();
+
     public abstract Object invoke(RpcInvocation rpcInvocation);
 
     /**

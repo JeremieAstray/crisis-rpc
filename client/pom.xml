@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.jeremie.spring</groupId>
-        <artifactId>${app.name}-remote</artifactId>
+        <artifactId>${app.name}</artifactId>
         <version>${project.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>${app.name}-remote-client</artifactId>
+    <artifactId>${app.name}-client</artifactId>
     <version>${project.version}</version>
     <packaging>jar</packaging>
 

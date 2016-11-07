@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.remote.mina;
 
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -25,17 +26,18 @@ public class MinaRpcBean extends RpcBean {
     private IoConnector connector;
     private boolean isConnect = false;
 
-    public IoSession getSession() {
-        return session;
-    }
-
+    @Override
     public boolean isConnect() {
         return isConnect;
     }
 
     @Override
+    public void write(RpcInvocation rpcInvocation) {
+        this.session.write(rpcInvocation);
+    }
+
+    @Override
     public void init() {
-        super.init();
         connector = new NioSocketConnector();
         connector.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));

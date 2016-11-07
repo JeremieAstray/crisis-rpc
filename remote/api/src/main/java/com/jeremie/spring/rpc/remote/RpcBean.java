@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.remote;
 
+import com.jeremie.spring.rpc.RpcInvocation;
 import org.springframework.beans.factory.DisposableBean;
 
 /**
@@ -11,9 +12,11 @@ public abstract class RpcBean implements DisposableBean {
     protected String appName;
     protected int clientPort;
 
-    public void init() {
+    public abstract void write(RpcInvocation rpcInvocation);
 
-    }
+    public abstract void init();
+
+    public abstract boolean isConnect();
 
     public void setHost(String host) {
         this.host = host;

@@ -2,30 +2,34 @@ package com.jeremie.spring.rpc.remote.netty;
 
 
 import com.jeremie.spring.rpc.RpcInvocation;
+import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by Jeremie on 2015/5/13.
  */
-@Component
 public class NettyRpcClient extends RpcClient {
 
-    @Autowired
-    private NettyRpcBean nettyRpcBean;
+    private RpcBean nettyRpcBean;
 
-    public NettyRpcClient setNettyRpcBean(NettyRpcBean nettyRpcBean) {
-        this.nettyRpcBean = nettyRpcBean;
-        return this;
+    @Override
+    public void setRpcBean(RpcBean rpcBean) {
+        this.nettyRpcBean = rpcBean;
+
+    }
+
+    @Override
+    public RpcBean getRpcBean() {
+        return this.nettyRpcBean;
     }
 
     @Override
     public Object invoke(RpcInvocation rpcInvocation) {
         Object returnObject = this.dynamicProxyObject(rpcInvocation);
-        if (!nettyRpcBean.isConnect())
-            nettyRpcBean.init();
-        nettyRpcBean.channel.writeAndFlush(rpcInvocation);
+        if (!this.nettyRpcBean.isConnect()) {
+            this.nettyRpcBean.init();
+        }
+        this.nettyRpcBean.write(rpcInvocation);
         return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 }

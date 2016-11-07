@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.RpcInvocation;
+import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,16 @@ public class HttpRpcClient extends RpcClient {
         return this;
     }
 
+
+    @Override
+    public void setRpcBean(RpcBean rpcBean) {
+        //do nothing
+    }
+
+    @Override
+    public RpcBean getRpcBean() {
+        return null;
+    }
 
     @Override
     public Object invoke(RpcInvocation rpcInvocation) {

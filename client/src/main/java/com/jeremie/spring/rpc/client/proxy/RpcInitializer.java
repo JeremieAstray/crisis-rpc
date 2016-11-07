@@ -1,12 +1,14 @@
 package com.jeremie.spring.rpc.client.proxy;
 
 import com.jeremie.spring.rpc.RpcInvocation;
-import com.jeremie.spring.rpc.remote.config.RpcConfiguration;
-import com.jeremie.spring.rpc.remote.config.ServiceConfig;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
+import com.jeremie.spring.rpc.remote.RpcClientEnum;
+import com.jeremie.spring.rpc.remote.config.RpcConfiguration;
+import com.jeremie.spring.rpc.remote.config.ServiceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.Resource;
@@ -15,6 +17,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
@@ -24,20 +27,20 @@ import java.util.*;
 /**
  * @author guanhong 15/10/17 下午11:40.
  */
-
+@Component
 public class RpcInitializer {
 
     private final String RESOURCE_PATTERN = "/**/*.class";
     private static final Logger logger = LoggerFactory.getLogger(RpcInitializer.class);
+    private static final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
+
+    @Autowired
     private ConfigurableApplicationContext applicationContext;
+
+    private RpcConfiguration rpcConfiguration;
+
     private Map<String, RpcClient> rpcClientMap;
     private List<RpcBean> rpcBeanList;
-    private RpcConfiguration rpcConfiguration;
-    private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-
-    public void setApplicationContext(ConfigurableApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
 
     public void setRpcBeanList(List<RpcBean> rpcBeanList) {
         this.rpcBeanList = rpcBeanList;
@@ -51,7 +54,24 @@ public class RpcInitializer {
         this.rpcConfiguration = rpcConfiguration;
     }
 
+    private void beforeInit() {
+        try {
+            for (ServiceConfig serviceConfig : rpcConfiguration.getServices()) {
+                String name = serviceConfig.getName();
+                String method = serviceConfig.getMethod();
+                RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(method);
+                rpcClientMap.put(name, rpcClient);
+                if (rpcClient.getRpcBean() != null) {
+                    rpcBeanList.add(rpcClient.getRpcBean());
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
     public void init() {
+        beforeInit();
         ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();
         Map<String, List<Class>> clazzMap;
         try {
@@ -104,7 +124,7 @@ public class RpcInitializer {
     public Map<String, List<Class>> getClassMap() throws IOException, ClassNotFoundException {
         Map<String, List<Class>> clazzMap = new HashMap<>();
         clazzMap.clear();
-        for (ServiceConfig serviceConfig : rpcConfiguration.getServices()) {
+        for (ServiceConfig serviceConfig : this.rpcConfiguration.getServices()) {
             List<String> packages = serviceConfig.getPackages();
             if (!packages.isEmpty()) {
                 for (String pkg : packages) {
@@ -133,7 +153,8 @@ public class RpcInitializer {
     }
 
     public void destroy() throws Exception {
-        for (RpcBean rpcBean : rpcBeanList)
+        for (RpcBean rpcBean : rpcBeanList) {
             rpcBean.destroy();
+        }
     }
 }

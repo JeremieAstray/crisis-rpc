@@ -30,15 +30,15 @@ public class NioSocketRpcThread implements Runnable {
     public void run() {
         try {
             while (NioRpcBean.running) {
-                selector.select();
-                Iterator it = selector.selectedKeys().iterator();
+                this.selector.select();
+                Iterator it = this.selector.selectedKeys().iterator();
                 while (it.hasNext()) {
                     SelectionKey key = (SelectionKey) it.next();
                     it.remove();
-                    socketChannel = (SocketChannel) key.channel();
+                    this.socketChannel = (SocketChannel) key.channel();
                     if (key.isReadable()) {
                         this.dealReaderableMessage();
-                    } else if (key.isWritable() && !SocketNioRpcClient.requestQueue.isEmpty()) {
+                    } else if (key.isWritable() && !NioRpcBean.requestQueue.isEmpty()) {
                         this.dealWritableMessage();
                     }
                 }
@@ -50,7 +50,7 @@ public class NioSocketRpcThread implements Runnable {
 
     public void dealReaderableMessage() throws Exception {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(50 * 1024);
-        if (socketChannel.read((ByteBuffer) byteBuffer.clear()) > 0) {
+        if (this.socketChannel.read((ByteBuffer) byteBuffer.clear()) > 0) {
             byteBuffer.flip();
             byte[] bytes = new byte[byteBuffer.remaining()];
             byteBuffer.get(bytes, 0, bytes.length);
@@ -61,11 +61,12 @@ public class NioSocketRpcThread implements Runnable {
     }
 
     public void dealWritableMessage() throws Exception {
-        RpcInvocation rpcInvocation = SocketNioRpcClient.requestQueue.poll();
+        RpcInvocation rpcInvocation = NioRpcBean.requestQueue.poll();
         byte[] bytes = SerializeTool.objectToByteArray(rpcInvocation);
-        if (bytes == null)
+        if (bytes == null) {
             throw new IllegalStateException();
-        socketChannel.write(ByteBuffer.wrap(bytes));
+        }
+        this.socketChannel.write(ByteBuffer.wrap(bytes));
     }
 
 }
