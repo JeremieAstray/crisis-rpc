@@ -38,7 +38,7 @@ public class NettyRpcBean extends RpcBean {
     }
 
     @Override
-    public void init() {
+    public void init() throws Exception {
         this.group = new NioEventLoopGroup();
         try {
             this.bootstrap = new Bootstrap();
@@ -58,6 +58,7 @@ public class NettyRpcBean extends RpcBean {
             this.channel = this.bootstrap.connect(this.host, this.port).sync().channel();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
+            throw e;
         }
         this.isConnect = true;
     }

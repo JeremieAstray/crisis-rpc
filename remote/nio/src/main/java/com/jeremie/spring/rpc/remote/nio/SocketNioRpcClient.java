@@ -28,9 +28,14 @@ public class SocketNioRpcClient extends RpcClient {
     }
 
     @Override
-    public Object invoke(RpcInvocation rpcInvocation) {
-        Object returnObject = this.dynamicProxyObject(rpcInvocation);
+    public void init() throws Exception {
+
+    }
+
+    @Override
+    public Object invoke(RpcInvocation rpcInvocation) throws Exception {
         nioRpcBean.write(rpcInvocation);
+        Object returnObject = this.dynamicProxyObject(rpcInvocation);
         return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 

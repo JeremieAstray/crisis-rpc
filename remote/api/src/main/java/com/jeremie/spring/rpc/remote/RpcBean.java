@@ -12,9 +12,25 @@ public abstract class RpcBean implements DisposableBean {
     protected String appName;
     protected int clientPort;
 
-    public abstract void write(RpcInvocation rpcInvocation);
+    public String getHost() {
+        return host;
+    }
 
-    public abstract void init();
+    public int getPort() {
+        return port;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public int getClientPort() {
+        return clientPort;
+    }
+
+    public abstract void write(RpcInvocation rpcInvocation) throws Exception;
+
+    public abstract void init() throws Exception;
 
     public abstract boolean isConnect();
 

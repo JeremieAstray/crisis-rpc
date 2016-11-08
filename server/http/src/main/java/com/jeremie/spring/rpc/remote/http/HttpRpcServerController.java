@@ -33,8 +33,9 @@ public class HttpRpcServerController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = "/", produces = "text/html; charset=utf-8")
     @ResponseBody
     public String rpcServer(String rpcDtoStr, Model model, HttpServletRequest request) throws Exception {
-        if (!MonitorStatus.init.get())
+        if (!MonitorStatus.init.get()) {
             MonitorStatus.init(applicationContext, MonitorStatus.Remote.http);
+        }
         MonitorStatus.remoteHostsList.add(request.getRemoteHost() + ":" + request.getRemotePort());
         Object object = SerializeTool.stringToObject(rpcDtoStr);
         RpcHandler.setRpcContextAddress(new InetSocketAddress(request.getLocalAddr(), request.getLocalPort())

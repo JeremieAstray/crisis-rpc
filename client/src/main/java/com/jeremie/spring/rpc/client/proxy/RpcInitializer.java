@@ -115,11 +115,11 @@ public class RpcInitializer {
     /**
      * 获取代理class集合
      *
-     * @return
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @return Map
+     * @throws IOException IOException
+     * @throws ClassNotFoundException ClassNotFoundException
      */
-    public Map<String, List<Class>> getClassMap() throws IOException, ClassNotFoundException {
+    private Map<String, List<Class>> getClassMap() throws IOException, ClassNotFoundException {
         Map<String, List<Class>> clazzMap = new HashMap<>();
         clazzMap.clear();
         for (ServiceConfig serviceConfig : this.rpcConfiguration.getServices()) {

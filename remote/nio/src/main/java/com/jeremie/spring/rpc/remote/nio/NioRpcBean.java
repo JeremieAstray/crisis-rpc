@@ -27,7 +27,7 @@ public class NioRpcBean extends RpcBean {
     private Thread nioThread = null;
 
     @Override
-    public void write(RpcInvocation rpcInvocation) {
+    public void write(RpcInvocation rpcInvocation) throws Exception {
         requestQueue.add(rpcInvocation);
         if (!this.init && this.nioThread == null) {
             this.init();
@@ -37,7 +37,7 @@ public class NioRpcBean extends RpcBean {
     }
 
     @Override
-    public void init() {
+    public void init() throws Exception {
         try {
             this.socketChannel = SocketChannel.open();
             this.selector = Selector.open();
@@ -52,6 +52,7 @@ public class NioRpcBean extends RpcBean {
             this.init = true;
         } catch (Exception e) {
             logger.error("rpcNioBean init error", e);
+            throw e;
         }
     }
 

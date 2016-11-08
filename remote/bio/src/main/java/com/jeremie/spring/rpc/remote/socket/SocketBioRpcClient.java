@@ -16,40 +16,28 @@ import java.util.concurrent.Executors;
 public class SocketBioRpcClient extends RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketBioRpcClient.class);
-    private String host;
-    private int port;
-    private String AppName;
+    private RpcBean rpcBean;
     private Executor executor = Executors.newFixedThreadPool(200);
-
-    public SocketBioRpcClient setHost(String host) {
-        this.host = host;
-        return this;
-    }
-
-    public SocketBioRpcClient setPort(int port) {
-        this.port = port;
-        return this;
-    }
-
-    public SocketBioRpcClient setAppName(String appName) {
-        AppName = appName;
-        return this;
-    }
 
     @Override
     public void setRpcBean(RpcBean rpcBean) {
-        //do nothing
+        this.rpcBean = rpcBean;
     }
 
     @Override
     public RpcBean getRpcBean() {
-        return null;
+        return this.rpcBean;
+    }
+
+    @Override
+    public void init() throws Exception {
+
     }
 
     @Override
     public Object invoke(RpcInvocation rpcInvocation) {
+        executor.execute(new SocketBioRpcThread(this.rpcBean.getPort(), this.rpcBean.getHost(), rpcInvocation));
         Object returnObject = this.dynamicProxyObject(rpcInvocation);
-        executor.execute(new SocketBioRpcThread(port, host, rpcInvocation));
         return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 }

@@ -30,7 +30,9 @@ public abstract class RpcClient {
 
     public abstract RpcBean getRpcBean();
 
-    public abstract Object invoke(RpcInvocation rpcInvocation);
+    public abstract void init() throws Exception;
+
+    public abstract Object invoke(RpcInvocation rpcInvocation) throws Exception;
 
     /**
      * 动态代理类

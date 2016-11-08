@@ -27,15 +27,22 @@ public class MinaRpcClient extends RpcClient {
     }
 
     @Override
-    public Object invoke(RpcInvocation rpcInvocation) {
-        Object returnObject = this.dynamicProxyObject(rpcInvocation);
-        if (!minaRpcBean.isConnect())
+    public void init() throws Exception {
+        if (!this.minaRpcBean.isConnect()) {
             try {
-                minaRpcBean.init();
+                this.minaRpcBean.init();
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                return null;
+                throw e;
             }
+        }
+    }
+
+    @Override
+    public Object invoke(RpcInvocation rpcInvocation) throws Exception {
+        this.init();
+        this.minaRpcBean.write(rpcInvocation);
+        Object returnObject = this.dynamicProxyObject(rpcInvocation);
         return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 }

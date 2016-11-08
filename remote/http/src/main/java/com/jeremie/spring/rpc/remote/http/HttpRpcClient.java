@@ -16,41 +16,27 @@ import java.util.concurrent.Executors;
 @Component
 public class HttpRpcClient extends RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(HttpRpcClient.class);
-    private String host;
-    private int port;
-    private String appName;
+    private RpcBean rpcBean;
     private Executor executor = Executors.newFixedThreadPool(200);
-
-    public HttpRpcClient setHost(String host) {
-        this.host = host;
-        return this;
-    }
-
-    public HttpRpcClient setAppName(String appName) {
-        this.appName = appName;
-        return this;
-    }
-
-    public HttpRpcClient setPort(int port) {
-        this.port = port;
-        return this;
-    }
-
 
     @Override
     public void setRpcBean(RpcBean rpcBean) {
-        //do nothing
+        this.rpcBean = rpcBean;
     }
 
     @Override
     public RpcBean getRpcBean() {
-        return null;
+        return this.rpcBean;
+    }
+
+    @Override
+    public void init() throws Exception {
     }
 
     @Override
     public Object invoke(RpcInvocation rpcInvocation) {
+        executor.execute(new HttpRpcThread(this.rpcBean.getPort(), this.rpcBean.getHost(), rpcInvocation));
         Object returnObject = this.dynamicProxyObject(rpcInvocation);
-        executor.execute(new HttpRpcThread(port, host, rpcInvocation));
         return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
     }
 }

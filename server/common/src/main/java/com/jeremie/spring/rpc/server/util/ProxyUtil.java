@@ -26,8 +26,8 @@ public class ProxyUtil {
 
             return target.getClass();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.info("The bean " + bean.getClass().getName() + " is not a proxy bean!");
         }
-        return null;
+        return bean.getClass();
     }
 }
