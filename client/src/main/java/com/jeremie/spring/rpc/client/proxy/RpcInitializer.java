@@ -42,6 +42,7 @@ public class RpcInitializer {
 
     private Map<String, RpcClient> rpcClientMap = new ConcurrentHashMap<>();
     private List<RpcBean> rpcBeanList = new ArrayList<>();
+
     public void setRpcConfiguration(RpcConfiguration rpcConfiguration) {
         this.rpcConfiguration = rpcConfiguration;
     }
@@ -54,6 +55,11 @@ public class RpcInitializer {
                 RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(method);
                 this.rpcClientMap.put(name, rpcClient);
                 if (rpcClient.getRpcBean() != null) {
+                    RpcBean rpcBean = rpcClient.getRpcBean();
+                    rpcBean.setAppName(name);
+                    rpcBean.setClientPort(rpcConfiguration.getDefaultNioClientPort());
+                    rpcBean.setHost(rpcConfiguration.getDefaultIp());
+                    rpcBean.setPort(rpcConfiguration.getDefaultPort());
                     this.rpcBeanList.add(rpcClient.getRpcBean());
                 }
             }
