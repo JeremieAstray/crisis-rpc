@@ -4,7 +4,6 @@ import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcBean;
 import com.jeremie.spring.rpc.remote.RpcClient;
 import com.jeremie.spring.rpc.remote.RpcClientEnum;
-import com.jeremie.spring.rpc.remote.config.RpcConfiguration;
 import com.jeremie.spring.rpc.remote.config.ServiceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,28 +37,27 @@ public class RpcInitializer {
     @Autowired
     private ConfigurableApplicationContext applicationContext;
 
-    private RpcConfiguration rpcConfiguration;
+    private List<ServiceConfig> serviceConfigList;
 
     private Map<String, RpcClient> rpcClientMap = new ConcurrentHashMap<>();
     private List<RpcBean> rpcBeanList = new ArrayList<>();
 
-    public void setRpcConfiguration(RpcConfiguration rpcConfiguration) {
-        this.rpcConfiguration = rpcConfiguration;
+
+    public void setServiceConfigList(List<ServiceConfig> serviceConfigList) {
+        this.serviceConfigList = serviceConfigList;
     }
 
     private void beforeInit() {
         try {
-            for (ServiceConfig serviceConfig : rpcConfiguration.getServices()) {
-                String name = serviceConfig.getName();
-                String method = serviceConfig.getMethod();
-                RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(method);
-                this.rpcClientMap.put(name, rpcClient);
+            for (ServiceConfig serviceConfig : serviceConfigList) {
+                RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(serviceConfig.getMethod());
+                this.rpcClientMap.put(serviceConfig.getName(), rpcClient);
                 if (rpcClient.getRpcBean() != null) {
                     RpcBean rpcBean = rpcClient.getRpcBean();
-                    rpcBean.setAppName(name);
-                    rpcBean.setClientPort(rpcConfiguration.getDefaultNioClientPort());
-                    rpcBean.setHost(rpcConfiguration.getDefaultIp());
-                    rpcBean.setPort(rpcConfiguration.getDefaultPort());
+                    rpcBean.setAppName(serviceConfig.getName());
+                    rpcBean.setClientPort(serviceConfig.getDefaultNioClientPort());
+                    rpcBean.setHost(serviceConfig.getDefaultIp());
+                    rpcBean.setPort(serviceConfig.getDefaultPort());
                     this.rpcBeanList.add(rpcClient.getRpcBean());
                 }
             }
@@ -116,13 +114,13 @@ public class RpcInitializer {
      * 获取代理class集合
      *
      * @return Map
-     * @throws IOException IOException
+     * @throws IOException            IOException
      * @throws ClassNotFoundException ClassNotFoundException
      */
     private Map<String, List<Class>> getClassMap() throws IOException, ClassNotFoundException {
         Map<String, List<Class>> clazzMap = new HashMap<>();
         clazzMap.clear();
-        for (ServiceConfig serviceConfig : this.rpcConfiguration.getServices()) {
+        for (ServiceConfig serviceConfig : this.serviceConfigList) {
             List<String> packages = serviceConfig.getPackages();
             if (!packages.isEmpty()) {
                 for (String pkg : packages) {

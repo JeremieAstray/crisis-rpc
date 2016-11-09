@@ -9,6 +9,10 @@ import java.util.List;
  */
 public class ServiceConfig implements Serializable {
 
+    private String defaultIp;
+    private int defaultPort;
+    private int defaultNioClientPort;
+
     private String name;
     private String method;
     private List<String> packages = new ArrayList<>();
@@ -35,5 +39,29 @@ public class ServiceConfig implements Serializable {
 
     public void setPackages(List<String> packages) {
         this.packages = packages;
+    }
+
+    public String getDefaultIp() {
+        return this.defaultIp;
+    }
+
+    public void setDefaultIp(String defaultIp) {
+        this.defaultIp = defaultIp;
+    }
+
+    public int getDefaultPort() {
+        return this.defaultPort;
+    }
+
+    public void setDefaultPort(int defaultPort) {
+        this.defaultPort = defaultPort;
+    }
+
+    public int getDefaultNioClientPort() {
+        return this.defaultNioClientPort;
+    }
+
+    public void setDefaultNioClientPort(int defaultNioClientPort) {
+        this.defaultNioClientPort = defaultNioClientPort;
     }
 }

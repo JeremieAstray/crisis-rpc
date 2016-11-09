@@ -12,15 +12,12 @@
 
     <!-- 配置使Spring采用CGLIB代理 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
-
-    <bean id="rpcConfiguration" class="com.jeremie.spring.rpc.remote.config.RpcConfiguration">
-        <property name="defaultHttpport" value="80"/>
-        <property name="defaultIp" value="127.0.0.1"/>
-        <property name="defaultNioClientPort" value="8090"/>
-        <property name="defaultPort" value="8091"/>
-        <property name="services">
+    <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer" init-method="init">
+        <property name="serviceConfigList">
             <list>
                 <bean id="minaServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">
+                    <property name="defaultIp" value="127.0.0.1"/>
+                    <property name="defaultPort" value="8091"/>
                     <property name="method" value="mina"/>
                     <property name="name" value="adol-impl"/>
                     <property name="packages">
@@ -30,6 +27,8 @@
                     </property>
                 </bean>
                 <bean id="httpServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">
+                    <property name="defaultIp" value="127.0.0.1"/>
+                    <property name="defaultPort" value="80"/>
                     <property name="method" value="http"/>
                     <property name="name" value="home-impl"/>
                     <property name="packages">
@@ -40,9 +39,6 @@
                 </bean>
             </list>
         </property>
-    </bean>
-    <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer" init-method="init">
-        <property name="rpcConfiguration" ref="rpcConfiguration"/>
     </bean>
 
     <!-- 自动扫描 ,将带有注解的类 纳入spring容器管理 -->
