@@ -12,6 +12,7 @@
 
     <!-- 配置使Spring采用CGLIB代理 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
+
     <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer" init-method="init">
         <property name="serviceConfigList">
             <list>
@@ -28,7 +29,7 @@
                 </bean>
                 <bean id="httpServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">
                     <property name="defaultIp" value="127.0.0.1"/>
-                    <property name="defaultPort" value="80"/>
+                    <property name="defaultPort" value="8095"/>
                     <property name="method" value="http"/>
                     <property name="name" value="home-impl"/>
                     <property name="packages">
