@@ -12,20 +12,6 @@
     <artifactId>crisis-rpc-common</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.ribbon</groupId>
-            <artifactId>ribbon-eureka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client</artifactId>
-        </dependency>
-    </dependencies>
     <build>
         <plugins>
             <plugin>

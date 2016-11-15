@@ -2,9 +2,6 @@ package com.jeremie.spring.monitor.server;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.shared.Application;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -15,8 +12,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,13 +20,11 @@ import java.util.List;
 /**
  * @author guanhong 15/12/8 下午2:16.
  */
-@RestController
+/*@RestController*/
 public class MonitorServer {
-    @Autowired
-    private EurekaClient discoverEurekaClient;
 
     private static final Logger logger = LoggerFactory.getLogger(MonitorServer.class);
-
+/*
     @RequestMapping(path = "/monitor")
     public String status() {
         List<Application> applicationList = discoverEurekaClient.getApplications().getRegisteredApplications();
@@ -61,5 +54,5 @@ public class MonitorServer {
             }
         });
         return result.toJSONString();
-    }
+    }*/
 }
