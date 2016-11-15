@@ -83,14 +83,17 @@ public abstract class RpcClient {
                     }
                     if (this.getObject() != null) {
                         if ("finalize".equals(method.getName())) {
+                            resultCache.invalidate(rpcInvocation.getClientId());
                             this.finalize();
                             return null;
                         }
                         return method.invoke(this.getObject(), params);
                     }
+                    resultCache.invalidate(rpcInvocation.getClientId());
                     return null;
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
+                    resultCache.invalidate(rpcInvocation.getClientId());
                     return null;
                 }
             }

@@ -14,5 +14,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>discovery-api</module>
+        <module>zookeeper-client</module>
     </modules>
 </project>
