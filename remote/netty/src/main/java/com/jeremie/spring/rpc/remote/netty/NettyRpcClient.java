@@ -12,15 +12,19 @@ public class NettyRpcClient extends RpcClient {
 
     private RpcBean nettyRpcBean;
 
-    @Override
-    public void setRpcBean(RpcBean rpcBean) {
-        this.nettyRpcBean = rpcBean;
-
+    public NettyRpcClient(Boolean lazyLoading) {
+        super(lazyLoading);
     }
 
     @Override
     public RpcBean getRpcBean() {
         return this.nettyRpcBean;
+    }
+
+    @Override
+    public void setRpcBean(RpcBean rpcBean) {
+        this.nettyRpcBean = rpcBean;
+
     }
 
     @Override
@@ -34,7 +38,11 @@ public class NettyRpcClient extends RpcClient {
     public Object invoke(RpcInvocation rpcInvocation) throws Exception {
         this.init();
         this.nettyRpcBean.write(rpcInvocation);
-        Object returnObject = this.dynamicProxyObject(rpcInvocation);
-        return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
+        if (super.lazyLoading) {
+            Object returnObject = this.dynamicProxyObject(rpcInvocation);
+            return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
+        } else {
+            return this.getObject(rpcInvocation);
+        }
     }
 }

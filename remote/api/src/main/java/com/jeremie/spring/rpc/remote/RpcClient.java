@@ -21,14 +21,20 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class RpcClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
     public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
+
     protected static long TIMEOUT = 500L;
     public static Cache<String, Object> resultCache = CacheBuilder.newBuilder().expireAfterWrite(TIMEOUT, TimeUnit.MILLISECONDS).build();
-    private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
+    protected boolean lazyLoading;
 
-    public abstract void setRpcBean(RpcBean rpcBean);
+    public RpcClient(Boolean lazyLoading) {
+        this.lazyLoading = lazyLoading;
+    }
 
     public abstract RpcBean getRpcBean();
+
+    public abstract void setRpcBean(RpcBean rpcBean);
 
     public abstract void init() throws Exception;
 

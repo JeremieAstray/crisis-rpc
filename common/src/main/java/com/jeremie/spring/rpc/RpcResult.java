@@ -11,6 +11,7 @@ public class RpcResult implements Serializable {
     private Status status;
     private Object returnPara;
     private Exception exception;
+    private String serverName;
 
     public String getClientId() {
         return clientId;
@@ -42,6 +43,14 @@ public class RpcResult implements Serializable {
 
     public void setException(Exception exception) {
         this.exception = exception;
+    }
+
+    public String getServerName() {
+        return this.serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 
     public enum Status {

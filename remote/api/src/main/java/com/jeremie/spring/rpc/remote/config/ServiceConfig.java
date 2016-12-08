@@ -12,11 +12,12 @@ public class ServiceConfig implements Serializable {
     private String defaultIp;
     private int defaultPort;
     private int defaultNioClientPort;
+    private boolean lazyLoading = false;
 
     private String name;
+
     private String method;
     private List<String> packages = new ArrayList<>();
-
     public String getName() {
         return name;
     }
@@ -64,4 +65,13 @@ public class ServiceConfig implements Serializable {
     public void setDefaultNioClientPort(int defaultNioClientPort) {
         this.defaultNioClientPort = defaultNioClientPort;
     }
+
+    public boolean isLazyLoading() {
+        return this.lazyLoading;
+    }
+
+    public void setLazyLoading(boolean lazyLoading) {
+        this.lazyLoading = lazyLoading;
+    }
+
 }

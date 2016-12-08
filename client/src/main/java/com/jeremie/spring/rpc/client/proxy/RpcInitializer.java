@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,10 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class RpcInitializer {
 
-    private final String RESOURCE_PATTERN = "/**/*.class";
     private static final Logger logger = LoggerFactory.getLogger(RpcInitializer.class);
     private static final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-
+    private final String RESOURCE_PATTERN = "/**/*.class";
     @Autowired
     private ConfigurableApplicationContext applicationContext;
 
@@ -50,7 +50,7 @@ public class RpcInitializer {
     private void beforeInit() {
         try {
             for (ServiceConfig serviceConfig : serviceConfigList) {
-                RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(serviceConfig.getMethod());
+                RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(serviceConfig.getMethod(), serviceConfig.isLazyLoading());
                 this.rpcClientMap.put(serviceConfig.getName(), rpcClient);
                 if (rpcClient.getRpcBean() != null) {
                     RpcBean rpcBean = rpcClient.getRpcBean();
@@ -61,7 +61,7 @@ public class RpcInitializer {
                     this.rpcBeanList.add(rpcClient.getRpcBean());
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             logger.error(e.getMessage(), e);
         }
     }

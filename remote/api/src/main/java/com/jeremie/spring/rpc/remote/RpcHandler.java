@@ -11,13 +11,15 @@ public class RpcHandler {
         if (message instanceof RpcResult) {
             RpcResult rpcResult = (RpcResult) message;
             if (rpcResult.getStatus() == RpcResult.Status.SUCCESS) {
-                if (rpcResult.getReturnPara() != null)
+                if (rpcResult.getReturnPara() != null) {
                     RpcClient.resultCache.put(rpcResult.getClientId(), rpcResult.getReturnPara());
+                }
                 Object lock = RpcClient.lockMap.get(rpcResult.getClientId());
-                if (lock != null)
+                if (lock != null) {
                     synchronized (lock) {
                         lock.notify();
                     }
+                }
             }
         }
     }

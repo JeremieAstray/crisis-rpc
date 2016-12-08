@@ -19,14 +19,18 @@ public class SocketBioRpcClient extends RpcClient {
     private RpcBean rpcBean;
     private Executor executor = Executors.newFixedThreadPool(200);
 
-    @Override
-    public void setRpcBean(RpcBean rpcBean) {
-        this.rpcBean = rpcBean;
+    public SocketBioRpcClient(Boolean lazyLoading) {
+        super(lazyLoading);
     }
 
     @Override
     public RpcBean getRpcBean() {
         return this.rpcBean;
+    }
+
+    @Override
+    public void setRpcBean(RpcBean rpcBean) {
+        this.rpcBean = rpcBean;
     }
 
     @Override
@@ -37,7 +41,11 @@ public class SocketBioRpcClient extends RpcClient {
     @Override
     public Object invoke(RpcInvocation rpcInvocation) {
         executor.execute(new SocketBioRpcThread(this.rpcBean.getPort(), this.rpcBean.getHost(), rpcInvocation));
-        Object returnObject = this.dynamicProxyObject(rpcInvocation);
-        return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
+        if (super.lazyLoading) {
+            Object returnObject = this.dynamicProxyObject(rpcInvocation);
+            return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
+        } else {
+            return this.getObject(rpcInvocation);
+        }
     }
 }

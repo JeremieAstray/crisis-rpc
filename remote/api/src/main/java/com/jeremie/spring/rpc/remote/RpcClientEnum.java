@@ -1,5 +1,7 @@
 package com.jeremie.spring.rpc.remote;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Created by jeremie on 2016/11/7.
  */
@@ -21,13 +23,13 @@ public enum RpcClientEnum {
         this.beanClazzName = beanClazzName;
     }
 
-    public static RpcClient getRpcClientInstance(String name) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public static RpcClient getRpcClientInstance(String name, boolean lazyLoading) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         if (name == null) {
             throw new NullPointerException();
         }
         for (RpcClientEnum rpcClientEnum : RpcClientEnum.values()) {
             if (name.equals(rpcClientEnum.name)) {
-                RpcClient rpcClient = (RpcClient) Class.forName(rpcClientEnum.clientClazzName).newInstance();
+                RpcClient rpcClient = (RpcClient) Class.forName(rpcClientEnum.clientClazzName).getDeclaredConstructor(Boolean.class).newInstance(lazyLoading);
                 if (!"".equals(rpcClientEnum.beanClazzName)) {
                     rpcClient.setRpcBean((RpcBean) Class.forName(rpcClientEnum.beanClazzName).newInstance());
                 }

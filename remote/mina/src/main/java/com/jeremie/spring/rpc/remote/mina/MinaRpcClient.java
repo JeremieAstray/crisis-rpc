@@ -16,14 +16,18 @@ public class MinaRpcClient extends RpcClient {
 
     private RpcBean minaRpcBean;
 
-    @Override
-    public void setRpcBean(RpcBean rpcBean) {
-        this.minaRpcBean = rpcBean;
+    public MinaRpcClient(Boolean lazyLoading) {
+        super(lazyLoading);
     }
 
     @Override
     public RpcBean getRpcBean() {
         return this.minaRpcBean;
+    }
+
+    @Override
+    public void setRpcBean(RpcBean rpcBean) {
+        this.minaRpcBean = rpcBean;
     }
 
     @Override
@@ -42,7 +46,11 @@ public class MinaRpcClient extends RpcClient {
     public Object invoke(RpcInvocation rpcInvocation) throws Exception {
         this.init();
         this.minaRpcBean.write(rpcInvocation);
-        Object returnObject = this.dynamicProxyObject(rpcInvocation);
-        return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
+        if (super.lazyLoading) {
+            Object returnObject = this.dynamicProxyObject(rpcInvocation);
+            return returnObject == null ? this.getObject(rpcInvocation) : returnObject;
+        } else {
+            return this.getObject(rpcInvocation);
+        }
     }
 }
