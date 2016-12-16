@@ -17,8 +17,8 @@ public class HttpRpcClient extends RpcClient {
     private RpcBean rpcBean;
     private Executor executor = Executors.newFixedThreadPool(200);
 
-    public HttpRpcClient(Boolean lazyLoading) {
-        super(lazyLoading);
+    public HttpRpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
+        super(serverName, lazyLoading, cacheTimeout);
     }
 
     @Override
@@ -33,6 +33,7 @@ public class HttpRpcClient extends RpcClient {
 
     @Override
     public void init() throws Exception {
+        executor.execute(new HttpRpcThread(this.rpcBean.getPort(), this.rpcBean.getHost(), null));
     }
 
     @Override

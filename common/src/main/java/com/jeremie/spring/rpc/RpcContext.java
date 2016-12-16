@@ -30,6 +30,8 @@ public class RpcContext {
 
     private SocketAddress remoteAddress;
 
+    private String serverName;
+
     /**
      * get context.
      *
@@ -100,5 +102,13 @@ public class RpcContext {
 
     public void setRemoteAddress(SocketAddress remoteAddress) {
         this.remoteAddress = remoteAddress;
+    }
+
+    public String getServerName() {
+        return this.serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 }

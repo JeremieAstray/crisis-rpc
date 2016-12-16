@@ -15,8 +15,8 @@ public class SocketNioRpcClient extends RpcClient {
 
     private RpcBean nioRpcBean;
 
-    public SocketNioRpcClient(Boolean lazyLoading) {
-        super(lazyLoading);
+    public SocketNioRpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
+        super(serverName, lazyLoading, cacheTimeout);
     }
 
     @Override

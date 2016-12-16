@@ -13,6 +13,7 @@ public class ServiceConfig implements Serializable {
     private int defaultPort;
     private int defaultNioClientPort;
     private boolean lazyLoading = false;
+    private Long loadTimeout = 500L;
 
     private String name;
 
@@ -74,4 +75,11 @@ public class ServiceConfig implements Serializable {
         this.lazyLoading = lazyLoading;
     }
 
+    public Long getLoadTimeout() {
+        return this.loadTimeout;
+    }
+
+    public void setLoadTimeout(Long loadTimeout) {
+        this.loadTimeout = loadTimeout;
+    }
 }

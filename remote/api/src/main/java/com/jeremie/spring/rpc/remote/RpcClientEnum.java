@@ -23,20 +23,20 @@ public enum RpcClientEnum {
         this.beanClazzName = beanClazzName;
     }
 
-    public static RpcClient getRpcClientInstance(String name, boolean lazyLoading) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
-        if (name == null) {
+    public static RpcClient getRpcClientInstance(String serverName, String clientName, boolean lazyLoading, Long cacheTimeout) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        if (clientName == null) {
             throw new NullPointerException();
         }
         for (RpcClientEnum rpcClientEnum : RpcClientEnum.values()) {
-            if (name.equals(rpcClientEnum.name)) {
-                RpcClient rpcClient = (RpcClient) Class.forName(rpcClientEnum.clientClazzName).getDeclaredConstructor(Boolean.class).newInstance(lazyLoading);
+            if (clientName.equals(rpcClientEnum.name)) {
+                RpcClient rpcClient = (RpcClient) Class.forName(rpcClientEnum.clientClazzName).getDeclaredConstructor(String.class, Boolean.class, Long.class).newInstance(serverName, lazyLoading, cacheTimeout);
                 if (!"".equals(rpcClientEnum.beanClazzName)) {
                     rpcClient.setRpcBean((RpcBean) Class.forName(rpcClientEnum.beanClazzName).newInstance());
                 }
                 return rpcClient;
             }
         }
-        throw new ClassNotFoundException("can not case to rpc client class name " + name + " !");
+        throw new ClassNotFoundException("can not case to rpc client class name " + clientName + " !");
     }
 
 }

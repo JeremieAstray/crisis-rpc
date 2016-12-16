@@ -12,8 +12,8 @@ public class NettyRpcClient extends RpcClient {
 
     private RpcBean nettyRpcBean;
 
-    public NettyRpcClient(Boolean lazyLoading) {
-        super(lazyLoading);
+    public NettyRpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
+        super(serverName, lazyLoading, cacheTimeout);
     }
 
     @Override

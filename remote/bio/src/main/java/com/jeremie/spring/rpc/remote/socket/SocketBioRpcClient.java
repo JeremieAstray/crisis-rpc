@@ -19,8 +19,8 @@ public class SocketBioRpcClient extends RpcClient {
     private RpcBean rpcBean;
     private Executor executor = Executors.newFixedThreadPool(200);
 
-    public SocketBioRpcClient(Boolean lazyLoading) {
-        super(lazyLoading);
+    public SocketBioRpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
+        super(serverName, lazyLoading, cacheTimeout);
     }
 
     @Override

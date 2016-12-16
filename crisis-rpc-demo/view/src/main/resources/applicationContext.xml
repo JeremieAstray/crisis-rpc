@@ -23,6 +23,7 @@
                     <property name="method" value="mina"/>
                     <property name="name" value="adol-impl"/>
                     <property name="lazyLoading" value="true"/>
+                    <property name="loadTimeout" value="1000"/>
                     <property name="packages">
                         <list>
                             <value>com.jeremie.spring.adol.service</value>
@@ -35,6 +36,7 @@
                     <property name="method" value="http"/>
                     <property name="name" value="home-impl"/>
                     <property name="lazyLoading" value="true"/>
+                    <property name="loadTimeout" value="1000"/>
                     <property name="packages">
                         <list>
                             <value>com.jeremie.spring.home.service</value>

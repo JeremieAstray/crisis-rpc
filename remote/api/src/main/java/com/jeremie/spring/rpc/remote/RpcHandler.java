@@ -12,7 +12,7 @@ public class RpcHandler {
             RpcResult rpcResult = (RpcResult) message;
             if (rpcResult.getStatus() == RpcResult.Status.SUCCESS) {
                 if (rpcResult.getReturnPara() != null) {
-                    RpcClient.resultCache.put(rpcResult.getClientId(), rpcResult.getReturnPara());
+                    RpcClient.getCache(rpcResult.getServerName()).put(rpcResult.getClientId(), rpcResult.getReturnPara());
                 }
                 Object lock = RpcClient.lockMap.get(rpcResult.getClientId());
                 if (lock != null) {

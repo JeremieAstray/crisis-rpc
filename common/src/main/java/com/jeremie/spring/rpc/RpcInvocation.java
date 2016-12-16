@@ -12,6 +12,7 @@ public class RpcInvocation implements Serializable {
     private Class[] paramsType;
     private Object[] params;
     private Class returnType;
+    private String serverName;
 
     public String getClientId() {
         return clientId;
@@ -59,5 +60,13 @@ public class RpcInvocation implements Serializable {
 
     public void setReturnType(Class returnType) {
         this.returnType = returnType;
+    }
+
+    public String getServerName() {
+        return this.serverName;
+    }
+
+    public void setServerName(String serverName) {
+        this.serverName = serverName;
     }
 }

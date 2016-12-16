@@ -16,8 +16,8 @@ public class MinaRpcClient extends RpcClient {
 
     private RpcBean minaRpcBean;
 
-    public MinaRpcClient(Boolean lazyLoading) {
-        super(lazyLoading);
+    public MinaRpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
+        super(serverName, lazyLoading, cacheTimeout);
     }
 
     @Override

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +49,7 @@ public class RpcInitializer {
     private void beforeInit() {
         try {
             for (ServiceConfig serviceConfig : serviceConfigList) {
-                RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(serviceConfig.getMethod(), serviceConfig.isLazyLoading());
+                RpcClient rpcClient = RpcClientEnum.getRpcClientInstance(serviceConfig.getName(), serviceConfig.getMethod(), serviceConfig.isLazyLoading(), serviceConfig.getLoadTimeout());
                 this.rpcClientMap.put(serviceConfig.getName(), rpcClient);
                 if (rpcClient.getRpcBean() != null) {
                     RpcBean rpcBean = rpcClient.getRpcBean();
@@ -60,8 +59,9 @@ public class RpcInitializer {
                     rpcBean.setPort(serviceConfig.getDefaultPort());
                     this.rpcBeanList.add(rpcClient.getRpcBean());
                 }
+                rpcClient.init();
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
@@ -82,6 +82,7 @@ public class RpcInitializer {
                 //jdk方案 代理服务
                 Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
                     RpcInvocation rpcInvocation = new RpcInvocation();
+                    rpcInvocation.setServerName(serviceName);
                     rpcInvocation.setClientId(UUID.randomUUID().toString());
                     rpcInvocation.setDestClazz(clazz.getName());
                     rpcInvocation.setParams(params);

@@ -20,6 +20,7 @@ public class RpcHandler {
 
     private static void setRpcContext(RpcInvocation rpcInvocation) {
         RpcContext rpcContext = RpcContext.getContext();
+        rpcContext.setServerName(rpcInvocation.getServerName());
         rpcContext.setArguments(rpcInvocation.getParams());
         rpcContext.setMethodName(rpcInvocation.getMethod());
         rpcContext.setParameterTypes(rpcInvocation.getParamsType());
@@ -36,6 +37,7 @@ public class RpcHandler {
         if (message instanceof RpcInvocation) {
             RpcInvocation rpcInvocation = (RpcInvocation) message;
             setRpcContext(rpcInvocation);
+            rpcResult.setServerName(rpcInvocation.getServerName());
             try {
                 //获取需要被调用的class(applicationContext中)和方法
                 Class clazz = Class.forName(rpcInvocation.getDestClazz());

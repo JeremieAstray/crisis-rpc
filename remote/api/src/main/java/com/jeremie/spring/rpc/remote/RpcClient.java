@@ -2,6 +2,7 @@ package com.jeremie.spring.rpc.remote;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Maps;
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.proxy.ProxyHandler;
 import org.slf4j.Logger;
@@ -23,13 +24,17 @@ public abstract class RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
     public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
-
-    protected static long TIMEOUT = 500L;
-    public static Cache<String, Object> resultCache = CacheBuilder.newBuilder().expireAfterWrite(TIMEOUT, TimeUnit.MILLISECONDS).build();
+    public static Map<String, Cache<String, Object>> resultCacheMap = Maps.newHashMap();
+    protected static long DEFAULT_TIMEOUT = 500L;
     protected boolean lazyLoading;
 
-    public RpcClient(Boolean lazyLoading) {
+    public RpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
         this.lazyLoading = lazyLoading;
+        resultCacheMap.put(serverName, CacheBuilder.newBuilder().expireAfterWrite(cacheTimeout, TimeUnit.MILLISECONDS).build());
+    }
+
+    public static Cache<String, Object> getCache(String cacheRegion) {
+        return resultCacheMap.getOrDefault(cacheRegion, CacheBuilder.newBuilder().expireAfterWrite(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS).build());
     }
 
     public abstract RpcBean getRpcBean();
@@ -70,36 +75,36 @@ public abstract class RpcClient {
                 try {
                     if (this.isFirst() && this.getObject() == null) {
                         try {
-                            Object o = resultCache.getIfPresent(rpcInvocation.getClientId());
+                            Object o = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
                             if (o != null)
                                 this.setObject(o);
                             else {
                                 synchronized (rpcInvocation) {
-                                    rpcInvocation.wait(TIMEOUT);
+                                    rpcInvocation.wait(DEFAULT_TIMEOUT);
                                 }
-                                o = resultCache.getIfPresent(rpcInvocation.getClientId());
+                                o = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
                             }
                             if (o != null)
                                 this.setObject(o);
                             this.setFirst(false);
                         } finally {
-                            resultCache.invalidate(rpcInvocation.getClientId());
+                            getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                             lockMap.remove(rpcInvocation.getClientId());
                         }
                     }
                     if (this.getObject() != null) {
                         if ("finalize".equals(method.getName())) {
-                            resultCache.invalidate(rpcInvocation.getClientId());
+                            getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                             this.finalize();
                             return null;
                         }
                         return method.invoke(this.getObject(), params);
                     }
-                    resultCache.invalidate(rpcInvocation.getClientId());
+                    getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                     return null;
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
-                    resultCache.invalidate(rpcInvocation.getClientId());
+                    getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                     return null;
                 }
             }
@@ -117,9 +122,9 @@ public abstract class RpcClient {
     public Object getObject(RpcInvocation rpcInvocation) {
         try {
             synchronized (rpcInvocation) {
-                rpcInvocation.wait(TIMEOUT);
+                rpcInvocation.wait(DEFAULT_TIMEOUT);
             }
-            Object returnObject = resultCache.getIfPresent(rpcInvocation.getClientId());
+            Object returnObject = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
             if (returnObject == null && rpcInvocation.getReturnType().isPrimitive())
                 return this.getDefaultPrimitiveValue(Type.getType(rpcInvocation.getReturnType()).getSort());
             else
@@ -127,7 +132,7 @@ public abstract class RpcClient {
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            resultCache.invalidate(rpcInvocation.getClientId());
+            getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
             lockMap.remove(rpcInvocation.getClientId());
         }
         if (rpcInvocation.getReturnType().isPrimitive())
