@@ -76,36 +76,35 @@ public abstract class RpcClient {
                     if (this.isFirst() && this.getObject() == null) {
                         try {
                             Object o = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
-                            if (o != null)
+                            if (o != null) {
                                 this.setObject(o);
-                            else {
+                            } else {
                                 synchronized (rpcInvocation) {
                                     rpcInvocation.wait(DEFAULT_TIMEOUT);
                                 }
                                 o = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
                             }
-                            if (o != null)
+                            if (o != null) {
                                 this.setObject(o);
+                            }
                             this.setFirst(false);
                         } finally {
-                            getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                             lockMap.remove(rpcInvocation.getClientId());
                         }
                     }
                     if (this.getObject() != null) {
                         if ("finalize".equals(method.getName())) {
-                            getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                             this.finalize();
                             return null;
                         }
                         return method.invoke(this.getObject(), params);
                     }
-                    getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                     return null;
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
-                    getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                     return null;
+                } finally {
+                    getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                 }
             }
         });
@@ -125,24 +124,26 @@ public abstract class RpcClient {
                 rpcInvocation.wait(DEFAULT_TIMEOUT);
             }
             Object returnObject = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
-            if (returnObject == null && rpcInvocation.getReturnType().isPrimitive())
+            if (returnObject == null && rpcInvocation.getReturnType().isPrimitive()) {
                 return this.getDefaultPrimitiveValue(Type.getType(rpcInvocation.getReturnType()).getSort());
-            else
+            } else {
                 return returnObject;
+            }
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         } finally {
             getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
             lockMap.remove(rpcInvocation.getClientId());
         }
-        if (rpcInvocation.getReturnType().isPrimitive())
+        if (rpcInvocation.getReturnType().isPrimitive()) {
             return this.getDefaultPrimitiveValue(Type.getType(rpcInvocation.getReturnType()).getSort());
-        else
+        } else {
             return null;
+        }
     }
 
 
-    public Object getDefaultPrimitiveValue(int sort) {
+    private Object getDefaultPrimitiveValue(int sort) {
         switch (sort) {
             //VOID
             case 0:
