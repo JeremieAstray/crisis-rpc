@@ -7,23 +7,29 @@ import com.jeremie.spring.rpc.remote.RpcBean;
  * Created by jeremie on 2016/11/8.
  */
 public class SocketBioRpcBean extends RpcBean {
+
+    public static SocketPool<SocketBioRpcThread> socketBioRpcThreadSocketPool;
+    private boolean isConnect = false;
+
+
     @Override
     public void write(RpcInvocation rpcInvocation) throws Exception {
-
+        socketBioRpcThreadSocketPool.getConnection().handleObject(rpcInvocation);
     }
 
     @Override
-    public void init() throws Exception {
-
+    public synchronized void init() throws Exception {
+        socketBioRpcThreadSocketPool = new SocketPool<>(() -> new SocketBioRpcThread(this.getPort(), this.getHost()));
+        isConnect = true;
     }
 
     @Override
     public boolean isConnect() {
-        return false;
+        return isConnect;
     }
 
     @Override
     public void destroy() throws Exception {
-
+        socketBioRpcThreadSocketPool.killConnection();
     }
 }

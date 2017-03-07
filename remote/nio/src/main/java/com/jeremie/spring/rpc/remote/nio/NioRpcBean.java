@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class NioRpcBean extends RpcBean {
     static Queue<RpcInvocation> requestQueue = new ConcurrentLinkedQueue<>();
 
-    static boolean running = false;
+    static volatile boolean running = false;
     private boolean init = false;
     private static final Logger logger = LoggerFactory.getLogger(NioRpcBean.class);
     private SocketChannel socketChannel = null;
@@ -37,7 +37,7 @@ public class NioRpcBean extends RpcBean {
     }
 
     @Override
-    public void init() throws Exception {
+    public synchronized void init() throws Exception {
         try {
             this.socketChannel = SocketChannel.open();
             this.selector = Selector.open();

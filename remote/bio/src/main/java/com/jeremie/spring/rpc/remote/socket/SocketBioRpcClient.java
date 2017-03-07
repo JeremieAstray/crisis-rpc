@@ -7,9 +7,6 @@ import com.jeremie.spring.rpc.remote.RpcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 /**
  * Created by Jeremie on 2015/5/13.
  */
@@ -17,7 +14,6 @@ public class SocketBioRpcClient extends RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SocketBioRpcClient.class);
     private RpcBean rpcBean;
-    private Executor executor = Executors.newFixedThreadPool(200);
 
     public SocketBioRpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
         super(serverName, lazyLoading, cacheTimeout);
@@ -35,12 +31,15 @@ public class SocketBioRpcClient extends RpcClient {
 
     @Override
     public void init() throws Exception {
-
+        if (!this.rpcBean.isConnect()) {
+            this.rpcBean.init();
+        }
     }
 
     @Override
-    public Object invoke(RpcInvocation rpcInvocation) {
-        executor.execute(new SocketBioRpcThread(this.rpcBean.getPort(), this.rpcBean.getHost(), rpcInvocation));
+    public Object invoke(RpcInvocation rpcInvocation) throws Exception {
+        this.init();
+        this.rpcBean.write(rpcInvocation);
         if (super.lazyLoading) {
             Object returnObject = this.dynamicProxyObject(rpcInvocation);
             return returnObject == null ? this.getObject(rpcInvocation) : returnObject;

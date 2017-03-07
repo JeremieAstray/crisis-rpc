@@ -37,7 +37,7 @@ public class MinaRpcBean extends RpcBean {
     }
 
     @Override
-    public void init() {
+    public synchronized void init() {
         connector = new NioSocketConnector();
         connector.getFilterChain().addLast("logger", new LoggingFilter(this.getClass()));
         connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));

@@ -38,7 +38,7 @@ public class NettyRpcBean extends RpcBean {
     }
 
     @Override
-    public void init() throws Exception {
+    public synchronized void init() throws Exception {
         this.group = new NioEventLoopGroup();
         try {
             this.bootstrap = new Bootstrap();
