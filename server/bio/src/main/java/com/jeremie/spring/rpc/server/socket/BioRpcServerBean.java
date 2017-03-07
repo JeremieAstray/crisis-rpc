@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 @Component
 public class BioRpcServerBean {
     private static final Logger logger = LoggerFactory.getLogger(BioRpcServerBean.class);
-    private Executor executor = Executors.newFixedThreadPool(100);
+    private Executor executor = Executors.newFixedThreadPool(200);
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -28,7 +28,7 @@ public class BioRpcServerBean {
     @Autowired
     private RpcConfiguration rpcConfiguration;
 
-    private boolean runningSignal;
+    private volatile boolean runningSignal;
     private ServerSocket serverSocket;
 
     public void init() {

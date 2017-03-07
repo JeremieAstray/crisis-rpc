@@ -36,7 +36,7 @@ public class NioRpcServerBean {
     private ServerSocketChannel serverSocketChannel;
     private Selector selector;
 
-    private boolean runningSignal;
+    private volatile boolean runningSignal;
 
     public void init() {
         MonitorStatus.init(this.applicationContext, MonitorStatus.Remote.nio);

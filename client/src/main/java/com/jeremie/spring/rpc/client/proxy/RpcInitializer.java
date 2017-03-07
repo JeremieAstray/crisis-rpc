@@ -80,7 +80,7 @@ public class RpcInitializer {
             boolean isInterface = clazz.isInterface();
             if (isInterface) {
                 //jdk方案 代理服务
-                Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, (proxy, method, params) -> {
+                Object o = Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), (proxy, method, params) -> {
                     RpcInvocation rpcInvocation = new RpcInvocation();
                     rpcInvocation.setServerName(serviceName);
                     rpcInvocation.setClientId(UUID.randomUUID().toString());

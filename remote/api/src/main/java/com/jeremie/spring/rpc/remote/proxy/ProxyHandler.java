@@ -4,6 +4,8 @@ package com.jeremie.spring.rpc.remote.proxy;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
+import java.lang.reflect.Method;
+
 /**
  * @author guanhong 15/11/15 下午4:21.
  */
@@ -28,7 +30,7 @@ public abstract class ProxyHandler implements MethodInterceptor {
         this.object = object;
     }
 
-    public abstract Object intercept(Object obj, java.lang.reflect.Method method, Object[] args,
+    public abstract Object intercept(Object obj, Method method, Object[] args,
                                      MethodProxy proxy) throws Throwable;
 
     @Override
