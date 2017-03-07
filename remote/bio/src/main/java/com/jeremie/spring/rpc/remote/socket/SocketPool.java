@@ -1,7 +1,6 @@
 package com.jeremie.spring.rpc.remote.socket;
 
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -43,6 +42,7 @@ public class SocketPool<T extends PoolObject> {
                     T connection = this.poolBeanFactory.init();
                     this.poolBeanLinkedListPool.add(connection);
                     this.integerTMap.put(connection.getId(), connection);
+                    new Thread(connection).start();
                 }
                 break;
             }

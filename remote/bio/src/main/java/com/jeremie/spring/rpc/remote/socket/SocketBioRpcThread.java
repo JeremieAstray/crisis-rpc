@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author guanhong 15/11/18 下午4:13.
  */
-public class SocketBioRpcThread implements Runnable, PoolObject {
+public class SocketBioRpcThread implements PoolObject {
     private static final Logger logger = LoggerFactory.getLogger(SocketBioRpcThread.class);
 
     private static AtomicInteger ID = new AtomicInteger(0);
@@ -39,7 +39,9 @@ public class SocketBioRpcThread implements Runnable, PoolObject {
 
     public synchronized void handleObject(RpcInvocation rpcInvocation) {
         this.rpcInvocation = rpcInvocation;
-        this.currentThread.notify();
+        synchronized (this.currentThread) {
+            this.currentThread.notify();
+        }
     }
 
     @Override
@@ -47,7 +49,9 @@ public class SocketBioRpcThread implements Runnable, PoolObject {
         try {
             this.currentThread = Thread.currentThread();
             while (this.running) {
-                this.currentThread.wait();
+                synchronized (this.currentThread) {
+                    this.currentThread.wait();
+                }
                 if (this.rpcInvocation != null) {
                     objectInputStream = new ObjectInputStream(socket.getInputStream());
                     objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
