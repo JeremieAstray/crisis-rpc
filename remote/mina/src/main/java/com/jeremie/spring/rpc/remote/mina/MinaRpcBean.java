@@ -53,7 +53,7 @@ public class MinaRpcBean extends RpcBean {
     public void destroy() {
         try {
             //关闭
-            if (session != null) {
+            if (connector != null) {
                 /*if (session.isConnected()) {
                     session.getCloseFuture().awaitUninterruptibly();
                 }*/
