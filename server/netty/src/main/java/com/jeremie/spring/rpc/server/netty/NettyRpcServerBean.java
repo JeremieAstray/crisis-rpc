@@ -59,17 +59,10 @@ public class NettyRpcServerBean {
             this.channelFuture = serverBootstrap.bind(serverPort).sync();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            if (this.bossGroup != null) {
-                this.bossGroup.shutdownGracefully();
-            }
-            if (this.workerGroup != null) {
-                this.workerGroup.shutdownGracefully();
-            }
         }
     }
 
-    public void destory() {
+    public void destroy() {
         try {
             // 监听服务器关闭监听
             if (this.channelFuture != null) {
@@ -79,10 +72,18 @@ public class NettyRpcServerBean {
             logger.error(e.getMessage(), e);
         } finally {
             if (this.bossGroup != null) {
-                this.bossGroup.shutdownGracefully();
+                try {
+                    this.bossGroup.shutdownGracefully().sync();
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
             if (this.workerGroup != null) {
-                this.workerGroup.shutdownGracefully();
+                try {
+                    this.workerGroup.shutdownGracefully().sync();
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
     }

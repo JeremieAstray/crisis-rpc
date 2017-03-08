@@ -54,9 +54,9 @@ public class MinaRpcBean extends RpcBean {
         try {
             //关闭
             if (session != null) {
-                if (session.isConnected()) {
+                /*if (session.isConnected()) {
                     session.getCloseFuture().awaitUninterruptibly();
-                }
+                }*/
                 connector.dispose(true);
             }
         } catch (Exception e) {

@@ -10,7 +10,7 @@ public enum RpcClientEnum {
     NIO("nio", "com.jeremie.spring.rpc.remote.nio.SocketNioRpcClient", "com.jeremie.spring.rpc.remote.nio.NioRpcBean"),
     BIO("bio", "com.jeremie.spring.rpc.remote.socket.SocketBioRpcClient", "com.jeremie.spring.rpc.remote.socket.SocketBioRpcBean"),
     MINA("mina", "com.jeremie.spring.rpc.remote.mina.MinaRpcClient", "com.jeremie.spring.rpc.remote.mina.MinaRpcBean"),
-    NETTY("netty", "com.jeremie.spring.rpc.remote.netty.NettyRpcBean", "com.jeremie.spring.rpc.remote.netty.NettyRpcBean"),
+    NETTY("netty", "com.jeremie.spring.rpc.remote.netty.NettyRpcClient", "com.jeremie.spring.rpc.remote.netty.NettyRpcBean"),
     HTTP("http", "com.jeremie.spring.rpc.remote.http.HttpRpcClient", "com.jeremie.spring.rpc.remote.http.HttpRpcBean");
 
     private String name;

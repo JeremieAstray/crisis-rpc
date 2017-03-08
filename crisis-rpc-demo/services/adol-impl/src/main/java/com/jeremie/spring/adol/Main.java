@@ -17,7 +17,7 @@ public class Main {
                 Thread.sleep(500);
             }
         }finally {
-            minaRpcServerBean.destory();
+            minaRpcServerBean.destroy();
         }
     }
 }

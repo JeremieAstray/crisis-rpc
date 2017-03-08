@@ -14,7 +14,7 @@
     <!-- 配置使Spring采用CGLIB代理 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-    <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer" init-method="init">
+    <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer" init-method="init" destroy-method="destroy">
         <property name="serviceConfigList">
             <list>
                 <bean id="minaServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">

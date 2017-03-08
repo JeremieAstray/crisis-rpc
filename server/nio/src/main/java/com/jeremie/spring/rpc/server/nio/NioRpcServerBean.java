@@ -78,7 +78,7 @@ public class NioRpcServerBean {
         }
     }
 
-    public void destory() {
+    public void destroy() {
         try {
             if (this.runningSignal) {
                 this.runningSignal = false;

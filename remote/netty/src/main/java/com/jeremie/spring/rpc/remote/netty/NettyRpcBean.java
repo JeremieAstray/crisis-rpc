@@ -67,7 +67,7 @@ public class NettyRpcBean extends RpcBean {
     public void destroy() throws Exception {
         //关闭
         if (this.bootstrap != null) {
-            this.group.shutdownGracefully();
+            this.group.shutdownGracefully().sync();
         }
     }
 }

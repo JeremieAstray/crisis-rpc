@@ -49,7 +49,7 @@ public class MinaRpcServerBean {
         }
     }
 
-    public void destory() {
+    public void destroy() {
         if (this.minaIoAcceptor != null) {
             this.minaIoAcceptor.dispose();
         }
