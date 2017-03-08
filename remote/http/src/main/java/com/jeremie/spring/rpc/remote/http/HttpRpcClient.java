@@ -15,7 +15,6 @@ import java.util.concurrent.Executors;
 public class HttpRpcClient extends RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(HttpRpcClient.class);
     private RpcBean rpcBean;
-    private Executor executor = Executors.newFixedThreadPool(200);
 
     public HttpRpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
         super(serverName, lazyLoading, cacheTimeout);
@@ -33,12 +32,12 @@ public class HttpRpcClient extends RpcClient {
 
     @Override
     public void init() throws Exception {
-        executor.execute(new HttpRpcThread(this.rpcBean.getPort(), this.rpcBean.getHost(), null));
+        this.rpcBean.init();
     }
 
     @Override
-    public Object invoke(RpcInvocation rpcInvocation) {
-        executor.execute(new HttpRpcThread(this.rpcBean.getPort(), this.rpcBean.getHost(), rpcInvocation));
+    public Object invoke(RpcInvocation rpcInvocation) throws Exception {
+        this.rpcBean.write(rpcInvocation);
         if (super.lazyLoading) {
             Object returnObject = this.dynamicProxyObject(rpcInvocation);
             return returnObject == null ? this.getObject(rpcInvocation) : returnObject;

@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.remote.socket;
 
+import com.jeremie.spring.rpc.RpcEndSignal;
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import org.slf4j.Logger;
@@ -58,9 +59,15 @@ public class SocketBioRpcThread implements PoolObject {
                     this.objectOutputStream.writeObject(this.rpcInvocation);
                     this.objectOutputStream.flush();
                     Object o = objectInputStream.readObject();
-                    RpcHandler.handleMessage(o);
-                    this.rpcInvocation = null;
-                    SocketBioRpcBean.socketBioRpcThreadSocketPool.releaseConnection(this.getId());
+                    if(o instanceof  RpcEndSignal){
+                        this.rpcInvocation = null;
+                        this.running = false;
+                        SocketBioRpcBean.socketBioRpcThreadSocketPool.releaseConnection(this.getId());
+                    }else {
+                        RpcHandler.handleMessage(o);
+                        this.rpcInvocation = null;
+                        SocketBioRpcBean.socketBioRpcThreadSocketPool.releaseConnection(this.getId());
+                    }
                 }
             }
         } catch (EOFException e) {
@@ -100,6 +107,9 @@ public class SocketBioRpcThread implements PoolObject {
     @Override
     public void killConnection() {
         this.running = false;
-        this.currentThread.notify();
+        this.rpcInvocation = new RpcEndSignal();
+        synchronized (this.currentThread) {
+            this.currentThread.notify();
+        }
     }
 }

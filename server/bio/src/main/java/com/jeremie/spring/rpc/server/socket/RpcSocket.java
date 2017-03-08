@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.server.socket;
 
 
+import com.jeremie.spring.rpc.RpcEndSignal;
 import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
@@ -41,10 +42,16 @@ public class RpcSocket implements Runnable {
             objectInputStream = new ObjectInputStream(this.socket.getInputStream());
             while (this.running) {
                 Object o = objectInputStream.readObject();
-                RpcHandler.setRpcContextAddress(socket.getLocalSocketAddress(), socket.getRemoteSocketAddress());
-                RpcResult rpcResult = RpcHandler.handleMessage(o, applicationContext);
-                objectOutputStream.writeObject(rpcResult);
-                objectOutputStream.flush();
+                if (o instanceof RpcEndSignal) {
+                    objectOutputStream.writeObject(new RpcEndSignal());
+                    objectOutputStream.flush();
+                    this.closeThread();
+                } else {
+                    RpcHandler.setRpcContextAddress(socket.getLocalSocketAddress(), socket.getRemoteSocketAddress());
+                    RpcResult rpcResult = RpcHandler.handleMessage(o, applicationContext);
+                    objectOutputStream.writeObject(rpcResult);
+                    objectOutputStream.flush();
+                }
             }
         } catch (IOException | ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
