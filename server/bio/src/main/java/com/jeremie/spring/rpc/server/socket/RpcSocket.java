@@ -24,6 +24,7 @@ public class RpcSocket implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RpcSocket.class);
     private Socket socket;
     private ApplicationContext applicationContext;
+    private volatile boolean running = true;
 
     public RpcSocket(Socket sockek, ApplicationContext applicationContext) {
         this.socket = sockek;
@@ -38,16 +39,19 @@ public class RpcSocket implements Runnable {
             MonitorStatus.remoteHostsList.add(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
             objectOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
             objectInputStream = new ObjectInputStream(this.socket.getInputStream());
-            Object o = objectInputStream.readObject();
-            RpcHandler.setRpcContextAddress(socket.getLocalSocketAddress(), socket.getRemoteSocketAddress());
-            RpcResult rpcResult = RpcHandler.handleMessage(o, applicationContext);
-            objectOutputStream.writeObject(rpcResult);
-
+            while (this.running) {
+                Object o = objectInputStream.readObject();
+                RpcHandler.setRpcContextAddress(socket.getLocalSocketAddress(), socket.getRemoteSocketAddress());
+                RpcResult rpcResult = RpcHandler.handleMessage(o, applicationContext);
+                objectOutputStream.writeObject(rpcResult);
+                objectOutputStream.flush();
+            }
         } catch (IOException | ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            if (remoteAddress != null)
+            if (remoteAddress != null) {
                 MonitorStatus.remoteHostsList.remove(remoteAddress.getHostString() + ":" + remoteAddress.getPort());
+            }
             if (objectOutputStream != null) {
                 try {
                     objectOutputStream.flush();
@@ -76,5 +80,9 @@ public class RpcSocket implements Runnable {
             }
 
         }
+    }
+
+    public void closeThread() {
+        this.running = false;
     }
 }

@@ -48,17 +48,18 @@ public class SocketBioRpcThread implements PoolObject {
     public void run() {
         try {
             this.currentThread = Thread.currentThread();
+            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             while (this.running) {
                 synchronized (this.currentThread) {
                     this.currentThread.wait();
                 }
                 if (this.rpcInvocation != null) {
-                    objectInputStream = new ObjectInputStream(socket.getInputStream());
-                    objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                    objectOutputStream.writeObject(rpcInvocation);
+                    this.objectOutputStream.writeObject(this.rpcInvocation);
+                    this.objectOutputStream.flush();
                     Object o = objectInputStream.readObject();
                     RpcHandler.handleMessage(o);
-                    rpcInvocation = null;
+                    this.rpcInvocation = null;
                     SocketBioRpcBean.socketBioRpcThreadSocketPool.releaseConnection(this.getId());
                 }
             }

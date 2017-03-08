@@ -1,5 +1,8 @@
 package com.jeremie.spring.rpc.remote.socket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Deque;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +15,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author guanhong 2017/2/22.
  */
 public class SocketPool<T extends PoolObject> {
+    private static final Logger logger = LoggerFactory.getLogger(SocketPool.class);
+
     private Deque<T> poolBeanLinkedListPool = new ConcurrentLinkedDeque<>();
     private PoolBeanFactory<T> poolBeanFactory;
     private Map<Integer, T> integerTMap = new ConcurrentHashMap<>();
@@ -60,7 +65,7 @@ public class SocketPool<T extends PoolObject> {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(),e);
                     }
                 }
             }
