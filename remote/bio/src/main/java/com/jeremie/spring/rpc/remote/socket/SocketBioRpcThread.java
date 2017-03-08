@@ -88,6 +88,7 @@ public class SocketBioRpcThread implements PoolObject {
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
+            SocketBioRpcBean.socketBioRpcThreadSocketPool.removeConnection(this.getId());
         }
     }
 
