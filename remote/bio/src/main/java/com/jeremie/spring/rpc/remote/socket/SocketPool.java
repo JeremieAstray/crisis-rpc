@@ -40,15 +40,18 @@ public class SocketPool<T extends PoolObject> {
 
 
     private void newPoolBeans(int size) {
-        this.lock.lock();
-        this.size.addAndGet(size);
-        for (int i = 0; i < size; i++) {
-            T connection = this.poolBeanFactory.init();
-            this.poolBeanLinkedListPool.add(connection);
-            this.integerTMap.put(connection.getId(), connection);
-            new Thread(connection).start();
+        try {
+            this.lock.lock();
+            this.size.addAndGet(size);
+            for (int i = 0; i < size; i++) {
+                T connection = this.poolBeanFactory.init();
+                this.poolBeanLinkedListPool.add(connection);
+                this.integerTMap.put(connection.getId(), connection);
+                new Thread(connection).start();
+            }
+        } finally {
+            this.lock.unlock();
         }
-        this.lock.unlock();
     }
 
     public synchronized T getConnection() {
@@ -91,10 +94,13 @@ public class SocketPool<T extends PoolObject> {
     }
 
     public void killConnection() {
-        this.lock.lock();
-        this.integerTMap.values().forEach(PoolObject::killConnection);
-        this.integerTMap.clear();
-        this.poolBeanLinkedListPool.clear();
-        this.lock.unlock();
+        try {
+            this.lock.lock();
+            this.integerTMap.values().forEach(PoolObject::killConnection);
+            this.integerTMap.clear();
+            this.poolBeanLinkedListPool.clear();
+        } finally {
+            this.lock.unlock();
+        }
     }
 }
