@@ -14,7 +14,7 @@
     <aop:aspectj-autoproxy proxy-target-class="true"/>
     <bean class="com.jeremie.spring.rpc.server.common.RpcConfiguration" id="rpcConfiguration">
         <property name="serverName" value="home-impl"/>
-        <property name="serverPort" value="80"/>
+        <property name="serverPort" value="8092"/>
     </bean>
     <!-- 自动扫描 ,将带有注解的类 纳入spring容器管理 -->
     <context:component-scan base-package="com.jeremie.spring">

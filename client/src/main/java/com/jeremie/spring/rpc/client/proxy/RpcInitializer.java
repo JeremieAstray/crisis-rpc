@@ -7,6 +7,8 @@ import com.jeremie.spring.rpc.remote.RpcClientEnum;
 import com.jeremie.spring.rpc.remote.config.ServiceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -27,8 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author guanhong 15/10/17 下午11:40.
  */
-@Component
-public class RpcInitializer {
+public class RpcInitializer implements InitializingBean, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcInitializer.class);
     private static final ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
@@ -121,6 +122,10 @@ public class RpcInitializer {
     private Map<String, List<Class>> getClassMap() throws IOException, ClassNotFoundException {
         Map<String, List<Class>> clazzMap = new HashMap<>();
         clazzMap.clear();
+        if (this.serviceConfigList == null) {
+            logger.info("serviceConfigList is null");
+            return clazzMap;
+        }
         for (ServiceConfig serviceConfig : this.serviceConfigList) {
             List<String> packages = serviceConfig.getPackages();
             if (!packages.isEmpty()) {
@@ -149,9 +154,15 @@ public class RpcInitializer {
         return clazzMap;
     }
 
+    @Override
     public void destroy() throws Exception {
         for (RpcBean rpcBean : rpcBeanList) {
             rpcBean.destroy();
         }
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        init();
     }
 }

@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.server.nio;
 
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
@@ -60,7 +61,7 @@ public class RpcSocket implements Runnable {
                         byteBuffer.get(bytes, 0, bytes.length);
                         byteBuffer.clear();
                         //byteBuffer.flip();
-                        Object o = SerializeTool.byteArrayToObject(bytes);
+                        Object o = SerializeTool.byteArrayToObject(bytes, RpcInvocation.class);
                         RpcHandler.setRpcContextAddress(socketChannel.getLocalAddress(), socketChannel.getRemoteAddress());
                         RpcResult rpcResult = RpcHandler.handleMessage(o, applicationContext);
                         byteBuffer.clear();

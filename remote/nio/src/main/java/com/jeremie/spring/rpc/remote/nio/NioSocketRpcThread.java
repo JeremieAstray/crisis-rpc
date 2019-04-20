@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.remote.nio;
 
 import com.jeremie.spring.rpc.RpcInvocation;
+import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class NioSocketRpcThread implements Runnable {
             byte[] bytes = new byte[byteBuffer.remaining()];
             byteBuffer.get(bytes, 0, bytes.length);
             byteBuffer.clear();
-            Object o = SerializeTool.byteArrayToObject(bytes);
+            Object o = SerializeTool.byteArrayToObject(bytes, RpcResult.class);
             RpcHandler.handleMessage(o);
         }
     }

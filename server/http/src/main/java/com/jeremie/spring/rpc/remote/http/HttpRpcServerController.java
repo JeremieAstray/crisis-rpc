@@ -1,5 +1,6 @@
 package com.jeremie.spring.rpc.remote.http;
 
+import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.server.common.MonitorStatus;
 import com.jeremie.spring.rpc.server.common.RpcHandler;
@@ -37,7 +38,7 @@ public class HttpRpcServerController extends WebMvcConfigurerAdapter {
             MonitorStatus.init(applicationContext, MonitorStatus.Remote.http);
         }
         MonitorStatus.remoteHostsList.add(request.getRemoteHost() + ":" + request.getRemotePort());
-        Object object = SerializeTool.stringToObject(rpcDtoStr);
+        Object object = SerializeTool.stringToObject(rpcDtoStr, RpcInvocation.class);
         RpcHandler.setRpcContextAddress(new InetSocketAddress(request.getLocalAddr(), request.getLocalPort())
                 , new InetSocketAddress(request.getRemoteAddr(), request.getRemotePort()));
         RpcResult rpcResult = RpcHandler.handleMessage(object, applicationContext);
