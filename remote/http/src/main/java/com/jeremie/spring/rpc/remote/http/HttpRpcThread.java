@@ -1,6 +1,7 @@
 package com.jeremie.spring.rpc.remote.http;
 
 import com.jeremie.spring.rpc.RpcInvocation;
+import com.jeremie.spring.rpc.RpcResult;
 import com.jeremie.spring.rpc.remote.RpcHandler;
 import com.jeremie.spring.rpc.util.SerializeTool;
 import org.apache.http.HttpEntity;
@@ -50,7 +51,7 @@ public class HttpRpcThread implements Runnable {
             HttpEntity resultEntity = response.getEntity();
             //防止中文乱码
             String result = EntityUtils.toString(resultEntity, "UTF-8");
-            Object object = SerializeTool.stringToObject(result);
+            Object object = SerializeTool.stringToObject(result, RpcResult.class);
             RpcHandler.handleMessage(object);
         } catch (IOException e) {
             logger.error("httpRequest error", e);

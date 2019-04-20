@@ -3,6 +3,7 @@ package com.jeremie.spring.rpc.remote;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
+import com.jeremie.spring.rpc.RpcContext;
 import com.jeremie.spring.rpc.RpcInvocation;
 import com.jeremie.spring.rpc.remote.proxy.ProxyHandler;
 import org.slf4j.Logger;
@@ -25,7 +26,8 @@ public abstract class RpcClient {
     private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
     public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
     public static Map<String, Cache<String, Object>> resultCacheMap = Maps.newHashMap();
-    protected static long DEFAULT_TIMEOUT = 500L;
+    //3s
+    protected static long DEFAULT_TIMEOUT = 3000L;
     protected boolean lazyLoading;
 
     public RpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
@@ -69,7 +71,7 @@ public abstract class RpcClient {
         //设置代理对象的父类
         hancer.setSuperclass(rpcInvocation.getReturnType());
         //设置回调对象，即调用代理对象里面的方法时，实际上执行的是回调对象（里的intercept方法）。
-        hancer.setCallback(new ProxyHandler() {
+        ProxyHandler handler = new ProxyHandler() {
             @Override
             public Object intercept(Object obj, Method method, Object[] params, MethodProxy proxy) throws Throwable {
                 try {
@@ -101,15 +103,90 @@ public abstract class RpcClient {
                     }
                     return null;
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                    return null;
+                    throw e;
                 } finally {
                     getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
                 }
             }
-        });
+        };
+        hancer.setCallback(handler);
+        //future
+        RpcContext.getContext().setFuture(new RpcFuture(rpcInvocation, handler));
         //创建代理对象
         return hancer.create();
+
+        /*
+        //使用future进行异步调用(其实没用到future的特性，future应该把异步处理的内容都放在这里)
+        return new Future() {
+            private Object object = null;
+            private boolean first = true;
+
+            private void setFirst(boolean first) {
+                this.first = first;
+            }
+
+            private Object getObject() {
+                return object;
+            }
+
+            private void setObject(Object object) {
+                this.object = object;
+            }
+
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                this.object = null;
+                this.first = false;
+                return this.isCancelled();
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return this.object == null;
+            }
+
+            @Override
+            public boolean isDone() {
+                return this.first;
+            }
+
+            @Override
+            public synchronized Object get() throws InterruptedException, ExecutionException {
+                return this.get(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS);
+            }
+
+            @Override
+            public synchronized Object get(long timeout, TimeUnit unit) {
+                try {
+                    if (this.isDone() && this.getObject() == null) {
+                        Object o = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
+                        if (o != null) {
+                            this.setObject(o);
+                            this.setFirst(false);
+                            return o;
+                        } else {
+                            synchronized (rpcInvocation) {
+                                rpcInvocation.wait(unit.toMillis(timeout));
+                            }
+                            o = getCache(rpcInvocation.getServerName()).getIfPresent(rpcInvocation.getClientId());
+                            if (o != null) {
+                                this.setObject(o);
+                                this.setFirst(false);
+                                return o;
+                            }
+                        }
+                    } else {
+                        return this.getObject();
+                    }
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    lockMap.remove(rpcInvocation.getClientId());
+                    getCache(rpcInvocation.getServerName()).invalidate(rpcInvocation.getClientId());
+                }
+                return null;
+            }
+        };*/
     }
 
     /**

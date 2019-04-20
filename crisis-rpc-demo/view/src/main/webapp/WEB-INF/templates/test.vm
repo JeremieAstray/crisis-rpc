@@ -5,11 +5,11 @@
     <title></title>
 </head>
 <body>
-    ${vmtest} <br>
-    ${user} <br>
-    ${testGetString}<br>
-    ${vmchange} <br>
-    ${adol}<br>
-vmreload
+    vmtest : ${vmtest} <br>
+    user : ${user} <br>
+    testGetString : ${testGetString}<br>
+    vmchange : ${vmchange} <br>
+    adol : ${adol}<br>
+    vmreload
 </body>
 </html>

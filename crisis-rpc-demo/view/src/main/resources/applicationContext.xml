@@ -14,7 +14,7 @@
     <!-- 配置使Spring采用CGLIB代理 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
-    <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer" init-method="init" destroy-method="destroy">
+    <bean class="com.jeremie.spring.rpc.client.proxy.RpcInitializer">
         <property name="serviceConfigList">
             <list>
                 <bean id="minaServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">
@@ -32,8 +32,8 @@
                 </bean>
                 <bean id="httpServerConfig" class="com.jeremie.spring.rpc.remote.config.ServiceConfig">
                     <property name="defaultIp" value="127.0.0.1"/>
-                    <property name="defaultPort" value="8095"/>
-                    <property name="method" value="http"/>
+                    <property name="defaultPort" value="8092"/>
+                    <property name="method" value="mina"/>
                     <property name="name" value="home-impl"/>
                     <property name="lazyLoading" value="true"/>
                     <property name="loadTimeout" value="1000"/>

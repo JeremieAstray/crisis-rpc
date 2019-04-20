@@ -13,7 +13,7 @@ public class SerializeTool {
 
     private static final Logger logger = LoggerFactory.getLogger(SerializeTool.class);
 
-    public static String objectToString(Object object) {
+    public static <T extends Serializable> String objectToString(T object) {
         ByteArrayOutputStream byteArrayOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
         try {
@@ -37,14 +37,19 @@ public class SerializeTool {
         return null;
     }
 
-    public static Object stringToObject(String string) {
+    public static <T extends Serializable> T stringToObject(String string, Class<T> clazz) {
         ByteArrayInputStream byteArrayInputStream = null;
         ObjectInputStream objectInputStream = null;
         try {
             byte[] objectBytes = string.getBytes("ISO-8859-1");
             byteArrayInputStream = new ByteArrayInputStream(objectBytes);
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            return objectInputStream.readObject();
+            Object o = objectInputStream.readObject();
+            if (o.getClass().equals(clazz)) {
+                return (T) o;
+            } else {
+                throw new ClassCastException("object can not cast to " + clazz.getName());
+            }
         } catch (IOException | ClassNotFoundException e) {
             logger.error("stringToObject error", e);
         } finally {
@@ -60,13 +65,18 @@ public class SerializeTool {
         return null;
     }
 
-    public static Object byteArrayToObject(byte[] byteArray) throws EOFException {
+    public static <T extends Serializable> T byteArrayToObject(byte[] byteArray, Class<T> clazz) throws EOFException {
         ByteArrayInputStream byteArrayInputStream = null;
         ObjectInputStream objectInputStream = null;
         try {
             byteArrayInputStream = new ByteArrayInputStream(byteArray);
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            return objectInputStream.readObject();
+            Object o = objectInputStream.readObject();
+            if (o.getClass().isAssignableFrom(clazz)) {
+                return (T) o;
+            } else {
+                throw new ClassCastException("object can not cast to " + clazz.getName());
+            }
         } catch (EOFException e) {
             throw e;
         } catch (IOException | ClassNotFoundException e) {
@@ -85,7 +95,7 @@ public class SerializeTool {
         return null;
     }
 
-    public static byte[] objectToByteArray(Object object) {
+    public static <T extends Serializable> byte[] objectToByteArray(T object) {
         ByteArrayOutputStream byteArrayOutputStream = null;
         ObjectOutputStream objectOutputStream = null;
         try {

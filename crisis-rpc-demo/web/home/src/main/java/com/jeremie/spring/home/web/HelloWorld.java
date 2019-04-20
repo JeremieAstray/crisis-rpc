@@ -4,6 +4,7 @@ package com.jeremie.spring.home.web;
 import com.jeremie.spring.adol.service.AdolService;
 import com.jeremie.spring.home.entity.User;
 import com.jeremie.spring.home.service.UserService;
+import com.jeremie.spring.rpc.RpcContext;
 import com.jeremie.spring.web.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
+import java.util.concurrent.Future;
 
 /**
  * @author guanhong 15/7/27 下午6:58.
@@ -49,31 +51,42 @@ public class HelloWorld extends BaseController {
         String[] stringArray = userService.testStringArray();
         long[] longArray = userService.testlongArray();
         Long num = userService.testLong();
-        if (stringArray != null)
+        if (stringArray != null) {
             Arrays.asList(stringArray).forEach(System.out::println);
-        else
+        } else {
             System.out.println("get null StringArray");
-        if (longArray != null)
-            for (long a : longArray)
+        }
+        if (longArray != null) {
+            for (long a : longArray) {
                 System.out.println(a);
-        else
+            }
+        } else {
             System.out.println("get null longArray");
-        if (num != 0)
+        }
+        if (num != 0) {
             System.out.println(num);
-        else
+        } else {
             System.out.println("get null number");
+        }
         model.addAttribute("testGetString", test);
         model.addAttribute("user", user.getUsername());
         model.addAttribute("adol", adolService.getSomethingTest());
+
+        userService.getById(33);
+        Future<User> userFuture = RpcContext.getContext().getFuture();
+        model.addAttribute("user2", userFuture.get().toString());
+
         return "test";
     }
 
     @RequestMapping("/updateUser")
     public String updateUser(RedirectAttributes redirectAttributes, Long id, String name) throws Exception {
-        if (id == null)
+        if (id == null) {
             id = 1l;
-        if (name == null || "".equals(name))
+        }
+        if (name == null || "".equals(name)) {
             name = "guanhong!";
+        }
         userService.updateUserById(name, id);
         redirectAttributes.addAttribute("id", id);
         return "redirect:/templates/testvm";

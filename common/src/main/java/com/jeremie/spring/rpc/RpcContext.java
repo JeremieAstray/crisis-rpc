@@ -3,18 +3,16 @@ package com.jeremie.spring.rpc;
 import java.net.SocketAddress;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * @author guanhong 15/11/22 上午11:13.
  */
 public class RpcContext {
 
-    private static final ThreadLocal<RpcContext> LOCAL = new ThreadLocal<RpcContext>() {
-        @Override
-        protected RpcContext initialValue() {
-            return new RpcContext();
-        }
-    };
+    private static final ThreadLocal<RpcContext> LOCAL = ThreadLocal.withInitial(RpcContext::new);
+
+    private Future<?> future;
 
     private List<URL> urls;
 
@@ -39,6 +37,15 @@ public class RpcContext {
      */
     public static RpcContext getContext() {
         return LOCAL.get();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Future<T> getFuture() {
+        return (Future<T>) future;
+    }
+
+    public void setFuture(Future<?> future) {
+        this.future = future;
     }
 
     /**
