@@ -10,6 +10,7 @@
     testGetString : ${testGetString}<br>
     vmchange : ${vmchange} <br>
     adol : ${adol}<br>
+    user2 : ${user2}<br>
     vmreload
 </body>
 </html>

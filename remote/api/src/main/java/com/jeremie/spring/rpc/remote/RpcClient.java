@@ -15,7 +15,6 @@ import org.springframework.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,19 +23,19 @@ import java.util.concurrent.TimeUnit;
 public abstract class RpcClient {
 
     private static final Logger logger = LoggerFactory.getLogger(RpcClient.class);
-    public static Map<String, Object> lockMap = new ConcurrentHashMap<>();
-    public static Map<String, Cache<String, Object>> resultCacheMap = Maps.newHashMap();
+    static Map<String, Object> lockMap = Maps.newConcurrentMap();
+    private static Map<String, Cache<String, Object>> resultCacheMap = Maps.newConcurrentMap();
     //3s
-    protected static long DEFAULT_TIMEOUT = 3000L;
+    static long DEFAULT_TIMEOUT = 30L;
     protected boolean lazyLoading;
 
     public RpcClient(String serverName, Boolean lazyLoading, Long cacheTimeout) {
         this.lazyLoading = lazyLoading;
-        resultCacheMap.put(serverName, CacheBuilder.newBuilder().expireAfterWrite(cacheTimeout, TimeUnit.MILLISECONDS).build());
+        resultCacheMap.put(serverName, CacheBuilder.newBuilder().expireAfterWrite(cacheTimeout, TimeUnit.SECONDS).build());
     }
 
-    public static Cache<String, Object> getCache(String cacheRegion) {
-        return resultCacheMap.getOrDefault(cacheRegion, CacheBuilder.newBuilder().expireAfterWrite(DEFAULT_TIMEOUT, TimeUnit.MILLISECONDS).build());
+    static Cache<String, Object> getCache(String cacheRegion) {
+        return resultCacheMap.getOrDefault(cacheRegion, CacheBuilder.newBuilder().expireAfterWrite(DEFAULT_TIMEOUT, TimeUnit.SECONDS).build());
     }
 
     public abstract RpcBean getRpcBean();
@@ -50,8 +49,8 @@ public abstract class RpcClient {
     /**
      * 动态代理类
      *
-     * @param rpcInvocation
-     * @return
+     * @param rpcInvocation rpcInvocation
+     * @return Object
      */
     public Object dynamicProxyObject(RpcInvocation rpcInvocation) {
         lockMap.put(rpcInvocation.getClientId(), rpcInvocation);
